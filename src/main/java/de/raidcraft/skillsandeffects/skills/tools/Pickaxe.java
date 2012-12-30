@@ -90,18 +90,23 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                 getHero().debug("Super Breaker enabled -> double exp: " + exp);
             }
             getLevel().addExp(exp);
+
+            // drop item if super breaker active
+            if(superBreakerActive) {
+                event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
+                        event.getBlock().getData()));
+            }
+
+            // calculate double drop
+            double chance = getLevel().getLevel() * doubleDropChance;
+            double random = Math.random() * 100.;
+            if(chance > random) {
+                event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
+                        event.getBlock().getData()));
+            }
+
         } catch (Exception ignored) {
         }
-
-        // drop item if super breaker active
-        if(superBreakerActive) {
-            event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
-                    event.getBlock().getData()));
-        }
-
-        // calculate if double drop
-        double chance = getLevel().getLevel() * doubleDropChance;
-
     }
 
     /*
