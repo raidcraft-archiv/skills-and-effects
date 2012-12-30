@@ -53,7 +53,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     /*
      * Level increase and Double Drop
      */
-    @TriggerHandler
+    @TriggerHandler(checkUsage = false)
     public void blockBreak(BlockBreakTrigger trigger) throws CombatException {
         getHero().debug("BlockBreak trigger called");
 
@@ -91,7 +91,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     /*
      * Super Breaker
      */
-    @TriggerHandler(checkUsage = true)
+    @TriggerHandler(checkUsage = false)
     public void interact(PlayerInteractTrigger trigger) throws CombatException {
         getHero().debug("Interact trigger called");
         PlayerInteractEvent event = trigger.getEvent();
@@ -103,11 +103,10 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         }
         getHero().debug("Correct tool in hand");
 
-        // check usage costs and cooldown
-        checkUsage();
-
         // activate Super Breaker
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+            // check usage costs and cooldown
+            checkUsage();
             if(getHero().hasEffect(SpeedBlockBreak.class)
                     && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
                 getHero().debug("Super Breaker already enabled!");
