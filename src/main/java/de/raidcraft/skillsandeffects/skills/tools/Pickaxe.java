@@ -94,13 +94,14 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         }
 
         // drop item if super breaker active
-        if (superBreakerActive) {
+        if(superBreakerActive) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
                     event.getBlock().getData()));
         }
 
         // calculate if double drop
-//        double chance = ;
+        double chance = getLevel().getLevel() * doubleDropChance;
+
     }
 
     /*
@@ -112,17 +113,17 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         PlayerInteractEvent event = trigger.getEvent();
 
         // check if correct tool
-        if (event.getItem() == null
+        if(event.getItem() == null
                 || event.getItem().getTypeId() != toolId) {
             return;
         }
         getHero().debug("Correct tool in hand");
 
         // activate Super Breaker
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
             checkUsage();
-            if (getHero().hasEffect(SpeedBlockBreak.class)
+            if(getHero().hasEffect(SpeedBlockBreak.class)
                     && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
                 getHero().debug("Super Breaker already enabled!");
                 return;
