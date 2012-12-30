@@ -81,16 +81,20 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
         if(event.getItem() == null || event.getItem().getTypeId() != toolId) {
             return;
         }
+        trigger.getHero().debug("Correct tool!");
 
         // check if clicked block is in list
         if(event.getClickedBlock() == null || !blocks.contains(event.getClickedBlock().getTypeId())) {
+            trigger.getHero().debug("Block not known!");
             return;
         }
+        trigger.getHero().debug("Block known!");
         
         BlockBreakEvent fakeBreakEvent = new BlockBreakEvent(event.getClickedBlock(), event.getPlayer());
         RaidCraft.callEvent(fakeBreakEvent);
         if(!fakeBreakEvent.isCancelled()) {
             event.getClickedBlock().setType(Material.AIR);
+            trigger.getHero().debug("Delete block");
         }
     }
 }
