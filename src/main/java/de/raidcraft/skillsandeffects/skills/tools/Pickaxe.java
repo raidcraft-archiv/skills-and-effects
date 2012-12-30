@@ -58,7 +58,6 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
      */
     @TriggerHandler(checkUsage = false)
     public void blockBreak(BlockBreakTrigger trigger) throws CombatException {
-        getHero().debug("BlockBreak trigger called");
 
         BlockBreakEvent event = trigger.getEvent();
 
@@ -67,8 +66,6 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             return;
         }
 
-        getHero().debug("Natural block");
-
         // check if correct tool
         if (event.getPlayer().getItemInHand() == null
                 || event.getPlayer().getItemInHand().getTypeId() != toolId) {
@@ -76,33 +73,25 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             return;
         }
 
-        getHero().debug("Correct tool in hand");
-
         boolean superBreakerActive = (getHero().hasEffect(SpeedBlockBreak.class)
                 && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this));
 
         // add exp based on mined block
         try {
             int exp = (Integer) data.get(String.valueOf(trigger.getEvent().getBlock().getTypeId()));
-            getHero().debug("Block known -> exp: " + exp);
             if (superBreakerActive) {
                 exp *= 2;
                 getHero().debug("Super Breaker enabled -> double exp: " + exp);
             }
             getLevel().addExp(exp);
 
-            // drop item if super breaker active
-            if(superBreakerActive) {
-                event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
-                        event.getBlock().getData()));
-            }
-
             // calculate double drop
             double chance = getLevel().getLevel() * doubleDropChance;
             double random = Math.random() * 100.;
             if(chance > random) {
-                event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
-                        event.getBlock().getData()));
+                for(ItemStack itemStack : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
+                    event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), itemStack);
+                }
             }
 
         } catch (Exception ignored) {
@@ -114,7 +103,6 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
      */
     @TriggerHandler(checkUsage = false)
     public void interact(PlayerInteractTrigger trigger) throws CombatException {
-        getHero().debug("Interact trigger called");
         PlayerInteractEvent event = trigger.getEvent();
 
         // check if correct tool
@@ -122,7 +110,6 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                 || event.getItem().getTypeId() != toolId) {
             return;
         }
-        getHero().debug("Correct tool in hand");
 
         // activate Super Breaker
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
