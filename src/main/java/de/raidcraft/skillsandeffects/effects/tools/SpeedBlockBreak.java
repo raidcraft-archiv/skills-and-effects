@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.effects;
+package de.raidcraft.skillsandeffects.effects.tools;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;

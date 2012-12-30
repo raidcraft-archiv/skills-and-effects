@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.tools;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.effectimpls.SpeedBlockBreak;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -14,6 +13,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import de.raidcraft.skillsandeffects.effects.tools.SpeedBlockBreak;
 import de.raidcraft.util.MetaDataKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
