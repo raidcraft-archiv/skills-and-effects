@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -37,7 +38,8 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
     private Map<String, Object> data;
     private int toolId;
-    
+    private double doubleDropChance;
+
     public Pickaxe(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
@@ -48,6 +50,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     public void load(ConfigurationSection data) {
         this.toolId = data.getInt("tool-id", 270);
         this.data = data.getValues(false);
+        this.doubleDropChance = data.getDouble("double-drop-chance-per-level", 10);
     }
 
     /*
@@ -60,14 +63,14 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         BlockBreakEvent event = trigger.getEvent();
 
         // ignore player placed block
-        if(RaidCraft.getMetaData(event.getBlock(), MetaDataKey.PLAYER_PLACED_BLOCK, false)) {
+        if (RaidCraft.getMetaData(event.getBlock(), MetaDataKey.PLAYER_PLACED_BLOCK, false)) {
             return;
         }
 
         getHero().debug("Natural block");
 
         // check if correct tool
-        if(event.getPlayer().getItemInHand() == null
+        if (event.getPlayer().getItemInHand() == null
                 || event.getPlayer().getItemInHand().getTypeId() != toolId) {
             getHero().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId + ")");
             return;
@@ -75,17 +78,29 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         getHero().debug("Correct tool in hand");
 
+        boolean superBreakerActive = (getHero().hasEffect(SpeedBlockBreak.class)
+                && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this));
+
         // add exp based on mined block
         try {
-            int exp = (Integer)data.get(String.valueOf(trigger.getEvent().getBlock().getTypeId()));
+            int exp = (Integer) data.get(String.valueOf(trigger.getEvent().getBlock().getTypeId()));
             getHero().debug("Block known -> exp: " + exp);
-            if(getHero().hasEffect(SpeedBlockBreak.class)
-                    && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
+            if (superBreakerActive) {
                 exp *= 2;
                 getHero().debug("Super Breaker enabled -> double exp: " + exp);
             }
             getLevel().addExp(exp);
-        } catch(Exception ignored) {}
+        } catch (Exception ignored) {
+        }
+
+        // drop item if super breaker active
+        if (superBreakerActive) {
+            event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(event.getBlock().getType(), 1,
+                    event.getBlock().getData()));
+        }
+
+        // calculate if double drop
+//        double chance = ;
     }
 
     /*
@@ -97,17 +112,17 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         PlayerInteractEvent event = trigger.getEvent();
 
         // check if correct tool
-        if(event.getItem() == null
+        if (event.getItem() == null
                 || event.getItem().getTypeId() != toolId) {
             return;
         }
         getHero().debug("Correct tool in hand");
 
         // activate Super Breaker
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
             checkUsage();
-            if(getHero().hasEffect(SpeedBlockBreak.class)
+            if (getHero().hasEffect(SpeedBlockBreak.class)
                     && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
                 getHero().debug("Super Breaker already enabled!");
                 return;
