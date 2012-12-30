@@ -71,15 +71,6 @@
                             </includes>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>everything</id>
-                        <goals><goal>jar</goal></goals>
-                        <configuration>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>

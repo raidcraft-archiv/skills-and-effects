@@ -53,7 +53,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     /*
      * Level increase and Double Drop
      */
-    @TriggerHandler(ignoreChecks = true)
+    @TriggerHandler
     public void blockBreak(BlockBreakTrigger trigger) throws CombatException {
         getHero().debug("BlockBreak trigger called");
 
@@ -91,7 +91,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     /*
      * Super Breaker
      */
-    @TriggerHandler(ignoreChecks = true)
+    @TriggerHandler(checkUsage = true)
     public void interact(PlayerInteractTrigger trigger) throws CombatException {
         getHero().debug("Interact trigger called");
         PlayerInteractEvent event = trigger.getEvent();

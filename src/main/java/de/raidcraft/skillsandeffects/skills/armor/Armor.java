@@ -67,7 +67,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
     }
 
-    @TriggerHandler(ignoreChecks = true)
+    @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
         if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
@@ -76,7 +76,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
     }
 
-    @TriggerHandler(ignoreChecks = true)
+    @TriggerHandler
     public void onInventoryClose(InventoryCloseTrigger trigger) {
 
         checkArmor();
