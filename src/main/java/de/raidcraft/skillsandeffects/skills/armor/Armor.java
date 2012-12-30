@@ -1,5 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.armor;
 
+import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -69,6 +70,9 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreChecks = true)
     public void onDamage(DamageTrigger trigger) {
 
+        if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
+            return;
+        }
 
     }
 
