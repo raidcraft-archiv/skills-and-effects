@@ -103,6 +103,9 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         }
         getHero().debug("Correct tool in hand");
 
+        // check usage costs and cooldown
+        checkUsage();
+
         // activate Super Breaker
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             if(getHero().hasEffect(SpeedBlockBreak.class)
