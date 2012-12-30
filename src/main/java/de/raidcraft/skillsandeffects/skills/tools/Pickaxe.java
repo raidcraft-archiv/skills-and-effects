@@ -50,7 +50,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     public void load(ConfigurationSection data) {
         this.toolId = data.getInt("tool-id", 270);
         this.data = data.getValues(false);
-        this.doubleDropChance = data.getDouble("double-drop-chance-per-level", 10);
+        this.doubleDropChance = data.getDouble("double-drop-chance-per-level", 0.1);
     }
 
     /*
@@ -136,7 +136,6 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
             getHero().debug("Start Super Breaker!");
             addEffect(getHero(), SpeedBlockBreak.class);
-            substractUsageCost();
         }
     }
 

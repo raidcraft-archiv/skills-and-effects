@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,6 +34,7 @@ import java.util.List;
 )
 public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered {
 
+    private boolean used;
     private List<Integer> blocks;
     private String activateMsg;
     private String deactivateMsg;
@@ -46,7 +48,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
     @Override
     public void load(ConfigurationSection data) {
         this.activateMsg = data.getString("activate-message", "SuperBreaker aktiviert!");
-        this.deactivateMsg = data.getString("deactivate-message", "SuperBreaker deaktiviert!");
+        this.deactivateMsg = data.getString("deactivate-message", "SuperBreaker abgelaufen!");
         this.toolId = data.getInt("tool-id");
         this.blocks = data.getIntegerList("blocks");
     }
@@ -57,7 +59,8 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
             return;
         }
         
-        ((Player) target.getEntity()).sendMessage(ChatColor.GREEN + activateMsg);
+        ((Player) target.getEntity()).sendMessage(ChatColor.YELLOW + "Du hebst deine " + ItemUtils.getFriendlyName(Material.getMaterial
+                (toolId)));
     }
 
     @Override
@@ -66,20 +69,29 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
             return;
         }
 
-        ((Player) target.getEntity()).sendMessage(ChatColor.GREEN + deactivateMsg);
+        if(used) ((Player) target.getEntity()).sendMessage(ChatColor.RED + deactivateMsg);
+        else ((Player) target.getEntity()).sendMessage(ChatColor.GRAY + "Du senkst deine " + ItemUtils.getFriendlyName(Material.getMaterial
+                (toolId)));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+        used = true;
+        ((Player) target.getEntity()).sendMessage(ChatColor.GREEN + activateMsg);
     }
     
     @TriggerHandler
-    public void onInteract(PlayerInteractTrigger trigger) {
+    public void onInteract(PlayerInteractTrigger trigger) throws CombatException {
 
         PlayerInteractEvent event = trigger.getEvent();
 
         if(event.getAction() != Action.LEFT_CLICK_BLOCK) {
             return;
+        }
+
+        if(!used) {
+            getSource().substractUsageCost();
+            renew(trigger.getHero());
         }
 
         // check if correct tool in use
