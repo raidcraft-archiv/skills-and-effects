@@ -59,8 +59,8 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
             return;
         }
         
-        ((Player) target.getEntity()).sendMessage(ChatColor.YELLOW + "Du hebst deine " + ItemUtils.getFriendlyName(Material.getMaterial
-                (toolId)));
+        ((Player) target.getEntity()).sendMessage(ChatColor.YELLOW + "Du hebst deine "
+                + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
     }
 
     @Override
@@ -70,8 +70,8 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
         }
 
         if(used) ((Player) target.getEntity()).sendMessage(ChatColor.RED + deactivateMsg);
-        else ((Player) target.getEntity()).sendMessage(ChatColor.GRAY + "Du senkst deine " + ItemUtils.getFriendlyName(Material.getMaterial
-                (toolId)));
+        else ((Player) target.getEntity()).sendMessage(ChatColor.GRAY + "Du senkst deine "
+                + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
     }
 
     @Override
