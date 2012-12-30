@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -35,7 +36,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
     private List<Integer> blocks;
     private String activateMsg;
     private String deactivateMsg;
-    private int toolId = -1;
+    private int toolId;
     
     public SpeedBlockBreak(Skill source, CharacterTemplate target, EffectData data) {
 
@@ -77,8 +78,14 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
 
         PlayerInteractEvent event = trigger.getEvent();
 
+        if(event.getAction() != Action.LEFT_CLICK_BLOCK) {
+            return;
+        }
+
         // check if correct tool in use
         if(event.getItem() == null || event.getItem().getTypeId() != toolId) {
+            trigger.getHero().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId +
+                    ")");
             return;
         }
         trigger.getHero().debug("Correct tool!");
