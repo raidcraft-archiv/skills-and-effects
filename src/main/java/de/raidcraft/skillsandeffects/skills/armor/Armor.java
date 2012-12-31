@@ -1,5 +1,7 @@
 package de.raidcraft.skillsandeffects.skills.armor;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
@@ -12,14 +14,18 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.trigger.InventoryClickTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -30,7 +36,8 @@ import java.util.*;
 )
 public class Armor extends AbstractLevelableSkill implements Triggered {
 
-    private final Map<ItemUtil.ArmorSlot, Set<ArmorPiece>> allowedArmor = new EnumMap<>(ItemUtil.ArmorSlot.class);
+    private Map<Material, ArmorPiece> allowedArmor;
+    private Map<ItemUtil.ArmorSlot, ArmorPiece> playerArmor;
 
     public Armor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -40,6 +47,8 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        allowedArmor = new EnumMap<>(Material.class);
+        playerArmor = new EnumMap<>(ItemUtil.ArmorSlot.class);
         ConfigurationSection section;
         for (String key : data.getConfigurationSection("armor").getKeys(false)) {
             Material item = ItemUtils.getItem(key);
@@ -47,24 +56,27 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
                 section = data.getConfigurationSection("armor." + key);
                 ItemUtil.ArmorSlot slot = ItemUtil.ArmorSlot.fromMaterial(item);
                 if (slot != null) {
-                    if (!allowedArmor.containsKey(slot)) {
-                        allowedArmor.put(slot, new HashSet<ArmorPiece>());
+                    if (!allowedArmor.containsKey(item)) {
+                        allowedArmor.put(item, new ArmorPiece(item, slot, section));
                     }
-                    allowedArmor.get(slot).add(new ArmorPiece(item, slot, section));
                 }
+            } else {
+                RaidCraft.LOGGER.warning("Item " + key + " in der Skill Config: " + getName() + " wurde nicht erkannt.");
             }
         }
     }
 
     @Override
     public void apply() {
-        //TODO: implement
+
+        checkArmor();
     }
 
     @Override
     public void remove() {
 
-
+        allowedArmor.clear();
+        checkArmor();
     }
 
     @TriggerHandler
@@ -73,7 +85,19 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
             return;
         }
-
+        if (trigger.getAttack().hasSource(AttackSource.ENVIRONMENT)) {
+            return;
+        }
+        int damageReduction = 0;
+        for (ArmorPiece armor : playerArmor.values()) {
+            // lets add up the defence points and reduce the damage
+            damageReduction += armor.getTotalDamageReduction(this);
+        }
+        if (damageReduction > 0) {
+            trigger.getAttack().setDamage(trigger.getAttack().getDamage() - damageReduction);
+            getHero().debug("damage reduced by " + damageReduction);
+            getHero().combatLog("Schaden durch Rüstung um " + damageReduction + " reduziert.");
+        }
     }
 
     @TriggerHandler
@@ -82,47 +106,62 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         checkArmor();
     }
 
+    public void onInventoryClickTrigger(InventoryClickTrigger trigger) {
+
+        checkArmor();
+    }
+
     private boolean isAllowedItem(Material material) {
 
-        Collection<Set<ArmorPiece>> values = allowedArmor.values();
-        for (Set<ArmorPiece> entry : values) {
-            for (ArmorPiece piece : entry) {
-                if (piece.getType() == material) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return allowedArmor.containsKey(material);
+    }
+
+    private boolean isAllowedItem(ItemStack itemStack) {
+
+        return itemStack != null && isAllowedItem(itemStack.getType());
     }
 
     private void checkArmor() {
 
         Hero hero = getHero();
         PlayerInventory inventory = hero.getPlayer().getInventory();
-        if (inventory.getHelmet() != null && inventory.getHelmet().getTypeId() != 0) {
-            if (!isAllowedItem(inventory.getHelmet().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getHelmet());
-                inventory.setHelmet(null);
-            }
+        boolean movedItem = false;
+        if (checkArmorItem(hero, ItemUtil.ArmorSlot.HEAD, inventory.getHelmet())) {
+            inventory.setHelmet(null);
+            movedItem = true;
         }
-        if (inventory.getChestplate() != null && inventory.getChestplate().getTypeId() != 0) {
-            if (!isAllowedItem(inventory.getChestplate().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getChestplate());
-                inventory.setChestplate(null);
-            }
+        if (checkArmorItem(hero, ItemUtil.ArmorSlot.CHEST, inventory.getChestplate())) {
+            inventory.setChestplate(null);
+            movedItem = true;
         }
-        if (inventory.getLeggings() != null && inventory.getLeggings().getTypeId() != 0) {
-            if (!isAllowedItem(inventory.getLeggings().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getLeggings());
-                inventory.setLeggings(null);
-            }
+        if (checkArmorItem(hero, ItemUtil.ArmorSlot.LEGS, inventory.getLeggings())) {
+            inventory.setLeggings(null);
+            movedItem = true;
         }
-        if (inventory.getBoots() != null && inventory.getBoots().getTypeId() != 0) {
-            if (!isAllowedItem(inventory.getBoots().getType())) {
-                ItemUtil.moveItem(hero, -1, inventory.getLeggings());
-                inventory.setBoots(null);
-            }
+        if (checkArmorItem(hero, ItemUtil.ArmorSlot.FEET, inventory.getBoots())) {
+            inventory.setBoots(null);
+            movedItem = true;
         }
+        if (movedItem) {
+            // inform the player
+            hero.sendMessage(ChatColor.RED + "Du kannst diese Rüstung nicht tragen. Sie wurde in dein Inventar gelegt.");
+        }
+    }
+
+    private boolean checkArmorItem(Hero hero, ItemUtil.ArmorSlot slot, ItemStack item) {
+
+        if (item == null || item.getTypeId() == 0) {
+            playerArmor.remove(slot);
+            return false;
+        }
+        if (!isAllowedItem(item)) {
+            ItemUtil.moveItem(hero, -1, item);
+            playerArmor.remove(slot);
+            return true;
+        } else {
+            playerArmor.put(slot, allowedArmor.get(item.getType()));
+        }
+        return false;
     }
 
     public static class ArmorPiece {
@@ -182,6 +221,12 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
             return obj instanceof ArmorPiece
                     && ((ArmorPiece) obj).getType() == getType()
                     && ((ArmorPiece) obj).getSlot() == getSlot();
+        }
+
+        @Override
+        public String toString() {
+
+            return slot.name() + ":" + type.name();
         }
     }
 }
