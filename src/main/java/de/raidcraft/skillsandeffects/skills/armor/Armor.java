@@ -42,6 +42,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     public Armor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+        // TODO: maybe add exp system to unlock more armor
     }
 
     @Override
