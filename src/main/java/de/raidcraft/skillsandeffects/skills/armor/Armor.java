@@ -78,6 +78,12 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     }
 
     @Override
+    public void onLevelGain() {
+
+
+    }
+
+    @Override
     public void apply() {
 
         checkArmor();
