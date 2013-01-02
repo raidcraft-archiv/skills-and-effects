@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.armor;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.hero.Hero;
@@ -43,13 +42,14 @@ import java.util.Map;
 )
 public class Armor extends AbstractLevelableSkill implements Triggered {
 
+    private static final double EXP_PER_DAMAGE_TAKEN = 0.25;
     private Map<Material, ArmorPiece> allowedArmor;
     private Map<ItemUtil.ArmorSlot, ArmorPiece> playerArmor;
 
     public Armor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        // TODO: maybe add exp system to unlock more armor
+        attachLevel(new ArmorLevel(this, database));
     }
 
     @Override
@@ -96,9 +96,6 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
             return;
         }
-        if (trigger.getAttack().hasSource(AttackSource.ENVIRONMENT)) {
-            return;
-        }
         int totalArmor = 0;
         for (ArmorPiece armor : playerArmor.values()) {
             // lets add up the defence points and reduce the damage
@@ -108,11 +105,11 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         double damageReduction = getDamageReduction(trigger.getAttack(), totalArmor);
         int newDamage = (int) (trigger.getAttack().getDamage() - (trigger.getAttack().getDamage() * damageReduction));
 
-        if (newDamage > 0) {
-            trigger.getAttack().setDamage(newDamage);
-            getHero().debug("damage reduced by " + damageReduction);
-            getHero().combatLog("Schaden durch Rüstung um " + damageReduction + " reduziert.");
-        }
+        trigger.getAttack().setDamage(newDamage);
+        getHero().debug("damage reduced by " + damageReduction);
+        getHero().combatLog("Schaden durch Rüstung um " + damageReduction + " reduziert.");
+        // now lets add some exp to the player to unlock more armor
+        getLevel().addExp((int) (EXP_PER_DAMAGE_TAKEN * newDamage));
     }
 
     @TriggerHandler
@@ -135,7 +132,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
     /**
      * This reduction formula is based on the WoW Armor Reduction formula for characters up to level 59.
-     * %Reduction = (Armor / ([85 * Enemy_Level] + Armor + 400))
+     * %Reduction = (Armor / ([85 * Enemy_Level] + Armor + 400)) * 100
      * The reduction is always capped at 75% so nobdy can receive 0 damage from armor reduction.
      *
      * To make things easier we calculate with a enemy level of 60 at all times.
@@ -148,8 +145,9 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
      */
     private double getDamageReduction(Attack attack, int armor) {
 
-        int level = 1;
-        if (attack.getSource() instanceof Levelable) {
+        // default the level to 60
+        int level = 60;
+        if (attack.getSource() instanceof Levelable && !(attack.getSource() instanceof Hero)) {
             level = ((Levelable) attack.getSource()).getLevel().getLevel();
         }
         double reduction = armor / ((45.0 * level) + armor + 200.0);
