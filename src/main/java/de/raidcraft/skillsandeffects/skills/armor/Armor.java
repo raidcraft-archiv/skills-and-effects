@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.skills.armor;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.AttackType;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.level.Levelable;
@@ -38,7 +39,9 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Armor",
-        desc = "Verringert erlittenen Schaden."
+        desc = "Verringert erlittenen Schaden.",
+        types = {EffectType.UNBINDABLE, EffectType.HELPFUL},
+        triggerCombat = true
 )
 public class Armor extends AbstractLevelableSkill implements Triggered {
 

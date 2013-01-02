@@ -31,8 +31,7 @@ import java.util.Map;
 @SkillInformation(
         name = "Pickaxe",
         desc = "Macht das Nutzen einer Spitzhacke spannender und effektiver",
-        types = {EffectType.UNBINDABLE},
-        triggerCombat = false
+        types = {EffectType.UNBINDABLE}
 )
 public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
