@@ -80,7 +80,22 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     @Override
     public void onLevelGain() {
 
+        super.onLevelGain();
+        for (ArmorPiece armor : allowedArmor.values()) {
+            if (armor.getLevel() == getLevel().getLevel()) {
+                getHero().sendMessage(
+                        ChatColor.GREEN + "Neue Rüstung freigeschaltet: " +
+                                ItemUtils.getFriendlyName(armor.getType(), ItemUtils.Language.GERMAN));
+            }
+        }
+        checkArmor();
+    }
 
+    @Override
+    public void onLevelLoss() {
+
+        super.onLevelLoss();
+        checkArmor();
     }
 
     @Override
