@@ -81,6 +81,16 @@
                             </includes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Protection</id>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <jarName>Protections</jarName>
+                            <includes>
+                                <include>**/protections/*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
