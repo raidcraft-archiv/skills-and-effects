@@ -30,8 +30,7 @@ import java.util.Map;
 @SkillInformation(
         name = "weapons",
         desc = "Erhöht den Schaden deiner Waffen.",
-        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.UNBINDABLE},
-        triggerCombat = true
+        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.UNBINDABLE}
 )
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
@@ -68,7 +67,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @Override
     public void remove() {
 
-        allowedWeapons.clear();
         checkTaskbar();
     }
 
@@ -88,13 +86,14 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
-        checkTaskbar();
         if (trigger.getAttack().isCancelled()) {
             return;
         }
         ItemStack item = trigger.getHero().getPlayer().getItemInHand();
-        if (item == null || item.getTypeId() == 0 || !allowedWeapons.containsKey(item.getType())) {
-            trigger.getAttack().setCancelled(true);
+        if (item == null || item.getTypeId() == 0
+                || !ItemUtil.isWeapon(item.getType())
+                || !allowedWeapons.containsKey(item.getType())) {
+            checkTaskbar();
             return;
         }
         int oldDamage = trigger.getAttack().getDamage();
@@ -117,7 +116,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         // 0-8 are the slot ids in the taskbar
         for (int i = 0; i < 9; i++) {
             ItemStack item = inventory.getItem(i);
-            if (item == null || item.getTypeId() == 0) {
+            if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
                 continue;
             }
             if (!allowedWeapons.containsKey(item.getType())
