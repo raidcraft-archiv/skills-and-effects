@@ -71,6 +71,16 @@
                             </includes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Weapons</id>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <jarName>Weapons</jarName>
+                            <includes>
+                                <include>**/weapons/*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
