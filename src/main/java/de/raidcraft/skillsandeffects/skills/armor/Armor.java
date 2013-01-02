@@ -57,6 +57,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
         allowedArmor = new EnumMap<>(Material.class);
         playerArmor = new EnumMap<>(ItemUtil.ArmorSlot.class);
+        if (data.getConfigurationSection("items") == null) return;
         // lets load all items that the class can wear
         for (String key : data.getConfigurationSection("items").getKeys(false)) {
             Material item = ItemUtils.getItem(key);
@@ -66,7 +67,11 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
                     if (!allowedArmor.containsKey(item)) {
                         int defArmorValue = data.getInt("defaults." + item.getId(), 0);
                         if (defArmorValue == 0) defArmorValue = data.getInt("defaults." + item.name(), 0);
-                        allowedArmor.put(item, new ArmorPiece(item, slot, defArmorValue, data.getInt("items." + key, 1)));
+                        ArmorPiece armorPiece = new ArmorPiece(item, slot, defArmorValue, data.getInt("items." + key, 1));
+                        allowedArmor.put(item, armorPiece);
+                        getHero().debug("loaded armor: " + armorPiece.getType().name() +
+                                        ":L" + armorPiece.getLevel() +
+                                        ":D" + armorPiece.getArmorValue());
                     }
                 } else {
                     RaidCraft.LOGGER.warning("Item " + key + " in der Skill Config: " + getName() + " ist kein Rüstungs Item.");
