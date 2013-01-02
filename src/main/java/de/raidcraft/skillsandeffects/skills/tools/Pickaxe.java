@@ -127,11 +127,9 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void apply() {
-        //TODO: implement
     }
 
     @Override
     public void remove() {
-        //TODO: implement
     }
 }
