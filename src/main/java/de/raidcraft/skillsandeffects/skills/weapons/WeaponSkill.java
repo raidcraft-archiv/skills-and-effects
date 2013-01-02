@@ -40,6 +40,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     public WeaponSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+        attachLevel(new WeaponLevel(this, database));
     }
 
     @Override
@@ -71,18 +72,36 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         checkTaskbar();
     }
 
+    @Override
+    public void onLevelGain() {
+
+        super.onLevelGain();
+        for (Weapon weapon : allowedWeapons.values()) {
+            if (weapon.getRequiredLevel() <= getLevel().getLevel()) {
+                getHero().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
+                        ItemUtils.getFriendlyName(weapon.getType(), ItemUtils.Language.GERMAN));
+            }
+        }
+        checkTaskbar();
+    }
+
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
         checkTaskbar();
+        if (trigger.getAttack().isCancelled()) {
+            return;
+        }
         ItemStack item = trigger.getHero().getPlayer().getItemInHand();
         if (item == null || item.getTypeId() == 0 || !allowedWeapons.containsKey(item.getType())) {
             trigger.getAttack().setCancelled(true);
             return;
         }
         int oldDamage = trigger.getAttack().getDamage();
-        trigger.getAttack().setDamage(allowedWeapons.get(item.getType()).getTotalDamage(this));
+        Weapon weapon = allowedWeapons.get(item.getType());
+        trigger.getAttack().setDamage(weapon.getTotalDamage(this));
         getHero().debug("damaged changed " + oldDamage + "->" + trigger.getAttack().getDamage());
+        getLevel().addExp(weapon.getExpForUse());
     }
 
     @TriggerHandler
@@ -139,6 +158,11 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         public int getRequiredLevel() {
 
             return config.getInt("level", 1);
+        }
+
+        public int getExpForUse() {
+
+            return config.getInt("exp", 2);
         }
     }
 }
