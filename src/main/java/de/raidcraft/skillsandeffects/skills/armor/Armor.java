@@ -42,7 +42,7 @@ import java.util.Map;
 )
 public class Armor extends AbstractLevelableSkill implements Triggered {
 
-    private static final double EXP_PER_DAMAGE_TAKEN = 0.25;
+    private static final int EXP_PER_DAMAGE_POINT_REDUCED = 2;
     private Map<Material, ArmorPiece> allowedArmor;
     private Map<ItemUtil.ArmorSlot, ArmorPiece> playerArmor;
 
@@ -132,10 +132,10 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         int newDamage = (int) (trigger.getAttack().getDamage() - (trigger.getAttack().getDamage() * damageReduction));
 
         trigger.getAttack().setDamage(newDamage);
-        getHero().debug("damage reduced by " + damageReduction);
+        getHero().debug("damage reduced by " + (trigger.getAttack().getDamage() - newDamage));
         getHero().combatLog("Schaden durch Rüstung um " + damageReduction + " reduziert.");
         // now lets add some exp to the player to unlock more armor
-        getLevel().addExp((int) (EXP_PER_DAMAGE_TAKEN * newDamage));
+        getLevel().addExp((trigger.getAttack().getDamage() - newDamage) * EXP_PER_DAMAGE_POINT_REDUCED);
     }
 
     @TriggerHandler
@@ -184,7 +184,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
     private boolean isAllowedItem(Material material) {
 
-        return allowedArmor.containsKey(material) && allowedArmor.get(material).getLevel() < getLevel().getLevel();
+        return allowedArmor.containsKey(material) && allowedArmor.get(material).getLevel() <= getLevel().getLevel();
     }
 
     private boolean isAllowedItem(ItemStack itemStack) {
@@ -217,7 +217,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         ItemUtil.ArmorSlot shield = ItemUtil.ArmorSlot.fromMaterial(inventory.getItemInHand().getType());
         if (shield != null && allowedArmor.containsKey(inventory.getItemInHand().getType())) {
             ArmorPiece armor = allowedArmor.get(inventory.getItemInHand().getType());
-            if (armor.getLevel() < getLevel().getLevel()) {
+            if (armor.getLevel() <= getLevel().getLevel()) {
                 playerArmor.put(armor.getSlot(), armor);
             } else {
                 playerArmor.remove(ItemUtil.ArmorSlot.SHIELD);
