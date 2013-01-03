@@ -49,6 +49,6 @@ public class Fireball extends AbstractLevelableSkill implements CommandTriggered
 
                 Fireball.this.addEffect(target, Burn.class);
             }
-        });
+        }).run();
     }
 }
