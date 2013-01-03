@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
@@ -39,7 +40,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     public WeaponSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new WeaponLevel(this, database));
+        attachLevel(new ConfigurableSkillLevel(this, database, data.getData()));
     }
 
     @Override

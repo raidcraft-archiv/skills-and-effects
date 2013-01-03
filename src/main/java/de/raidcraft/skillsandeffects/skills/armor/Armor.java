@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.InventoryClickTrigger;
@@ -51,7 +52,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     public Armor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new ArmorLevel(this, database));
+        attachLevel(new ConfigurableSkillLevel(this, database, data.getData()));
     }
 
     @Override
