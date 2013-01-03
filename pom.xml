@@ -111,6 +111,16 @@
                             </includes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Usage</id>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <jarName>Usage</jarName>
+                            <includes>
+                                <include>**/usage/*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

@@ -73,9 +73,11 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void apply() {
+        // nothing to do
     }
 
     @Override
     public void remove() {
+        // nothing to do
     }
 }

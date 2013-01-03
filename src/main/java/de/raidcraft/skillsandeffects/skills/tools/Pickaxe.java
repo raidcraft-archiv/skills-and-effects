@@ -77,7 +77,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         // add exp based on mined block
         try {
-            int exp = (Integer) data.get(String.valueOf(trigger.getEvent().getBlock().getTypeId()));
+            int exp = (Integer) data.get(String.valueOf(event.getBlock().getTypeId()));
             if (superBreakerActive) {
                 exp *= 2;
                 getHero().debug("Super Breaker enabled -> double exp: " + exp);
@@ -127,9 +127,11 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void apply() {
+        // nothing to do
     }
 
     @Override
     public void remove() {
+        // nothing to do
     }
 }
