@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.effects.damaging.Bleed;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,6 +29,7 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Strike extends AbstractLevelableSkill implements CommandTriggered {
 
     private boolean knockBack = true;
+    private boolean bleed = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -38,6 +40,7 @@ public class Strike extends AbstractLevelableSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         knockBack = data.getBoolean("knockback", true);
+        bleed = data.getBoolean("bleed", false);
     }
 
     @Override
@@ -54,6 +57,7 @@ public class Strike extends AbstractLevelableSkill implements CommandTriggered {
             public void run(final CharacterTemplate target) throws CombatException {
 
                 if (knockBack) addEffect(getHero().getEntity().getLocation(), target, KnockBack.class);
+                if (bleed) addEffect(target, Bleed.class);
             }
         }).run();
     }
