@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
-import de.raidcraft.skillsandeffects.skills.tools.ToolLevel;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -35,14 +35,14 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
     public Acrobatics(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
-        attachLevel(new ToolLevel(this, database));
+        attachLevel(new AcrobaticLevel(this, database));
     }
 
     @Override
     public void load(ConfigurationSection data) {
         this.data = data.getValues(false);
-        this.expPerDamage = data.getDouble("exp-per-damage");
-        this.rollChancePerLevel = data.getDouble("roll-chance-per-level");
+        this.expPerDamage = data.getDouble("exp-per-damage", 1.0);
+        this.rollChancePerLevel = data.getDouble("roll-chance-per-level", 0.1);
     }
 
     /*
@@ -51,9 +51,13 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(checkUsage = false)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
+        getHero().debug("Damage trigger called");
+
         if(trigger.getCause() != EntityDamageEvent.DamageCause.FALL) {
             return;
         }
+
+        getHero().debug("Fall damage trigger called");
 
         getLevel().addExp((int)(expPerDamage * (double)trigger.getAttack().getDamage()));
 
@@ -62,6 +66,7 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
         double random = Math.random() * 100.;
         if(chance > random) {
             trigger.getAttack().setDamage(trigger.getAttack().getDamage() / 2); // half damage
+            getHero().getPlayer().sendMessage(ChatColor.GREEN + "**roll**");
         }
     }
 

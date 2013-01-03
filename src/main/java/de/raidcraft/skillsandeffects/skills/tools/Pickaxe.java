@@ -14,7 +14,6 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.effects.tools.SpeedBlockBreak;
-import de.raidcraft.util.MetaDataKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -61,7 +60,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         BlockBreakEvent event = trigger.getEvent();
 
         // ignore player placed block
-        if (RaidCraft.getMetaData(event.getBlock(), MetaDataKey.PLAYER_PLACED_BLOCK, false)) {
+        if (RaidCraft.isPlayerPlacedBlock(event.getBlock())) {
             return;
         }
 
