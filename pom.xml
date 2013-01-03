@@ -101,6 +101,16 @@
                             </includes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>MagicalAttacks</id>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <jarName>MagicalAttacks</jarName>
+                            <includes>
+                                <include>**/magical/*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
