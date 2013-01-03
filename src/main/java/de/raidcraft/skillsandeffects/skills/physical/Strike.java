@@ -1,10 +1,9 @@
 package de.raidcraft.skillsandeffects.skills.physical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,9 +11,11 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.damaging.Bleed;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.trigger.AttackTrigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -26,7 +27,7 @@ import org.bukkit.configuration.ConfigurationSection;
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.INTERRUPT},
         triggerCombat = true
 )
-public class Strike extends AbstractLevelableSkill implements CommandTriggered {
+public class Strike extends AbstractLevelableSkill implements CommandTriggered, Triggered {
 
     private boolean knockBack = true;
     private boolean bleed = false;
@@ -52,13 +53,13 @@ public class Strike extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        new PhysicalAttack(getHero(), getTarget(), getTotalDamage(), new Callback() {
+        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
-            public void run(final CharacterTemplate target) throws CombatException {
+            public void run(AttackTrigger trigger) throws CombatException {
 
-                if (knockBack) addEffect(getHero().getEntity().getLocation(), target, KnockBack.class);
-                if (bleed) addEffect(target, Bleed.class);
+                if (knockBack) Strike.this.addEffect(getHero().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                if (bleed) Strike.this.addEffect(trigger.getAttack().getTarget(), Bleed.class);
             }
-        }).run();
+        });
     }
 }
