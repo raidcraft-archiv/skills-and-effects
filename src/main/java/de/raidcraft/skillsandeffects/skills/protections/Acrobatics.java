@@ -52,8 +52,6 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(checkUsage = false)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        getHero().debug("Damage trigger called");
-
         if(trigger.getCause() != EntityDamageEvent.DamageCause.FALL) {
             return;
         }

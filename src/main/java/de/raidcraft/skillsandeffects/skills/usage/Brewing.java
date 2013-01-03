@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BrewTrigger;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -43,8 +44,8 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-        this.potionExp = data.getConfigurationSection("exp").getValues(false);
-        this.potionLevel = data.getConfigurationSection("level").getValues(false);
+        this.potionExp = data.getConfigurationSection("exp-assignments").getValues(false);
+        this.potionLevel = data.getConfigurationSection("level-assignments").getValues(false);
     }
 
     @TriggerHandler(checkUsage = false)
@@ -59,16 +60,21 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
                 continue;
             }
             if(itemStack.getType() == Material.POTION) {
-                Potion potion = Potion.fromItemStack(itemStack);
 
                 try {
+                    Potion potion = Potion.fromItemStack(itemStack);
                     // check if player can brew potion with current level
                     int level = (Integer) potionLevel.get(String.valueOf(potion.getNameId()));
+                    getHero().debug("PotionId: " + potion.getNameId() + " | Level: " + level);
                     if(level > getLevel().getLevel()) {
                         event.setCancelled(true);
                         if(getHero().getPlayer().isOnline()) {
-                            getHero().getPlayer().sendMessage(ChatColor.RED + "Du kannst " + potion.getType().name() + " Tränke erst mit " +
+                            getHero().getPlayer().sendMessage(ChatColor.RED + "Du kannst " +
+                                    ItemUtils.getFriendlyName(potion.getType().name()) + " " +
+                                    "Tränke erst mit " +
                                     "Level " + level + " brauen!");
+                            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), itemStack);
+                            event.getContents().remove(i);
                         }
                         return;
                     }
