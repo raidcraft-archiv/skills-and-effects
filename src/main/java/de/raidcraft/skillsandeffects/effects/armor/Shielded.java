@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.effects.potion.Slowness;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -29,6 +30,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     private double damageReduction = 0.0;
     private int blockedDamage = 0;
     private boolean reflect = false;
+    private boolean slow = false;
     private Callback<DamageTrigger> callback;
 
     public Shielded(Skill source, CharacterTemplate target, EffectData data) {
@@ -91,11 +93,26 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {}
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        if (slow) {
+            target.addEffect(getSource(), getSource(), Slowness.class);
+        }
+    }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {}
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        if (slow) {
+            target.removeEffect(Slowness.class);
+        }
+    }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {}
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        if (slow) {
+            target.addEffect(getSource(), getSource(), Slowness.class);
+        }
+    }
 }
