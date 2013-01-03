@@ -91,6 +91,16 @@
                             </includes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>PhysicalAttacks</id>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <jarName>PhysicalAttacks</jarName>
+                            <includes>
+                                <include>**/physical/*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
