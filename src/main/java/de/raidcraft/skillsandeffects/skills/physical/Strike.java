@@ -53,7 +53,7 @@ public class Strike extends AbstractLevelableSkill implements CommandTriggered {
             @Override
             public void run(final CharacterTemplate target) throws CombatException {
 
-                if (knockBack) addEffect(target, KnockBack.class);
+                if (knockBack) addEffect(getHero().getEntity().getLocation(), target, KnockBack.class);
             }
         }).run();
     }
