@@ -69,5 +69,7 @@ public class Charging extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {}
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
 }

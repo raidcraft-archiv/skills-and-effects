@@ -47,6 +47,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
+
         this.toolId = data.getInt("tool-id", 270);
         this.data = data.getValues(false);
         this.doubleDropChance = data.getDouble("double-drop-chance-per-level", 0.1);
@@ -87,8 +88,8 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             // calculate double drop
             double chance = getLevel().getLevel() * doubleDropChance;
             double random = Math.random() * 100.;
-            if(chance > random) {
-                for(ItemStack itemStack : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
+            if (chance > random) {
+                for (ItemStack itemStack : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
                     event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), itemStack);
                 }
             }
@@ -102,19 +103,20 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
      */
     @TriggerHandler(checkUsage = false)
     public void interact(PlayerInteractTrigger trigger) throws CombatException {
+
         PlayerInteractEvent event = trigger.getEvent();
 
         // check if correct tool
-        if(event.getItem() == null
+        if (event.getItem() == null
                 || event.getItem().getTypeId() != toolId) {
             return;
         }
 
         // activate Super Breaker
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
             checkUsage();
-            if(getHero().hasEffect(SpeedBlockBreak.class)
+            if (getHero().hasEffect(SpeedBlockBreak.class)
                     && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
                 getHero().debug("Super Breaker already enabled!");
                 return;

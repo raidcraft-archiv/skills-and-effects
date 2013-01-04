@@ -39,7 +39,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
     private String activateMsg;
     private String deactivateMsg;
     private int toolId;
-    
+
     public SpeedBlockBreak(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
@@ -47,6 +47,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
 
     @Override
     public void load(ConfigurationSection data) {
+
         this.activateMsg = data.getString("activate-message", "SuperBreaker aktiviert!");
         this.deactivateMsg = data.getString("deactivate-message", "SuperBreaker abgelaufen!");
         this.toolId = data.getInt("tool-id");
@@ -55,60 +56,63 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
-        if(!(target.getEntity() instanceof Player)) {
+
+        if (!(target.getEntity() instanceof Player)) {
             return;
         }
-        
+
         ((Player) target.getEntity()).sendMessage(ChatColor.YELLOW + "Du hebst deine "
                 + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
-        if(!(target.getEntity() instanceof Player)) {
+
+        if (!(target.getEntity() instanceof Player)) {
             return;
         }
 
-        if(used) ((Player) target.getEntity()).sendMessage(ChatColor.RED + deactivateMsg);
+        if (used) ((Player) target.getEntity()).sendMessage(ChatColor.RED + deactivateMsg);
         else ((Player) target.getEntity()).sendMessage(ChatColor.GRAY + "Du senkst deine "
                 + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
         used = true;
         ((Player) target.getEntity()).sendMessage(ChatColor.GREEN + activateMsg);
     }
-    
+
     @TriggerHandler
     public void onInteract(PlayerInteractTrigger trigger) throws CombatException {
 
         PlayerInteractEvent event = trigger.getEvent();
 
-        if(event.getAction() != Action.LEFT_CLICK_BLOCK) {
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
             return;
         }
 
-        if(!used) {
+        if (!used) {
             getSource().substractUsageCost();
             renew(trigger.getHero());
         }
 
         // check if correct tool in use
-        if(event.getItem() == null || event.getItem().getTypeId() != toolId) {
+        if (event.getItem() == null || event.getItem().getTypeId() != toolId) {
             trigger.getHero().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId +
                     ")");
             return;
         }
 
         // check if clicked block is in list
-        if(event.getClickedBlock() == null || !blocks.contains(event.getClickedBlock().getTypeId())) {
+        if (event.getClickedBlock() == null || !blocks.contains(event.getClickedBlock().getTypeId())) {
             return;
         }
-        
+
         BlockBreakEvent fakeBreakEvent = new BlockBreakEvent(event.getClickedBlock(), event.getPlayer());
         RaidCraft.callEvent(fakeBreakEvent);
-        if(!fakeBreakEvent.isCancelled()) {
+        if (!fakeBreakEvent.isCancelled()) {
             event.getClickedBlock().breakNaturally(event.getPlayer().getItemInHand());
             event.getClickedBlock().setType(Material.AIR);
         }

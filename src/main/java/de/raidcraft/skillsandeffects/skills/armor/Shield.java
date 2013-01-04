@@ -63,10 +63,14 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
     }
 
     @Override
-    public void apply() {}
+    public void apply() {
+
+    }
 
     @Override
-    public void remove() {}
+    public void remove() {
+
+    }
 
     @TriggerHandler
     public void onItemHeldChange(ItemHeldTrigger trigger) throws CombatException {

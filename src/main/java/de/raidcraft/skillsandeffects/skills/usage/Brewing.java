@@ -44,6 +44,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
+
         this.potionExp = data.getConfigurationSection("exp-assignments").getValues(false);
         this.potionLevel = data.getConfigurationSection("level-assignments").getValues(false);
     }
@@ -53,22 +54,22 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
         BrewEvent event = trigger.getEvent();
 
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             ItemStack itemStack = event.getContents().getItem(i);
 
-            if(itemStack == null) {
+            if (itemStack == null) {
                 continue;
             }
-            if(itemStack.getType() == Material.POTION) {
+            if (itemStack.getType() == Material.POTION) {
 
                 try {
                     Potion potion = Potion.fromItemStack(itemStack);
                     // check if player can brew potion with current level
                     int level = (Integer) potionLevel.get(String.valueOf(potion.getNameId()));
                     getHero().debug("PotionId: " + potion.getNameId() + " | Level: " + level);
-                    if(level > getLevel().getLevel()) {
+                    if (level > getLevel().getLevel()) {
                         event.setCancelled(true);
-                        if(getHero().getPlayer().isOnline()) {
+                        if (getHero().getPlayer().isOnline()) {
                             getHero().getPlayer().sendMessage(ChatColor.RED + "Du kannst " +
                                     ItemUtils.getFriendlyName(potion.getType().name()) + " " +
                                     "Tränke erst mit " +
@@ -91,6 +92,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void apply() {
+
         RaidCraft.getPermissions().playerAdd(getHero().getPlayer(), "antiguest.preventions.brew");
     }
 

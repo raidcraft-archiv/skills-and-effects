@@ -41,6 +41,7 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
+
         this.data = data.getValues(false);
         this.expPerDamage = data.getDouble("exp-per-damage", 1.0);
         this.rollChancePerLevel = data.getDouble("roll-chance-per-level", 0.1);
@@ -52,18 +53,18 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(checkUsage = false)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        if(trigger.getCause() != EntityDamageEvent.DamageCause.FALL) {
+        if (trigger.getCause() != EntityDamageEvent.DamageCause.FALL) {
             return;
         }
 
         getHero().debug("Fall damage trigger called");
 
-        getLevel().addExp((int)(expPerDamage * (double)trigger.getAttack().getDamage()));
+        getLevel().addExp((int) (expPerDamage * (double) trigger.getAttack().getDamage()));
 
         // calculate roll chance
         double chance = getLevel().getLevel() * rollChancePerLevel;
         double random = Math.random() * 100.;
-        if(chance > random) {
+        if (chance > random) {
             trigger.getAttack().setDamage(trigger.getAttack().getDamage() / 2); // half damage
             getHero().getPlayer().sendMessage(ChatColor.GREEN + "**roll**");
         }

@@ -33,7 +33,7 @@ import java.util.Map;
  * Each item can have a configured armor value which are just points. The factor these points
  * are are converted into damage recution can be defined here. The points need to be given each
  * item in the metadata. Defaults can be provided in the base skill config.
- *
+ * <p/>
  * This means that other items can have armor values too. Like a shield (iron-door, etc.).
  *
  * @author Silthus
@@ -73,8 +73,8 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
                         ArmorPiece armorPiece = new ArmorPiece(item, slot, defArmorValue, data.getInt("items." + key, 1));
                         allowedArmor.put(item, armorPiece);
                         getHero().debug("loaded armor: " + armorPiece.getType().name() +
-                                        ":L" + armorPiece.getLevel() +
-                                        ":D" + armorPiece.getArmorValue());
+                                ":L" + armorPiece.getLevel() +
+                                ":D" + armorPiece.getArmorValue());
                     }
                 } else {
                     RaidCraft.LOGGER.warning("Item " + key + " in der Skill Config: " + getName() + " ist kein Rüstungs Item.");
@@ -164,13 +164,14 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
      * This reduction formula is based on the WoW Armor Reduction formula for characters up to level 59.
      * %Reduction = (Armor / ([85 * Enemy_Level] + Armor + 400)) * 100
      * The reduction is always capped at 75% so nobdy can receive 0 damage from armor reduction.
-     *
+     * <p/>
      * To make things easier we calculate with a enemy level of 60 at all times.
      * BUT you can change this when spawning your creature (e.g. boss).
-     *
+     * <p/>
      * Since we have about half the armor items (4 opposed to 8) the formula is halfed.
      *
      * @param armor that reduces the damage
+     *
      * @return damage reduction in percent
      */
     private double getDamageReduction(Attack attack, int armor) {

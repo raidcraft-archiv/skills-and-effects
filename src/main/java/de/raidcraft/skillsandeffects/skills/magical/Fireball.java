@@ -35,10 +35,14 @@ public class Fireball extends AbstractLevelableSkill implements CommandTriggered
     }
 
     @Override
-    public void apply() {}
+    public void apply() {
+
+    }
 
     @Override
-    public void remove() {}
+    public void remove() {
+
+    }
 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
