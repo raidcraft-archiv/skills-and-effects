@@ -37,6 +37,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Material, Integer> shieldLevels = new EnumMap<>(Material.class);
     private final Map<Material, Double> shieldExp = new EnumMap<>(Material.class);
+    private double staminaCostPerBlockedDamage = 0.01;
 
     public Shield(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -57,6 +58,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                 }
             }
         }
+        staminaCostPerBlockedDamage = data.getDouble("stamina-cost-per-damage", 0.01);
     }
 
     @Override
@@ -83,6 +85,17 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                             // dont block damage that is not physical
                             trigger.getAttack().setCancelled(true);
                             return;
+                        }
+                        // lets check if he has enough stamina to block the damage
+                        int staminaCost = (int) (staminaCostPerBlockedDamage * effect.getBlockedDamage());
+                        if (getHero().getStamina() < staminaCost) {
+                            int oldBlock = effect.getBlockedDamage();
+                            // lets set the blocked damage to the remaining stamina
+                            effect.setBlockedDamage((int) (getHero().getStamina() / staminaCostPerBlockedDamage));
+                            throw new CombatException(
+                                    "Du konntest nur " + effect.getBlockedDamage() + " von " + oldBlock + " Schaden blocken.");
+                        } else {
+                            getHero().setStamina(getHero().getStamina() - staminaCost);
                         }
                         getLevel().addExp((int) (effect.getBlockedDamage() * shieldExp.get(type)));
                     }

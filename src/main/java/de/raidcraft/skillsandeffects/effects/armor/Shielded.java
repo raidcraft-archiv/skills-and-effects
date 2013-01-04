@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.potion.Slowness;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -62,15 +63,22 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     }
 
     @TriggerHandler
-    public void onDamage(DamageTrigger trigger) throws CombatException {
+    public void onDamage(DamageTrigger trigger) {
 
         int oldDamage = trigger.getAttack().getDamage();
         int newDamage = (int) (oldDamage - oldDamage * damageReduction);
         blockedDamage = oldDamage - newDamage;
 
-        // run the callback
-        if (callback != null) {
-            callback.run(trigger);
+        try {
+            // run the callback
+            if (callback != null) {
+                callback.run(trigger);
+            }
+        } catch (CombatException e) {
+            // we want to display the message to the player and return
+            // from this effect silently to allow the damage to go thru
+            trigger.getAttack().setCancelled(true);
+            getSource().getHero().sendMessage(ChatColor.RED + e.getMessage());
         }
         // if the attack was cancelled that means the callback dont want the damage blocked
         // but the attack needs to be uncancelled for the damage to go thru
@@ -79,17 +87,29 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
             return;
         }
 
-        if (reflect && trigger.getAttack().getSource() instanceof CharacterTemplate) {
-            new EffectDamage(this, blockedDamage, AttackType.MAGICAL).run();
+        // lets rese the blocked damage maybe the callback changed it
+        newDamage = oldDamage - getBlockedDamage();
+
+        try {
+            if (reflect && trigger.getAttack().getSource() instanceof CharacterTemplate) {
+                new EffectDamage(this, getBlockedDamage(), AttackType.MAGICAL).run();
+            }
+        } catch (CombatException e) {
+            getSource().getHero().sendMessage("Schaden konnte nicht reflektiert werden: " + e.getMessage());
         }
         trigger.getAttack().setDamage(newDamage);
         trigger.getHero().debug("reduced damage " + oldDamage + "->" + newDamage + " - skill: " + getSource());
-        trigger.getHero().combatLog(blockedDamage + "dmg wurden vom Schild absorbiert.");
+        trigger.getHero().combatLog(getBlockedDamage() + "dmg wurden vom Schild absorbiert.");
     }
 
     public int getBlockedDamage() {
 
         return blockedDamage;
+    }
+
+    public void setBlockedDamage(int blockedDamage) {
+
+        this.blockedDamage = blockedDamage;
     }
 
     @Override
