@@ -19,6 +19,7 @@ import de.raidcraft.skills.trigger.InventoryClickTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.util.ItemUtil;
+import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -125,10 +126,15 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
             return;
         }
+
         int totalArmor = 0;
         for (ArmorPiece armor : playerArmor.values()) {
             // lets add up the defence points and reduce the damage
             totalArmor += armor.getArmorValue();
+        }
+        // lets reduce the total armor if the sundering armor effect is active
+        if (trigger.getAttack().getTarget().hasEffect(SunderingArmor.class)) {
+            totalArmor -= (totalArmor * trigger.getAttack().getTarget().getEffect(SunderingArmor.class).getArmorReduction());
         }
         // in percent
         double damageReduction = getDamageReduction(trigger.getAttack(), totalArmor);

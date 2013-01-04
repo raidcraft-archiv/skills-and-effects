@@ -8,40 +8,27 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.effects.damaging.Bleed;
-import de.raidcraft.skills.effects.disabling.KnockBack;
+import de.raidcraft.skills.effects.disabling.Disarmed;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
-import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "strike",
-        desc = "Schlägt das Ziel mit voller Wucht und stößt es zurück.",
-        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.INTERRUPT},
+        name = "Disarm",
+        desc = "Entwaffnet den Gegner und verhindert alle physischen Angriffe.",
+        types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DEBUFF, EffectType.DAMAGING},
         triggerCombat = true
 )
-public class Strike extends AbstractLevelableSkill implements CommandTriggered, Triggered {
+public class Disarm extends AbstractSkill implements CommandTriggered {
 
-    private boolean knockBack = true;
-    private boolean bleed = false;
-
-    public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Disarm(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-
-        knockBack = data.getBoolean("knockback", true);
-        bleed = data.getBoolean("bleed", false);
     }
 
     @Override
@@ -51,19 +38,18 @@ public class Strike extends AbstractLevelableSkill implements CommandTriggered, 
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
-                if (knockBack) Strike.this.addEffect(getHero().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
-                if (bleed) Strike.this.addEffect(trigger.getAttack().getTarget(), Bleed.class);
+                Disarm.this.addEffect(trigger.getAttack().getTarget(), Disarmed.class);
             }
         });
     }
 
     @Override
     public void apply() {
-
+        //TODO: implement
     }
 
     @Override
     public void remove() {
-
+        //TODO: implement
     }
 }
