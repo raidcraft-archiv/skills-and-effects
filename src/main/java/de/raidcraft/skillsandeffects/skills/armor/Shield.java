@@ -43,11 +43,12 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
     public Shield(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new ConfigurableSkillLevel(this, database, data.getData()));
     }
 
     @Override
     public void load(ConfigurationSection data) {
+
+        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         ConfigurationSection shields = data.getConfigurationSection("shields");
         if (shields != null) {

@@ -39,11 +39,12 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
     public Brewing(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
-        attachLevel(new ConfigurableSkillLevel(this, database, skillData.getData()));
     }
 
     @Override
     public void load(ConfigurationSection data) {
+
+        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         this.potionExp = data.getConfigurationSection("exp-assignments").getValues(false);
         this.potionLevel = data.getConfigurationSection("level-assignments").getValues(false);

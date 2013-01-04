@@ -36,11 +36,12 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
     public Acrobatics(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
-        attachLevel(new ConfigurableSkillLevel(this, database, skillData.getData()));
     }
 
     @Override
     public void load(ConfigurationSection data) {
+
+        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         this.data = data.getValues(false);
         this.expPerDamage = data.getDouble("exp-per-damage", 1.0);

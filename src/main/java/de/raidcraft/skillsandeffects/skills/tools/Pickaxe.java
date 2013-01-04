@@ -42,11 +42,12 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     public Pickaxe(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
         super(hero, skillData, profession, database);
-        attachLevel(new ConfigurableSkillLevel(this, database, skillData.getData()));
     }
 
     @Override
     public void load(ConfigurationSection data) {
+
+        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         this.toolId = data.getInt("tool-id", 270);
         this.data = data.getValues(false);

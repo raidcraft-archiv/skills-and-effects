@@ -53,11 +53,12 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     public Armor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new ConfigurableSkillLevel(this, database, data.getData()));
     }
 
     @Override
     public void load(ConfigurationSection data) {
+
+        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         allowedArmor = new EnumMap<>(Material.class);
         playerArmor = new EnumMap<>(ItemUtil.ArmorSlot.class);

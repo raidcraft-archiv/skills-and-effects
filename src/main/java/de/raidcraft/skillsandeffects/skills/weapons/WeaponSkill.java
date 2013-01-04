@@ -22,8 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -35,24 +34,31 @@ import java.util.Map;
 )
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
-    private final Map<Material, Weapon> allowedWeapons = new EnumMap<>(Material.class);
+    private static final Map<String, Map<Material, Weapon>> allowedWeapons = new HashMap<>();
+    private final Set<Material> myWeapons = new HashSet<>();
 
     public WeaponSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-        attachLevel(new ConfigurableSkillLevel(this, database, data.getData()));
     }
 
     @Override
     public void load(ConfigurationSection data) {
 
+        attachLevel(new ConfigurableSkillLevel(this, database, data));
+
+        if (!allowedWeapons.containsKey(getHero().getName())) {
+            allowedWeapons.put(getHero().getName(), new EnumMap<Material, Weapon>(Material.class));
+        }
         ConfigurationSection weapons = data.getConfigurationSection("weapons");
         if (weapons == null) return;
         for (String key : weapons.getKeys(false)) {
             Material item = ItemUtils.getItem(key);
             if (item != null) {
                 Weapon weapon = new Weapon(item, data.getConfigurationSection("weapons." + key));
-                allowedWeapons.put(item, weapon);
+                allowedWeapons.get(getHero().getName()).put(item, weapon);
+                myWeapons.add(item);
+                getHero().debug("Weapon loaded: " + weapon.getType() + ":L" + weapon.getRequiredLevel());
             } else {
                 RaidCraft.LOGGER.warning("The item " + key + " in the skill config " + getName() + " is not an item.");
             }
@@ -75,7 +81,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     public void onLevelGain() {
 
         super.onLevelGain();
-        for (Weapon weapon : allowedWeapons.values()) {
+        for (Weapon weapon : allowedWeapons.get(getHero().getName()).values()) {
             if (weapon.getRequiredLevel() <= getLevel().getLevel()) {
                 getHero().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
                         ItemUtils.getFriendlyName(weapon.getType(), ItemUtils.Language.GERMAN));
@@ -93,12 +99,15 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         ItemStack item = trigger.getHero().getPlayer().getItemInHand();
         if (item == null || item.getTypeId() == 0
                 || !ItemUtil.isWeapon(item.getType())
-                || !allowedWeapons.containsKey(item.getType())) {
+                || !allowedWeapons.get(getHero().getName()).containsKey(item.getType())) {
             checkTaskbar();
             return;
         }
+        if (!myWeapons.contains(item.getType())) {
+            return;
+        }
         int oldDamage = trigger.getAttack().getDamage();
-        Weapon weapon = allowedWeapons.get(item.getType());
+        Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
         trigger.getAttack().setDamage(weapon.getTotalDamage(this));
         getHero().debug("damaged changed " + oldDamage + "->" + trigger.getAttack().getDamage());
         getLevel().addExp(weapon.getExpForUse());
@@ -120,8 +129,10 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
                 continue;
             }
-            if (!allowedWeapons.containsKey(item.getType())
-                    || allowedWeapons.get(item.getType()).getRequiredLevel() > getLevel().getLevel()) {
+            Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
+            // this can be null at this point
+            if (!allowedWeapons.get(getHero().getName()).containsKey(item.getType())
+                    || weapon.getRequiredLevel() > getLevel().getLevel()) {
                 ItemUtil.moveItem(getHero(), i, item);
                 movedItem = true;
             }
@@ -163,6 +174,24 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         public int getExpForUse() {
 
             return config.getInt("exp", 2);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Weapon weapon = (Weapon) o;
+
+            return type == weapon.type;
+
+        }
+
+        @Override
+        public int hashCode() {
+
+            return type.hashCode();
         }
     }
 }
