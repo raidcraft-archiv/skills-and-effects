@@ -44,7 +44,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
         reflect = data.getBoolean("reflect", false);
 
-        damageReduction = 0.0;
+        damageReduction = data.getDouble("reduction.base", 0.2);
         damageReduction += data.getDouble("reduction.level-modifier") * getSource().getHero().getLevel().getLevel();
         damageReduction += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getLevel().getLevel();
 

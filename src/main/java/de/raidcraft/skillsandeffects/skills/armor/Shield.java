@@ -21,6 +21,7 @@ import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -70,7 +71,12 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler
     public void onItemHeldChange(ItemHeldTrigger trigger) throws CombatException {
 
-        final Material type = getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()).getType();
+        ItemStack item = getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot());
+        if (item == null || item.getTypeId() == 0) {
+            getHero().removeEffect(Shielded.class);
+            return;
+        }
+        final Material type = item.getType();
         if (ItemUtil.ArmorSlot.fromMaterial(type) == ItemUtil.ArmorSlot.SHIELD
                 && shieldLevels.containsKey(type)) {
             if (shieldLevels.get(type) > getLevel().getLevel()) {
