@@ -16,6 +16,7 @@ import de.raidcraft.skills.effects.damaging.Bleed;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
+import de.raidcraft.skills.effects.potion.Slowness;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
@@ -38,6 +39,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean sunderArmor = false;
     private boolean disarm = false;
     private boolean ignoreArmor = false;
+    private boolean slow = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -53,6 +55,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         sunderArmor = data.getBoolean("sunder-armor", false);
         disarm = data.getBoolean("disarm", false);
         ignoreArmor = data.getBoolean("ignoreArmor", false);
+        slow = data.getBoolean("slow", false);
     }
 
     @Override
@@ -68,6 +71,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);
                 if (disarm) Strike.this.addEffect(trigger.getAttack().getTarget(), Disarm.class);
                 if (ignoreArmor) trigger.getAttack().addAttackTypes(EffectType.IGNORE_ARMOR);
+                if (slow) Strike.this.addEffect(trigger.getAttack().getTarget(), Slowness.class);
             }
         });
     }
