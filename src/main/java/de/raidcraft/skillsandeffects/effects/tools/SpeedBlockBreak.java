@@ -100,7 +100,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
 
         // check if correct tool in use
         if (event.getItem() == null || event.getItem().getTypeId() != toolId) {
-            trigger.getSource().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId +
+            getSource().getHero().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId +
                     ")");
             return;
         }

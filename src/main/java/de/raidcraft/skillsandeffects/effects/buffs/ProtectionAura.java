@@ -48,8 +48,8 @@ public class ProtectionAura extends AbstractAura implements Triggered {
         int oldDamage = trigger.getAttack().getDamage();
         int newDamage = (int) (oldDamage - oldDamage * getDamageReduction());
         trigger.getAttack().setDamage(newDamage);
-        trigger.getSource().combatLog("[" + getFriendlyName() + "] " +
+        getSource().getHero().combatLog("[" + getFriendlyName() + "] " +
                 "Schaden um " + (int) (getDamageReduction() * 100) + "% von " + oldDamage + " auf " + newDamage + " veringert.");
-        trigger.getSource().debug("damaged reduced " + oldDamage + "->" + newDamage + " - " + getName());
+        getSource().getHero().debug("damaged reduced " + oldDamage + "->" + newDamage + " - " + getName());
     }
 }
