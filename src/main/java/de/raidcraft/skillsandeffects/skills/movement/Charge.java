@@ -3,7 +3,6 @@ package de.raidcraft.skillsandeffects.skills.movement;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.PhysicalAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -64,7 +63,7 @@ public class Charge extends AbstractSkill implements CommandTriggered {
             Charge.this.addEffect(target, Slowness.class);
         }
         if (getTotalDamage() > 0) {
-            new PhysicalAttack(getHero(), target, getTotalDamage()).run();
+            attack(target);
         }
     }
 
