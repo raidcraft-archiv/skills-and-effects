@@ -75,14 +75,4 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
             }
         });
     }
-
-    @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
 }

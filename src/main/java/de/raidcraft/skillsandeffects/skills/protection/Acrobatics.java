@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.skills.protections;
+package de.raidcraft.skillsandeffects.skills.protection;
 
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -69,15 +69,5 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
             trigger.getAttack().setDamage(trigger.getAttack().getDamage() / 2); // half damage
             getHero().getPlayer().sendMessage(ChatColor.GREEN + "**roll**");
         }
-    }
-
-    @Override
-    public void apply() {
-        // nothing to do
-    }
-
-    @Override
-    public void remove() {
-        // nothing to do
     }
 }

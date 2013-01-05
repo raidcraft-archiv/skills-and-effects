@@ -62,16 +62,6 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
         staminaCostPerBlockedDamage = data.getDouble("stamina-cost-per-damage", 0.01);
     }
 
-    @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
-
     @TriggerHandler
     public void onItemHeldChange(ItemHeldTrigger trigger) throws CombatException {
 

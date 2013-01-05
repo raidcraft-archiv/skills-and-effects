@@ -49,14 +49,4 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
             i++;
         }
     }
-
-    @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
 }

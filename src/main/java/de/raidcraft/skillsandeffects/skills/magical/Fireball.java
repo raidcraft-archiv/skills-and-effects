@@ -35,16 +35,6 @@ public class Fireball extends AbstractLevelableSkill implements CommandTriggered
     }
 
     @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
-
-    @Override
     public void runCommand(CommandContext args) throws CombatException {
 
         new RangedAttack(getHero(), ProjectileType.FIREBALL, new RangedCallback() {

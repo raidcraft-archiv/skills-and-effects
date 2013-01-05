@@ -95,14 +95,4 @@ public class Aura extends AbstractSkill implements CommandTriggered {
             }
         }
     }
-
-    @Override
-    public void apply() {
-        //TODO: implement
-    }
-
-    @Override
-    public void remove() {
-        //TODO: implement
-    }
 }

@@ -99,6 +99,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void remove() {
-        // nothing to do
+
+        RaidCraft.getPermissions().playerRemove(getHero().getPlayer(), "antiguest.preventions.brew");
     }
 }

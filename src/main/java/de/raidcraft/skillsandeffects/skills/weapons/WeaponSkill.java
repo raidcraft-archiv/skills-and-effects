@@ -66,18 +66,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     }
 
     @Override
-    public void apply() {
-
-        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
-    }
-
-    @Override
-    public void remove() {
-
-        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
-    }
-
-    @Override
     public void onLevelGain() {
 
         super.onLevelGain();

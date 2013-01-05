@@ -58,14 +58,4 @@ public class Cleave extends AbstractSkill implements CommandTriggered {
             }
         });
     }
-
-    @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
 }

@@ -66,14 +66,4 @@ public class Charge extends AbstractSkill implements CommandTriggered {
             attack(target);
         }
     }
-
-    @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
 }

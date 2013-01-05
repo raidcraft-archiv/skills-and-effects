@@ -63,14 +63,4 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
             throw new CombatException(CombatException.Type.PARRIED);
         }
     }
-
-    @Override
-    public void apply() {
-
-    }
-
-    @Override
-    public void remove() {
-
-    }
 }

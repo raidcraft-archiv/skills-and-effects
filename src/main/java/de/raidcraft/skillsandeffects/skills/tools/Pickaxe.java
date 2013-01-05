@@ -127,14 +127,4 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             addEffect(getHero(), SpeedBlockBreak.class);
         }
     }
-
-    @Override
-    public void apply() {
-        // nothing to do
-    }
-
-    @Override
-    public void remove() {
-        // nothing to do
-    }
 }
