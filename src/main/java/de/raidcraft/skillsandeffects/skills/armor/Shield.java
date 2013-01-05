@@ -1,6 +1,5 @@
 package de.raidcraft.skillsandeffects.skills.armor;
 
-import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -32,7 +31,7 @@ import java.util.Map;
 @SkillInformation(
         name = "Shield",
         desc = "Absorbiert Schaden durch das Tragen eines Schildes.",
-        types = {EffectType.HELPFUL}
+        types = {EffectType.HELPFUL, EffectType.ABSORBING}
 )
 public class Shield extends AbstractLevelableSkill implements Triggered {
 
@@ -92,7 +91,8 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                     @Override
                     public void run(DamageTrigger trigger) throws CombatException {
 
-                        if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
+                        if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
+                                || trigger.getAttack().isOfAttackType(EffectType.IGNORE_ARMOR)) {
                             // dont block damage that is not physical
                             trigger.getAttack().setCancelled(true);
                             return;

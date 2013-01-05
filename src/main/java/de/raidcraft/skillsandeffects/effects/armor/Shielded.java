@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.effects.armor;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EffectDamage;
 import de.raidcraft.skills.api.combat.callback.Callback;
@@ -24,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
 @EffectInformation(
         name = "Shielded",
         description = "Schützt dich vor Angriffen",
-        types = {EffectType.HELPFUL, EffectType.HARMFUL, EffectType.DAMAGING}
+        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.REDUCING, EffectType.REFLECTING}
 )
 public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
@@ -92,7 +91,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
         try {
             if (reflect && trigger.getAttack().getSource() instanceof CharacterTemplate) {
-                new EffectDamage(this, getBlockedDamage(), AttackType.MAGICAL).run();
+                new EffectDamage(this, getBlockedDamage()).run();
             }
         } catch (CombatException e) {
             getSource().getHero().sendMessage("Schaden konnte nicht reflektiert werden: " + e.getMessage());

@@ -27,7 +27,7 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "strike",
         desc = "Schlägt das Ziel mit voller Wucht und stößt es zurück.",
-        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.INTERRUPT},
+        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL},
         triggerCombat = true
 )
 public class Strike extends AbstractSkill implements CommandTriggered, Triggered {
@@ -37,6 +37,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean stun = false;
     private boolean sunderArmor = false;
     private boolean disarm = false;
+    private boolean ignoreArmor = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -51,6 +52,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         stun = data.getBoolean("stun", false);
         sunderArmor = data.getBoolean("sunder-armor", false);
         disarm = data.getBoolean("disarm", false);
+        ignoreArmor = data.getBoolean("ignoreArmor", false);
     }
 
     @Override
@@ -65,6 +67,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (stun) Strike.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
                 if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);
                 if (disarm) Strike.this.addEffect(trigger.getAttack().getTarget(), Disarm.class);
+                if (ignoreArmor) trigger.getAttack().addAttackTypes(EffectType.IGNORE_ARMOR);
             }
         });
     }

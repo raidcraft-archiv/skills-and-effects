@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.armor;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.api.combat.AttackType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.hero.Hero;
@@ -42,7 +41,7 @@ import java.util.Map;
 @SkillInformation(
         name = "Armor",
         desc = "Verringert erlittenen Schaden.",
-        types = {EffectType.UNBINDABLE, EffectType.HELPFUL}
+        types = {EffectType.UNBINDABLE, EffectType.HELPFUL, EffectType.REDUCING}
 )
 public class Armor extends AbstractLevelableSkill implements Triggered {
 
@@ -124,7 +123,8 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
-        if (!trigger.getAttack().isOfAttackType(AttackType.PHYSICAL)) {
+        if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
+                || trigger.getAttack().isOfAttackType(EffectType.IGNORE_ARMOR)) {
             return;
         }
 

@@ -24,7 +24,7 @@ import java.util.Map;
 @SkillInformation(
         name = "Acrobatics",
         desc = "Minimiert Fallschaden",
-        types = {EffectType.UNBINDABLE},
+        types = {EffectType.UNBINDABLE, EffectType.REDUCING},
         triggerCombat = false
 )
 public class Acrobatics extends AbstractLevelableSkill implements Triggered {
