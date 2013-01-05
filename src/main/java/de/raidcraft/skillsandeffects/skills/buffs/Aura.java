@@ -10,8 +10,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skillsandeffects.effects.buffs.AbstractAura;
-import de.raidcraft.skillsandeffects.effects.buffs.ProtectionAura;
+import de.raidcraft.skillsandeffects.effects.buffs.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -26,7 +25,10 @@ public class Aura extends AbstractSkill implements CommandTriggered {
 
     public enum Type {
 
-        PROTECTION(ProtectionAura.class, "protection");
+        PROTECTION(ProtectionAura.class, "protection"),
+        REFLECTION(ReflectionAura.class, "reflection"),
+        MANA_REGAIN(ManaRegenAura.class, "mana-regain"),
+        DAMAGE(DamageAura.class, "damage");
 
         private final Class<? extends AbstractAura> effectClass;
 
