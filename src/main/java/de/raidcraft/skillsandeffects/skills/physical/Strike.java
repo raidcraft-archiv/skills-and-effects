@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.damaging.Bleed;
+import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -35,6 +36,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean bleed = false;
     private boolean stun = false;
     private boolean sunderArmor = false;
+    private boolean disarm = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -48,6 +50,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         bleed = data.getBoolean("bleed", false);
         stun = data.getBoolean("stun", false);
         sunderArmor = data.getBoolean("sunder-armor", false);
+        disarm = data.getBoolean("disarm", false);
     }
 
     @Override
@@ -61,6 +64,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (bleed) Strike.this.addEffect(trigger.getAttack().getTarget(), Bleed.class);
                 if (stun) Strike.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
                 if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);
+                if (disarm) Strike.this.addEffect(trigger.getAttack().getTarget(), Disarm.class);
             }
         });
     }
