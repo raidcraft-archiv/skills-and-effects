@@ -68,13 +68,13 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @Override
     public void apply() {
 
-        checkTaskbar();
+        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
     }
 
     @Override
     public void remove() {
 
-        checkTaskbar();
+        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
     }
 
     @Override
@@ -87,7 +87,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                         ItemUtils.getFriendlyName(weapon.getType(), ItemUtils.Language.GERMAN));
             }
         }
-        checkTaskbar();
+        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
     }
 
     @TriggerHandler
@@ -100,7 +100,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (item == null || item.getTypeId() == 0
                 || !ItemUtil.isWeapon(item.getType())
                 || !allowedWeapons.get(getHero().getName()).containsKey(item.getType())) {
-            checkTaskbar();
+            checkTaskbar(trigger.getHero().getPlayer().getInventory().getHeldItemSlot());
             return;
         }
         if (!myWeapons.contains(item.getType())) {
@@ -116,27 +116,27 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler
     public void onItemHeld(ItemHeldTrigger trigger) {
 
-        checkTaskbar();
+        checkTaskbar(trigger.getEvent().getNewSlot());
     }
 
-    private void checkTaskbar() {
+    private void checkTaskbar(int slot) {
 
         PlayerInventory inventory = getHero().getPlayer().getInventory();
         boolean movedItem = false;
-        // 0-8 are the slot ids in the taskbar
-        for (int i = 0; i < 9; i++) {
-            ItemStack item = inventory.getItem(i);
-            if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
-                continue;
-            }
-            Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
-            // this can be null at this point
-            if (!allowedWeapons.get(getHero().getName()).containsKey(item.getType())
-                    || weapon.getRequiredLevel() > getLevel().getLevel()) {
-                ItemUtil.moveItem(getHero(), i, item);
-                movedItem = true;
-            }
+
+        // only check the slot he is currently holding
+        ItemStack item = inventory.getItem(slot);
+        if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
+            return;
         }
+        Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
+        // this can be null at this point
+        if (!allowedWeapons.get(getHero().getName()).containsKey(item.getType())
+                || weapon.getRequiredLevel() > getLevel().getLevel()) {
+            ItemUtil.moveItem(getHero(), slot, item);
+            movedItem = true;
+        }
+
         if (movedItem) {
             getHero().sendMessage(ChatColor.RED + "Du kannst diese Waffe nicht tragen. Sie wurde in dein Inventar gelegt.");
         }
