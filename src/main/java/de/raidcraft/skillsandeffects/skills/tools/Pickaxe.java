@@ -15,12 +15,17 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.effects.tools.SpeedBlockBreak;
+import de.raidcraft.util.ItemUtils;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +40,8 @@ import java.util.Map;
 )
 public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
-    private Map<String, Object> data;
+    private Map<Integer, KnownBlock> knownBlocks = new HashMap<>();
+    private boolean plusVariant;
     private int toolId;
     private double doubleDropChance;
 
@@ -49,9 +55,44 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         attachLevel(new ConfigurableSkillLevel(this, database, data));
 
+        this.plusVariant = data.getBoolean("plus-variant", false);
         this.toolId = data.getInt("tool-id", 270);
-        this.data = data.getValues(false);
         this.doubleDropChance = data.getDouble("double-drop-chance-per-level", 0.1);
+
+        try {
+            for(Map.Entry<String, Object> entry : data.getConfigurationSection("blocks").getValues(false).entrySet()) {
+                ConfigurationSection section = (ConfigurationSection)entry.getValue();
+                Material material = ItemUtils.getItem(entry.getKey());
+                if(material == null) {
+                    RaidCraft.LOGGER.warning("Unknown material '" + entry.getKey() + "' in " + getClass().getSimpleName());
+                }
+                int exp = (Integer)section.getValues(false).get("exp");
+
+                List<SpecialDrop> specialDrops = new ArrayList<>();
+                Object dropSectionRaw = section.getValues(true).get("drops");
+                if(dropSectionRaw != null) {
+                ConfigurationSection drops = (ConfigurationSection)dropSectionRaw;
+                    for(Map.Entry<String, Object> dropEntry : drops.getValues(false).entrySet()) {
+                        ConfigurationSection dropSection = (ConfigurationSection)entry.getValue();
+                        Material dropMaterial = ItemUtils.getItem(dropEntry.getKey());
+                        int chance = (Integer)dropSection.getValues(false).get("chance");
+                        int level = (Integer)dropSection.getValues(false).get("min-level");
+                        short damageValue = 0;
+                        if(dropSection.getValues(false).get("data") != null) {
+                            damageValue = (Short)dropSection.getValues(false).get("data");
+                        }
+                        SpecialDrop specialDrop = new SpecialDrop(level, chance, new ItemStack(dropMaterial, 1, damageValue));
+                        specialDrops.add(specialDrop);
+                    }
+                }
+
+                KnownBlock knownBlock = new KnownBlock(material, exp, specialDrops);
+                knownBlocks.put(material.getId(), knownBlock);
+            }
+        }
+        catch(Exception e) {
+            RaidCraft.LOGGER.warning("Error while loading config in class: " + getClass().getSimpleName());
+        }
     }
 
     /*
@@ -78,14 +119,16 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                 && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this));
 
         // add exp based on mined block
-        try {
-            int exp = (Integer) data.get(String.valueOf(event.getBlock().getTypeId()));
-            if (superBreakerActive) {
-                exp *= 2;
-                getHero().debug("Super Breaker enabled -> double exp: " + exp);
-            }
-            getLevel().addExp(exp);
+        KnownBlock knownBlock = knownBlocks.get(event.getBlock().getTypeId());
+        if(knownBlock == null) return;
+        int exp = knownBlock.getExp();
+        if (superBreakerActive) {
+            exp *= 2;
+            getHero().debug("Super Breaker enabled -> double exp: " + exp);
+        }
+        getLevel().addExp(exp);
 
+        if(plusVariant) {
             // calculate double drop
             double chance = getLevel().getLevel() * doubleDropChance;
             double random = Math.random() * 100.;
@@ -95,7 +138,10 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                 }
             }
 
-        } catch (Exception ignored) {
+            // special drop
+            for(ItemStack item : knownBlock.getDrops(getHero())) {
+                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item);
+            }
         }
     }
 
@@ -113,6 +159,10 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             return;
         }
 
+        if(!plusVariant) {
+            return;
+        }
+
         // activate Super Breaker
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
@@ -125,6 +175,64 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
             getHero().debug("Start Super Breaker!");
             addEffect(getHero(), SpeedBlockBreak.class);
+        }
+    }
+
+    public class KnownBlock {
+
+        private Material material;
+        private int exp;
+        private List<SpecialDrop> drops;
+
+        public KnownBlock(Material material, int exp, List<SpecialDrop> drops) {
+            this.material = material;
+            this.exp = exp;
+            this.drops = drops;
+        }
+
+        public Material getMaterial() {
+            return material;
+        }
+
+        public int getExp() {
+            return exp;
+        }
+
+        public List<ItemStack> getDrops(Hero hero) {
+            List<ItemStack> itemDrops = new ArrayList<>();
+            for(SpecialDrop drop : drops) {
+                if(getLevel().getLevel() < drop.getLevel()) continue;
+                double random = Math.random() * 100.;
+                if (drop.getChance() > random) {
+                    itemDrops.add(drop.getItem());
+                }
+            }
+            return itemDrops;
+        }
+    }
+
+    public class SpecialDrop {
+
+        private int level;
+        private int chance;
+        private ItemStack item;
+
+        public SpecialDrop(int level, int chance, ItemStack item) {
+            this.level = level;
+            this.chance = chance;
+            this.item = item;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public int getChance() {
+            return chance;
+        }
+
+        public ItemStack getItem() {
+            return item;
         }
     }
 }

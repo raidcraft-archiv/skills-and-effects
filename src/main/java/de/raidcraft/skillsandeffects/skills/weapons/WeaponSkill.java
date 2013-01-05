@@ -19,6 +19,7 @@ import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -84,11 +85,16 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (trigger.getAttack().isCancelled()) {
             return;
         }
-        ItemStack item = trigger.getSource().getPlayer().getItemInHand();
+
+        if(!(trigger.getSource() instanceof Hero)) {
+            return;
+        }
+        Player player = ((Hero)trigger.getSource()).getPlayer();
+        ItemStack item = player.getItemInHand();
         if (item == null || item.getTypeId() == 0
                 || !ItemUtil.isWeapon(item.getType())
                 || !allowedWeapons.get(getHero().getName()).containsKey(item.getType())) {
-            checkTaskbar(trigger.getSource().getPlayer().getInventory().getHeldItemSlot());
+            checkTaskbar(player.getInventory().getHeldItemSlot());
             return;
         }
         if (!myWeapons.contains(item.getType())) {
