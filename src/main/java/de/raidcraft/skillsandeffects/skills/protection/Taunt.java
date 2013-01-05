@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.skills.protection;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -10,6 +11,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.effects.movement.Taunted;
 
 /**
  * @author Silthus
@@ -17,7 +19,8 @@ import de.raidcraft.skills.tables.THeroSkill;
 @SkillInformation(
         name = "Taunt",
         desc = "Zwingt alle Ziele im Umkreis dazu dich anzugreifen.",
-        types = {EffectType.DEBUFF, EffectType.AREA}
+        types = {EffectType.DEBUFF, EffectType.AREA},
+        triggerCombat = true
 )
 public class Taunt extends AbstractSkill implements CommandTriggered {
 
@@ -29,6 +32,10 @@ public class Taunt extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-
+        for (CharacterTemplate target : getNearbyTargets()) {
+            if (!target.isFriendly(getHero())) {
+                addEffect((CharacterTemplate)getHero(), target, Taunted.class);
+            }
+        }
     }
 }
