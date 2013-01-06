@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
@@ -43,7 +44,8 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     private Map<Integer, KnownBlock> knownBlocks = new HashMap<>();
     private boolean plusVariant;
     private int toolId;
-    private double doubleDropChance;
+    private double doubleDropChancePerLevel;
+    private int maxDoubleDropChance;
 
     public Pickaxe(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -57,45 +59,36 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         this.plusVariant = data.getBoolean("plus-variant", false);
         this.toolId = data.getInt("tool-id", 270);
-        this.doubleDropChance = data.getDouble("double-drop-chance-per-level", 0.1);
+        this.doubleDropChancePerLevel = data.getDouble("double-drop-chance-per-level", 0.1);
+        this.maxDoubleDropChance = data.getInt("max-double-drop-chance", 50);
 
-        try {
-            for(Map.Entry<String, Object> entry : data.getConfigurationSection("blocks").getValues(false).entrySet()) {
-                ConfigurationSection section = (ConfigurationSection)entry.getValue();
-                Material material = ItemUtils.getItem(entry.getKey());
-                if(material == null) {
-                    RaidCraft.LOGGER.warning("Unknown material '" + entry.getKey() + "' in " + getClass().getSimpleName());
-                }
-                int exp = (Integer)section.getValues(false).get("exp");
-                List<SpecialDrop> specialDrops = new ArrayList<>();
-                Object dropSectionRaw = section.getValues(true).get("drops");
-                if(dropSectionRaw != null) {
-                    ConfigurationSection drops = (ConfigurationSection)dropSectionRaw;
-                    for(Map.Entry<String, Object> dropEntry : drops.getValues(false).entrySet()) {
-                        ConfigurationSection dropSection = drops.getConfigurationSection(String.valueOf(dropEntry.getKey()));
-                        Material dropMaterial = ItemUtils.getItem(dropEntry.getKey());
-                        int chance = (Integer)dropSection.getValues(false).get("chance");
-                        int level = (Integer)dropSection.getValues(false).get("min-level");
-                        int damageValue = 0;
-                        if(dropSection.getValues(false).get("data") != null) {
-                            damageValue = (Integer)dropSection.getValues(false).get("data");
-                        }
-                        int dropExp = 0;
-                        if(dropSection.getValues(false).get("exp") != null) {
-                            dropExp = (Integer)dropSection.getValues(false).get("exp");
-                        }
-                        SpecialDrop specialDrop = new SpecialDrop(level, chance, new ItemStack(dropMaterial, 1, (short)damageValue), dropExp);
-                        specialDrops.add(specialDrop);
-                    }
-                }
-
-                KnownBlock knownBlock = new KnownBlock(material, exp, specialDrops);
-                knownBlocks.put(material.getId(), knownBlock);
+        CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "pickaxe-block-config"));
+        ConfigurationSection blocks = blockConfig.getConfigurationSection("blocks");
+        for(String key : blocks.getKeys(false)) {
+            Material material = ItemUtils.getItem(key);
+            if(material == null) {
+                RaidCraft.LOGGER.warning("Unknown material '" + key + "' in " + getClass().getSimpleName());
+                continue;
             }
-        }
-        catch(Exception e) {
-            RaidCraft.LOGGER.warning("Error while loading config in class: " + getClass().getSimpleName());
-            e.printStackTrace();
+            ConfigurationSection blockSettings = blocks.getConfigurationSection(key);
+            int exp = blockSettings.getInt("exp");
+            List<SpecialDrop> specialDrops = new ArrayList<>();
+            ConfigurationSection drops = blockSettings.getConfigurationSection("drops");
+            if(drops != null) {
+                for(String dropKey : drops.getKeys(false)) {
+                    ConfigurationSection dropSection = drops.getConfigurationSection(dropKey);
+                    Material dropMaterial = ItemUtils.getItem(dropKey);
+                    int chance = dropSection.getInt("chance", 0);
+                    int level = dropSection.getInt("min-level", 0);
+                    int damageValue = dropSection.getInt("data", 0);
+                    int dropExp = dropSection.getInt("exp", 0);
+                    SpecialDrop specialDrop = new SpecialDrop(level, chance, new ItemStack(dropMaterial, 1, (short)damageValue), dropExp);
+                    specialDrops.add(specialDrop);
+                }
+            }
+
+            KnownBlock knownBlock = new KnownBlock(material, exp, specialDrops);
+            knownBlocks.put(material.getId(), knownBlock);
         }
     }
 
@@ -134,7 +127,10 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         if(plusVariant) {
             // calculate double drop
-            double chance = getLevel().getLevel() * doubleDropChance;
+            double chance = getLevel().getLevel() * doubleDropChancePerLevel;
+            if(chance > maxDoubleDropChance) {
+                chance = maxDoubleDropChance;
+            }
             double random = Math.random() * 100.;
             if (chance > random) {
                 for (ItemStack itemStack : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
