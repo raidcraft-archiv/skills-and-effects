@@ -70,7 +70,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
         super.onLevelGain();
         for (Weapon weapon : allowedWeapons.get(getHero().getName()).values()) {
-            if (weapon.getRequiredLevel() <= getLevel().getLevel()) {
+            if (weapon.getRequiredLevel() == getLevel().getLevel()) {
                 getHero().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
                         ItemUtils.getFriendlyName(weapon.getType(), ItemUtils.Language.GERMAN));
             }
