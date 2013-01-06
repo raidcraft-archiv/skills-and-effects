@@ -34,6 +34,8 @@ import java.util.Map;
 public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     private Map<Material, IngredientSetting> knownIngredients = new HashMap<>();
+    private double cleverBrewingChancePerLevel;
+    private double maxCleverBrewingChance;
 
     public Brewing(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -44,6 +46,9 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
     public void load(ConfigurationSection data) {
 
         attachLevel(new ConfigurableSkillLevel(this, database, data));
+
+        this.cleverBrewingChancePerLevel = data.getDouble("clever-brewing-chance-per-level", 0.1);
+        this.maxCleverBrewingChance = data.getDouble("max-clever-brewing-chance", 33);
 
         ConfigurationSection ingredients = data.getConfigurationSection("ingredients");
         for(String key : ingredients.getKeys(false)) {
@@ -94,6 +99,16 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
         getLevel().addExp(ingredientSetting.getExp());
         getHero().debug("Brewing: Added " + ingredientSetting.getExp() + " EXP");
+
+        // calculate clever brewing
+        double chance = getLevel().getLevel() * cleverBrewingChancePerLevel;
+        if(chance > maxCleverBrewingChance) {
+            chance = maxCleverBrewingChance;
+        }
+        double random = Math.random() * 100.;
+        if (chance > random) {
+            ingredient.setAmount(ingredient.getAmount() + 1);
+        }
     }
 
     public class IngredientSetting {

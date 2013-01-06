@@ -48,7 +48,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
     private boolean plusVariant;
     private int toolId;
     private double doubleDropChancePerLevel;
-    private int maxDoubleDropChance;
+    private double maxDoubleDropChance;
 
     public Pickaxe(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -63,7 +63,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         this.plusVariant = data.getBoolean("plus-variant", false);
         this.toolId = data.getInt("tool-id", 270);
         this.doubleDropChancePerLevel = data.getDouble("double-drop-chance-per-level", 0.1);
-        this.maxDoubleDropChance = data.getInt("max-double-drop-chance", 50);
+        this.maxDoubleDropChance = data.getDouble("max-double-drop-chance", 50);
 
         CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "pickaxe-block-config.yml"));
         ConfigurationSection blocks = blockConfig.getConfigurationSection("blocks");
