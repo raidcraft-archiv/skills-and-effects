@@ -67,6 +67,10 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "pickaxe-block-config.yml"));
         ConfigurationSection blocks = blockConfig.getConfigurationSection("blocks");
+        if (blocks == null) {
+            RaidCraft.LOGGER.warning("Missing blocks config section in " + blockConfig.getName());
+            return;
+        }
         for(String key : blocks.getKeys(false)) {
             Material material = ItemUtils.getItem(key);
             if(material == null) {
@@ -182,6 +186,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             addEffect(getHero(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
                 @Override
                 public void run(PlayerInteractTrigger trigger) throws CombatException {
+
                     addEffect(getHero(), SpeedBlockBreak.class);
                 }
             }, Action.LEFT_CLICK_BLOCK);
