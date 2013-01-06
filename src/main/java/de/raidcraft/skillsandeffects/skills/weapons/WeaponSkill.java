@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.skills.weapons;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -13,6 +14,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.CombatTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
@@ -107,7 +109,19 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         checkTaskbar(trigger.getEvent().getNewSlot());
     }
 
+    @TriggerHandler
+    public void onCombat(CombatTrigger trigger) {
+
+        if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
+            checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
+        }
+    }
+
     private void checkTaskbar(int slot) {
+
+        if (!getHero().isInCombat()) {
+            return;
+        }
 
         PlayerInventory inventory = getHero().getPlayer().getInventory();
         boolean movedItem = false;

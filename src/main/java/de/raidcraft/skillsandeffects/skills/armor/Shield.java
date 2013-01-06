@@ -66,7 +66,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
     public void onItemHeldChange(ItemHeldTrigger trigger) throws CombatException {
 
         ItemStack item = getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot());
-        if (item == null || item.getTypeId() == 0) {
+        if (item == null || item.getTypeId() == 0 || !getHero().isInCombat()) {
             getHero().removeEffect(Shielded.class);
             return;
         }
