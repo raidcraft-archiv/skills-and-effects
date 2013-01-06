@@ -67,21 +67,24 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                     RaidCraft.LOGGER.warning("Unknown material '" + entry.getKey() + "' in " + getClass().getSimpleName());
                 }
                 int exp = (Integer)section.getValues(false).get("exp");
-
                 List<SpecialDrop> specialDrops = new ArrayList<>();
                 Object dropSectionRaw = section.getValues(true).get("drops");
                 if(dropSectionRaw != null) {
-                ConfigurationSection drops = (ConfigurationSection)dropSectionRaw;
+                    ConfigurationSection drops = (ConfigurationSection)dropSectionRaw;
                     for(Map.Entry<String, Object> dropEntry : drops.getValues(false).entrySet()) {
-                        ConfigurationSection dropSection = (ConfigurationSection)entry.getValue();
+                        ConfigurationSection dropSection = drops.getConfigurationSection(String.valueOf(dropEntry.getKey()));
                         Material dropMaterial = ItemUtils.getItem(dropEntry.getKey());
                         int chance = (Integer)dropSection.getValues(false).get("chance");
                         int level = (Integer)dropSection.getValues(false).get("min-level");
-                        short damageValue = 0;
+                        int damageValue = 0;
                         if(dropSection.getValues(false).get("data") != null) {
-                            damageValue = (Short)dropSection.getValues(false).get("data");
+                            damageValue = (Integer)dropSection.getValues(false).get("data");
                         }
-                        SpecialDrop specialDrop = new SpecialDrop(level, chance, new ItemStack(dropMaterial, 1, damageValue));
+                        int dropExp = 0;
+                        if(dropSection.getValues(false).get("exp") != null) {
+                            dropExp = (Integer)dropSection.getValues(false).get("exp");
+                        }
+                        SpecialDrop specialDrop = new SpecialDrop(level, chance, new ItemStack(dropMaterial, 1, (short)damageValue), dropExp);
                         specialDrops.add(specialDrop);
                     }
                 }
@@ -92,6 +95,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         }
         catch(Exception e) {
             RaidCraft.LOGGER.warning("Error while loading config in class: " + getClass().getSimpleName());
+            e.printStackTrace();
         }
     }
 
@@ -139,8 +143,9 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             }
 
             // special drop
-            for(ItemStack item : knownBlock.getDrops()) {
-                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item);
+            for(SpecialDrop drop : knownBlock.getDrops()) {
+                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), drop.getItem());
+                getLevel().addExp(drop.getExp());
             }
         }
     }
@@ -198,13 +203,13 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             return exp;
         }
 
-        public List<ItemStack> getDrops() {
-            List<ItemStack> itemDrops = new ArrayList<>();
+        public List<SpecialDrop> getDrops() {
+            List<SpecialDrop> itemDrops = new ArrayList<>();
             for(SpecialDrop drop : drops) {
                 if(getLevel().getLevel() < drop.getLevel()) continue;
                 double random = Math.random() * 100.;
                 if (drop.getChance() > random) {
-                    itemDrops.add(drop.getItem());
+                    itemDrops.add(drop);
                 }
             }
             return itemDrops;
@@ -216,11 +221,13 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         private int level;
         private int chance;
         private ItemStack item;
+        private int exp;
 
-        public SpecialDrop(int level, int chance, ItemStack item) {
+        public SpecialDrop(int level, int chance, ItemStack item, int exp) {
             this.level = level;
             this.chance = chance;
             this.item = item;
+            this.exp = exp;
         }
 
         public int getLevel() {
@@ -233,6 +240,10 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
         public ItemStack getItem() {
             return item;
+        }
+
+        public int getExp() {
+            return exp;
         }
     }
 }
