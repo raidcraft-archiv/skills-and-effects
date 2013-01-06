@@ -36,7 +36,6 @@ import java.util.List;
 )
 public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered {
 
-    private boolean used;
     private List<Material> knownBlocks = new ArrayList<>();
     private String activateMsg;
     private String deactivateMsg;
@@ -73,8 +72,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
             return;
         }
 
-        ((Player) target.getEntity()).sendMessage(ChatColor.YELLOW + "Du hebst deine "
-                + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
+        ((Player) target.getEntity()).sendMessage(ChatColor.GREEN + activateMsg);
     }
 
     @Override
@@ -84,16 +82,11 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
             return;
         }
 
-        if (used) ((Player) target.getEntity()).sendMessage(ChatColor.RED + deactivateMsg);
-        else ((Player) target.getEntity()).sendMessage(ChatColor.GRAY + "Du senkst deine "
-                + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
+        ((Player) target.getEntity()).sendMessage(ChatColor.RED + deactivateMsg);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
-
-        used = true;
-        ((Player) target.getEntity()).sendMessage(ChatColor.GREEN + activateMsg);
     }
 
     @TriggerHandler
@@ -103,11 +96,6 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
 
         if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
             return;
-        }
-
-        if (!used) {
-            getSource().substractUsageCost();
-            renew(trigger.getSource());
         }
 
         // check if correct tool in use

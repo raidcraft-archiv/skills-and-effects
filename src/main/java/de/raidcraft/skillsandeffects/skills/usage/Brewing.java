@@ -45,22 +45,18 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
         attachLevel(new ConfigurableSkillLevel(this, database, data));
 
-        try {
-            for(Map.Entry<String, Object> entry : data.getConfigurationSection("ingredients").getValues(false).entrySet()) {
-                ConfigurationSection section = (ConfigurationSection)entry.getValue();
-                Material material = ItemUtils.getItem(entry.getKey());
-                if(material == null) {
-                    RaidCraft.LOGGER.warning("Unknown material '" + entry.getKey() + "' in " + getClass().getSimpleName());
-                }
-                int exp = (Integer)section.getValues(false).get("exp");
-                int level = (Integer)section.getValues(false).get("min-level");
-
-                IngredientSetting ingredientSetting = new IngredientSetting(material, exp, level);
-                knownIngredients.put(material, ingredientSetting);
+        ConfigurationSection ingredients = data.getConfigurationSection("ingredients");
+        for(String key : ingredients.getKeys(false)) {
+            Material material = ItemUtils.getItem(key);
+            if(material == null) {
+                RaidCraft.LOGGER.warning("Unknown material '" + key + "' in " + getClass().getSimpleName());
+                continue;
             }
-        }
-        catch(Exception e) {
-            RaidCraft.LOGGER.warning("Error while loading config in class: " + getClass().getSimpleName());
+            ConfigurationSection blockSettings = ingredients.getConfigurationSection(key);
+            int minLevel = blockSettings.getInt("min-level");
+            int exp = blockSettings.getInt("exp");
+
+            knownIngredients.put(material, new IngredientSetting(material, exp, minLevel));
         }
     }
 
@@ -91,7 +87,8 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
                         "'" + ItemUtils.getFriendlyName(ingredient.getType()) + "' " +
                         "erst mit Skill-Level " + ingredientSetting.getMinLevel() + " brauen!");
                 event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), ingredient);
-                event.getContents().remove(3);
+                event.getContents().setItem(3, new ItemStack(Material.AIR, 1));
+                return;
             }
         }
 

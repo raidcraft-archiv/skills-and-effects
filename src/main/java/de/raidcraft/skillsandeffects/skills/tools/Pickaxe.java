@@ -2,6 +2,8 @@ package de.raidcraft.skillsandeffects.skills.tools;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -17,6 +19,7 @@ import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.effects.tools.SpeedBlockBreak;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
@@ -174,8 +177,14 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                 return;
             }
 
-            getHero().debug("Start Super Breaker!");
-            addEffect(getHero(), SpeedBlockBreak.class);
+            getHero().sendMessage(ChatColor.YELLOW + "Du hebst deine "
+                    + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
+            addEffect(getHero(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
+                @Override
+                public void run(PlayerInteractTrigger trigger) throws CombatException {
+                    addEffect(getHero(), SpeedBlockBreak.class);
+                }
+            }, Action.LEFT_CLICK_BLOCK);
         }
     }
 
