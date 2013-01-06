@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
@@ -21,6 +22,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +37,7 @@ import java.util.List;
 public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered {
 
     private boolean used;
-    private List<Integer> blocks;
+    private List<Material> knownBlocks = new ArrayList<>();
     private String activateMsg;
     private String deactivateMsg;
     private int toolId;
@@ -51,7 +53,17 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
         this.activateMsg = data.getString("activate-message", "SuperBreaker aktiviert!");
         this.deactivateMsg = data.getString("deactivate-message", "SuperBreaker abgelaufen!");
         this.toolId = data.getInt("tool-id");
-        this.blocks = data.getIntegerList("blocks");
+
+        CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "speedblockbreak-block-config.yml"));
+        ConfigurationSection blocks = blockConfig.getConfigurationSection("blocks");
+        for(String key : blocks.getKeys(false)) {
+            Material material = ItemUtils.getItem(key);
+            if(material == null) {
+                RaidCraft.LOGGER.warning("Unknown material '" + key + "' in " + getClass().getSimpleName());
+                continue;
+            }
+            knownBlocks.add(material);
+        }
     }
 
     @Override
@@ -106,7 +118,7 @@ public class SpeedBlockBreak extends ExpirableEffect<Skill> implements Triggered
         }
 
         // check if clicked block is in list
-        if (event.getClickedBlock() == null || !blocks.contains(event.getClickedBlock().getTypeId())) {
+        if (event.getClickedBlock() == null || !knownBlocks.contains(event.getClickedBlock().getType())) {
             return;
         }
 
