@@ -139,7 +139,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             }
 
             // special drop
-            for(ItemStack item : knownBlock.getDrops(getHero())) {
+            for(ItemStack item : knownBlock.getDrops()) {
                 event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item);
             }
         }
@@ -198,7 +198,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             return exp;
         }
 
-        public List<ItemStack> getDrops(Hero hero) {
+        public List<ItemStack> getDrops() {
             List<ItemStack> itemDrops = new ArrayList<>();
             for(SpecialDrop drop : drops) {
                 if(getLevel().getLevel() < drop.getLevel()) continue;
