@@ -8,12 +8,12 @@ import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.potion.Slowness;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -42,18 +42,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     public void load(ConfigurationSection data) {
 
         reflect = data.getBoolean("reflect", false);
-
-        damageReduction = data.getDouble("reduction.base", 0.2);
-        damageReduction += data.getDouble("reduction.level-modifier") * getSource().getHero().getLevel().getLevel();
-        damageReduction += data.getDouble("reduction.prof-level-modifier") * getSource().getProfession().getLevel().getLevel();
-
-        if (getSource() instanceof LevelableSkill) {
-            damageReduction += data.getDouble("reduction.skill-level-modifier") * ((LevelableSkill) getSource()).getLevel().getLevel();
-        }
-        // cap reduction default is 60%
-        if (data.getDouble("reduction.cap", 0.60) < damageReduction) {
-            damageReduction = data.getDouble("reduction.cap", 0.60);
-        }
+        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
     }
 
     public void addCallback(Callback<DamageTrigger> callback) {
