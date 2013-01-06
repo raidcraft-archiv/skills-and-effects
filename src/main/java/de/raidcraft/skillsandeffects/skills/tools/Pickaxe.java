@@ -62,7 +62,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         this.doubleDropChancePerLevel = data.getDouble("double-drop-chance-per-level", 0.1);
         this.maxDoubleDropChance = data.getInt("max-double-drop-chance", 50);
 
-        CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "pickaxe-block-config"));
+        CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "pickaxe-block-config.yml"));
         ConfigurationSection blocks = blockConfig.getConfigurationSection("blocks");
         for(String key : blocks.getKeys(false)) {
             Material material = ItemUtils.getItem(key);
