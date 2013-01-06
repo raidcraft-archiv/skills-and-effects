@@ -56,7 +56,8 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
             public void run(AttackTrigger trigger) throws CombatException {
 
                 if (stun) ShieldBash.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
-                if (knockback) ShieldBash.this.addEffect(trigger.getAttack().getTarget(), KnockBack.class);
+                if (knockback) ShieldBash.this.addEffect(
+                        getHero().getPlayer().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
             }
         });
     }
