@@ -18,8 +18,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,8 +33,7 @@ import java.util.Map;
 )
 public class Brewing extends AbstractLevelableSkill implements Triggered {
 
-    private Map<String, Object> potionExp;
-    private Map<String, Object> potionLevel;
+    private Map<Material, IngredientSetting> knownIngredients = new HashMap<>();
 
     public Brewing(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -46,8 +45,23 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
         attachLevel(new ConfigurableSkillLevel(this, database, data));
 
-        this.potionExp = data.getConfigurationSection("exp-assignments").getValues(false);
-        this.potionLevel = data.getConfigurationSection("level-assignments").getValues(false);
+        try {
+            for(Map.Entry<String, Object> entry : data.getConfigurationSection("ingredients").getValues(false).entrySet()) {
+                ConfigurationSection section = (ConfigurationSection)entry.getValue();
+                Material material = ItemUtils.getItem(entry.getKey());
+                if(material == null) {
+                    RaidCraft.LOGGER.warning("Unknown material '" + entry.getKey() + "' in " + getClass().getSimpleName());
+                }
+                int exp = (Integer)section.getValues(false).get("exp");
+                int level = (Integer)section.getValues(false).get("min-level");
+
+                IngredientSetting ingredientSetting = new IngredientSetting(material, exp, level);
+                knownIngredients.put(material, ingredientSetting);
+            }
+        }
+        catch(Exception e) {
+            RaidCraft.LOGGER.warning("Error while loading config in class: " + getClass().getSimpleName());
+        }
     }
 
     @TriggerHandler(checkUsage = false)
@@ -55,51 +69,57 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
         BrewEvent event = trigger.getEvent();
 
-        for (int i = 0; i < 3; i++) {
-            ItemStack itemStack = event.getContents().getItem(i);
+        ItemStack ingredient = event.getContents().getItem(3);
 
-            if (itemStack == null) {
-                continue;
-            }
-            if (itemStack.getType() == Material.POTION) {
+        if (ingredient == null) {
+            return;
+        }
 
-                try {
-                    Potion potion = Potion.fromItemStack(itemStack);
-                    // check if player can brew potion with current level
-                    int level = (Integer) potionLevel.get(String.valueOf(potion.getNameId()));
-                    getHero().debug("PotionId: " + potion.getNameId() + " | Level: " + level);
-                    if (level > getLevel().getLevel()) {
-                        event.setCancelled(true);
-                        if (getHero().getPlayer().isOnline()) {
-                            getHero().getPlayer().sendMessage(ChatColor.RED + "Du kannst " +
-                                    ItemUtils.getFriendlyName(potion.getType().name()) + " " +
-                                    "Tränke erst mit " +
-                                    "Level " + level + " brauen!");
-                            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), itemStack);
-                            event.getContents().remove(i);
-                        }
-                        return;
-                    }
+        getHero().debug("Brewing ingredient: " + ingredient.getType().name());
 
-                    // give exp
-                    int exp = (Integer) potionExp.get(String.valueOf(potion.getNameId()));
-                    getLevel().addExp(exp);
+        IngredientSetting ingredientSetting = knownIngredients.get(ingredient.getType());
 
-                } catch (Exception ignored) {
-                }
+        // unknown ingredient
+        if(ingredientSetting == null) {
+            return;
+        }
+
+        if (ingredientSetting.getMinLevel() > getLevel().getLevel()) {
+            event.setCancelled(true);
+            if (getHero().getPlayer().isOnline()) {
+                getHero().getPlayer().sendMessage(ChatColor.RED + "Du kannst Tränke mit der Zutat " +
+                        "'" + ItemUtils.getFriendlyName(ingredient.getType()) + "' " +
+                        "erst mit Skill-Level " + ingredientSetting.getMinLevel() + " brauen!");
+                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), ingredient);
+                event.getContents().remove(3);
             }
         }
+
+        getLevel().addExp(ingredientSetting.getExp());
+        getHero().debug("Brewing: Added " + ingredientSetting.getExp() + " EXP");
     }
 
-    @Override
-    public void apply() {
+    public class IngredientSetting {
+        private Material ingredient;
+        private int exp;
+        private int minLevel;
 
-        RaidCraft.getPermissions().playerAdd(getHero().getPlayer(), "antiguest.preventions.brew");
-    }
+        public IngredientSetting(Material ingredient, int exp, int minLevel) {
+            this.ingredient = ingredient;
+            this.exp = exp;
+            this.minLevel = minLevel;
+        }
 
-    @Override
-    public void remove() {
+        public Material getIngredient() {
+            return ingredient;
+        }
 
-        RaidCraft.getPermissions().playerRemove(getHero().getPlayer(), "antiguest.preventions.brew");
+        public int getExp() {
+            return exp;
+        }
+
+        public int getMinLevel() {
+            return minLevel;
+        }
     }
 }
