@@ -18,7 +18,7 @@ import de.raidcraft.skillsandeffects.effects.resources.RageEffect;
  * @author Silthus
  */
 @SkillInformation(
-        name = "Wut Regeneration",
+        name = "Rage",
         desc = "Regeneriert Wut wenn im Kampf."
 )
 public class Rage extends AbstractSkill implements Triggered {
