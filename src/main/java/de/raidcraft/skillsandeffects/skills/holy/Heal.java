@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.skills.heal;
+package de.raidcraft.skillsandeffects.skills.holy;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -47,7 +47,7 @@ public class Heal extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         if (selfHeal || getHero().getPlayer().isSneaking()) {
-            // self heal
+            // self holy
             getHero().heal(getTotalDamage());
             return;
         }
