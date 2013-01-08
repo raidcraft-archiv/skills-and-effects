@@ -24,7 +24,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -56,7 +60,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (weapons == null) return;
         for (String key : weapons.getKeys(false)) {
             Material item = ItemUtils.getItem(key);
-            if (item != null) {
+            if (item != null && ItemUtil.isWeapon(item)) {
                 Weapon weapon = new Weapon(item, data.getConfigurationSection("weapons." + key));
                 allowedWeapons.get(getHero().getName()).put(item, weapon);
                 myWeapons.add(item);

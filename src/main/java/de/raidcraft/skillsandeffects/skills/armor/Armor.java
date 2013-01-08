@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
@@ -47,7 +48,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
     private static final int EXP_PER_DAMAGE_POINT_REDUCED = 2;
     private Map<Material, ArmorPiece> allowedArmor;
-    private Map<ItemUtil.ArmorSlot, ArmorPiece> playerArmor;
+    private Map<ArmorType, ArmorPiece> playerArmor;
 
     public Armor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -60,18 +61,18 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         allowedArmor = new EnumMap<>(Material.class);
-        playerArmor = new EnumMap<>(ItemUtil.ArmorSlot.class);
+        playerArmor = new EnumMap<>(ArmorType.class);
         if (data.getConfigurationSection("items") == null) return;
         // lets load all items that the class can wear
         for (String key : data.getConfigurationSection("items").getKeys(false)) {
             Material item = ItemUtils.getItem(key);
             if (item != null) {
-                ItemUtil.ArmorSlot slot = ItemUtil.ArmorSlot.fromMaterial(item);
-                if (slot != null) {
+                ArmorType armor = ArmorType.fromMaterial(item);
+                if (armor != null) {
                     if (!allowedArmor.containsKey(item)) {
                         int defArmorValue = data.getInt("defaults." + item.getId(), 0);
                         if (defArmorValue == 0) defArmorValue = data.getInt("defaults." + item.name(), 0);
-                        ArmorPiece armorPiece = new ArmorPiece(item, slot, defArmorValue, data.getInt("items." + key, 1));
+                        ArmorPiece armorPiece = new ArmorPiece(item, armor, defArmorValue, data.getInt("items." + key, 1));
                         allowedArmor.put(item, armorPiece);
                         getHero().debug("loaded armor: " + armorPiece.getType().name() +
                                 ":L" + armorPiece.getLevel() +
@@ -209,33 +210,33 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         Hero hero = getHero();
         PlayerInventory inventory = hero.getPlayer().getInventory();
         boolean movedItem = false;
-        if (checkArmorItem(hero, ItemUtil.ArmorSlot.HEAD, inventory.getHelmet())) {
+        if (checkArmorItem(hero, ArmorType.HEAD, inventory.getHelmet())) {
             inventory.setHelmet(null);
             movedItem = true;
         }
-        if (checkArmorItem(hero, ItemUtil.ArmorSlot.CHEST, inventory.getChestplate())) {
+        if (checkArmorItem(hero, ArmorType.CHEST, inventory.getChestplate())) {
             inventory.setChestplate(null);
             movedItem = true;
         }
-        if (checkArmorItem(hero, ItemUtil.ArmorSlot.LEGS, inventory.getLeggings())) {
+        if (checkArmorItem(hero, ArmorType.LEGS, inventory.getLeggings())) {
             inventory.setLeggings(null);
             movedItem = true;
         }
-        if (checkArmorItem(hero, ItemUtil.ArmorSlot.FEET, inventory.getBoots())) {
+        if (checkArmorItem(hero, ArmorType.FEET, inventory.getBoots())) {
             inventory.setBoots(null);
             movedItem = true;
         }
         // lets check if we need to add the held item as a shield
-        ItemUtil.ArmorSlot shield = ItemUtil.ArmorSlot.fromMaterial(inventory.getItemInHand().getType());
+        ArmorType shield = ArmorType.fromMaterial(inventory.getItemInHand().getType());
         if (shield != null && allowedArmor.containsKey(inventory.getItemInHand().getType())) {
             ArmorPiece armor = allowedArmor.get(inventory.getItemInHand().getType());
             if (armor.getLevel() <= getLevel().getLevel()) {
                 playerArmor.put(armor.getSlot(), armor);
             } else {
-                playerArmor.remove(ItemUtil.ArmorSlot.SHIELD);
+                playerArmor.remove(ArmorType.SHIELD);
             }
         } else {
-            playerArmor.remove(ItemUtil.ArmorSlot.SHIELD);
+            playerArmor.remove(ArmorType.SHIELD);
         }
         if (movedItem) {
             // inform the player
@@ -243,7 +244,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
         }
     }
 
-    private boolean checkArmorItem(Hero hero, ItemUtil.ArmorSlot slot, ItemStack item) {
+    private boolean checkArmorItem(Hero hero, ArmorType slot, ItemStack item) {
 
         if (item == null || item.getTypeId() == 0) {
             playerArmor.remove(slot);
@@ -266,11 +267,11 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
     public static class ArmorPiece {
 
         private final Material type;
-        private final ItemUtil.ArmorSlot slot;
+        private final ArmorType slot;
         private final int armorValue;
         private final int level;
 
-        public ArmorPiece(Material type, ItemUtil.ArmorSlot slot, int armorValue, int level) {
+        public ArmorPiece(Material type, ArmorType slot, int armorValue, int level) {
 
             this.type = type;
             this.slot = slot;
@@ -283,7 +284,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
             return type;
         }
 
-        public ItemUtil.ArmorSlot getSlot() {
+        public ArmorType getSlot() {
 
             return slot;
         }
