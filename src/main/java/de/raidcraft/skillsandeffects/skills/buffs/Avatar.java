@@ -10,40 +10,34 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skillsandeffects.effects.buffs.aura.AbstractAura;
-import de.raidcraft.skillsandeffects.effects.buffs.aura.DamageAura;
-import de.raidcraft.skillsandeffects.effects.buffs.aura.ManaRegenAura;
-import de.raidcraft.skillsandeffects.effects.buffs.aura.ProtectionAura;
-import de.raidcraft.skillsandeffects.effects.buffs.aura.ReflectionAura;
+import de.raidcraft.skillsandeffects.effects.buffs.avatar.AbstractAvatar;
+import de.raidcraft.skillsandeffects.effects.buffs.avatar.BerserkerAvatar;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "Aura",
-        desc = "Schützt dich und deine Gruppe mit einer Aura.",
-        types = {EffectType.MAGICAL, EffectType.BUFF, EffectType.HELPFUL, EffectType.AURA}
+        name = "Avatar",
+        desc = "Verwandelt dich in einen Halbgott mit übermenschlichen Fähigkeiten.",
+        types = {EffectType.BUFF, EffectType.MAGICAL, EffectType.AVATAR, EffectType.HELPFUL}
 )
-public class Aura extends AbstractSkill implements CommandTriggered {
+public class Avatar extends AbstractSkill implements CommandTriggered {
 
     public enum Type {
 
-        PROTECTION(ProtectionAura.class, "protection"),
-        REFLECTION(ReflectionAura.class, "reflection"),
-        MANA_REGAIN(ManaRegenAura.class, "mana-regain"),
-        DAMAGE(DamageAura.class, "damage");
+        BERSERKER(BerserkerAvatar.class, "berserker");
 
-        private final Class<? extends AbstractAura> effectClass;
+        private final Class<? extends AbstractAvatar> effectClass;
 
         private final String[] aliases;
-        private Type(Class<? extends AbstractAura> effectClass, String... aliases) {
+        private Type(Class<? extends AbstractAvatar> effectClass, String... aliases) {
 
             this.effectClass = effectClass;
             this.aliases = aliases;
         }
 
-        public Class<? extends AbstractAura> getEffectClass() {
+        public Class<? extends AbstractAvatar> getEffectClass() {
 
             return effectClass;
         }
@@ -74,9 +68,9 @@ public class Aura extends AbstractSkill implements CommandTriggered {
         }
     }
 
-    private Type auraType;
+    private Type avatarType;
 
-    public Aura(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Avatar(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -84,21 +78,19 @@ public class Aura extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        this.auraType = Type.fromAlias(data.getString("type"));
+        avatarType = Type.fromAlias(data.getString("type"));
     }
 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (auraType == null) return;
+        if (avatarType == null) return;
 
-        for (Hero hero : getHero().getGroup().getMembers()) {
-            if (hero.hasEffect(auraType.getEffectClass())) {
-                hero.getEffect(auraType.getEffectClass()).renew();
-            } else {
-                hero.removeEffectTypes(EffectType.AURA);
-                addEffect(this, getHero(), auraType.getEffectClass());
-            }
+        if (getHero().hasEffect(avatarType.getEffectClass())) {
+            getHero().getEffect(avatarType.getEffectClass()).renew();
+        } else {
+            getHero().removeEffectTypes(EffectType.AVATAR);
+            addEffect(this, getHero(), avatarType.getEffectClass());
         }
     }
 }
