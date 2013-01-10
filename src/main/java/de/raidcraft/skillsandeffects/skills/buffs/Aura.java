@@ -10,7 +10,11 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skillsandeffects.effects.buffs.*;
+import de.raidcraft.skillsandeffects.effects.buffs.aura.AbstractAura;
+import de.raidcraft.skillsandeffects.effects.buffs.aura.DamageAura;
+import de.raidcraft.skillsandeffects.effects.buffs.aura.ManaRegenAura;
+import de.raidcraft.skillsandeffects.effects.buffs.aura.ProtectionAura;
+import de.raidcraft.skillsandeffects.effects.buffs.aura.ReflectionAura;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**

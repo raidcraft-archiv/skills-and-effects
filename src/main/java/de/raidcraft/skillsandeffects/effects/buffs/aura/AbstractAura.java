@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.effects.buffs;
+package de.raidcraft.skillsandeffects.effects.buffs.aura;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
