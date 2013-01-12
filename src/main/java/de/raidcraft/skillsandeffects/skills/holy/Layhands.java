@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.skills.holy;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -11,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.effects.debuff.LayhandsEffect;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -19,7 +21,8 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "LayHands",
         desc = "Heilt dich oder das Ziel um 100%, kostet allerdings 100% deiner Resourcen.",
-        types = {EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL}
+        types = {EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL},
+        elements = {EffectElement.LIGHT}
 )
 public class Layhands extends AbstractLevelableSkill implements CommandTriggered {
 
@@ -48,7 +51,11 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
         } else {
             throw new CombatException(CombatException.Type.INVALID_TARGET);
         }
+        if (target.hasEffect(LayhandsEffect.class)) {
+            throw new CombatException(CombatException.Type.IMMUNE);
+        }
         target.heal(target.getMaxHealth());
+        addEffect(this, target, LayhandsEffect.class);
         getHero().setResource(0);
         getHero().setStamina(0);
     }
