@@ -34,8 +34,8 @@ public class ShadowStep extends AbstractLevelableSkill implements CommandTrigger
 
         // lets get the position behind the target by multiplying the vector
         Location origin = getTarget().getEntity().getLocation();
-        Vector behindTarget = origin.getDirection().multiply(-2);
-        Location teleportLocation = origin.add(behindTarget);
+        Vector behindTarget = origin.getDirection().multiply(2);
+        Location teleportLocation = origin.subtract(behindTarget).add(0, 1, 0);
         origin.getWorld().playEffect(origin, Effect.ENDER_SIGNAL, 1);
         getHero().getPlayer().teleport(teleportLocation);
         teleportLocation.getWorld().playEffect(teleportLocation, Effect.ENDER_SIGNAL, 1);
