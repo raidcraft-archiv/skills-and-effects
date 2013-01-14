@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.skills.physical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -9,6 +10,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
@@ -17,6 +19,11 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * @author Silthus
  */
+@SkillInformation(
+        name = "Execute",
+        desc = "Richtet dein Ziel hin und verursacht maximalen Schaden.",
+        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL}
+)
 public class Execute extends AbstractLevelableSkill implements CommandTriggered {
 
     private double healthTreshold = 0.20;
