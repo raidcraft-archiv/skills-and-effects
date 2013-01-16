@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.util.BlockUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -29,6 +30,6 @@ public class FireTrap extends AbstractBowTrap {
     @Override
     protected void runTrap(Location target) {
 
-        target.getBlock().setType(Material.FIRE);
+        BlockUtil.replaceNonSolidSurfaceBlocks(target.getBlock(), Material.FIRE, width, length, height);
     }
 }

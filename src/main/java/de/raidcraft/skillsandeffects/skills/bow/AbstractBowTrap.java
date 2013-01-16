@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.skills.bow;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.effect.common.QueuedProjectile;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -47,7 +48,7 @@ public abstract class AbstractBowTrap extends AbstractLevelableSkill implements 
 
                 runTrap(trigger);
             }
-        });
+        }, ProjectileType.ARROW);
     }
 
     protected abstract void runTrap(Location target);
