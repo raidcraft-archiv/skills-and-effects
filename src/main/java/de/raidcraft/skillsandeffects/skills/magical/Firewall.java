@@ -12,8 +12,8 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.LocationUtil;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -51,16 +51,8 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Location target = getBlockTarget();
-        Block sourceBlock = target.getBlock().getRelative(0, 1, 0);
-        sourceBlock.setType(Material.FIRE);
-        int width = getWidth();
+        Block sourceBlock = getBlockTarget().getBlock();
         BlockFace face = LocationUtil.rotateBlockFace(getFacing());
-        if (width > 0) {
-            for (int i = 1; i <= width; i++) {
-                sourceBlock.getRelative(face, i).setType(Material.FIRE);
-                sourceBlock.getRelative(LocationUtil.flipBlockFace(face), i).setType(Material.FIRE);
-            }
-        }
+        BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
     }
 }

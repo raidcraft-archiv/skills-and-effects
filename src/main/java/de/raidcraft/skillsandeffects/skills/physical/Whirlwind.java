@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.skills.physical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -10,6 +11,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -24,6 +26,7 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Whirlwind extends AbstractSkill implements CommandTriggered {
 
     private int maxTargets = 4;
+    private boolean knockBack = false;
 
     public Whirlwind(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -34,6 +37,7 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         maxTargets = data.getInt("max-targets", 4);
+        knockBack = data.getBoolean("knockback", false);
     }
 
     @Override
@@ -45,7 +49,10 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
             if (!(i < maxTargets)) {
                 break;
             }
-            attack(target);
+            Attack<CharacterTemplate,CharacterTemplate> attack = attack(target);
+            if (!attack.isCancelled() && knockBack) {
+                addEffect(getHero().getPlayer().getLocation(), target, KnockBack.class);
+            }
             i++;
         }
     }

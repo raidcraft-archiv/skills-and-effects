@@ -51,6 +51,10 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         this.maxCleverBrewingChance = data.getDouble("max-clever-brewing-chance", 33);
 
         ConfigurationSection ingredients = data.getConfigurationSection("ingredients");
+        if (ingredients == null) {
+            return;
+        }
+
         for(String key : ingredients.getKeys(false)) {
             Material material = ItemUtils.getItem(key);
             if(material == null) {
