@@ -51,5 +51,5 @@ public abstract class AbstractBowTrap extends AbstractLevelableSkill implements 
         }, ProjectileType.ARROW);
     }
 
-    protected abstract void runTrap(Location target);
+    protected abstract void runTrap(Location target) throws CombatException;
 }

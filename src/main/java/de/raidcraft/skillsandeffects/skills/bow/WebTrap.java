@@ -1,14 +1,19 @@
 package de.raidcraft.skillsandeffects.skills.bow;
 
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.effects.TrapEffect;
 import de.raidcraft.util.BlockUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -26,8 +31,9 @@ public class WebTrap extends AbstractBowTrap {
     }
 
     @Override
-    protected void runTrap(Location target) {
+    protected void runTrap(Location target) throws CombatException {
 
-        BlockUtil.replaceNonSolidSurfaceBlocks(target.getBlock(), Material.WEB, width, length, height, true);
+        Set<Block> blocks = BlockUtil.replaceNonSolidSurfaceBlocks(target.getBlock(), Material.WEB, width, length, height, true);
+        addEffect(getHero(), TrapEffect.class).setChangedBlocks(blocks);
     }
 }
