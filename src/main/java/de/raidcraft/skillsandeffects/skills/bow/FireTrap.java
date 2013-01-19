@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skillsandeffects.effects.TrapEffect;
+import de.raidcraft.skillsandeffects.effects.misc.TrapEffect;
 import de.raidcraft.util.BlockUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
