@@ -17,7 +17,7 @@ import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
-import de.raidcraft.skillsandeffects.effects.tools.SpeedBlockBreak;
+import de.raidcraft.skillsandeffects.effects.tools.RecursiveBlockBreak;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -144,8 +144,8 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
             checkUsage();
-            if (getHero().hasEffect(SpeedBlockBreak.class)
-                    && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
+            if (getHero().hasEffect(RecursiveBlockBreak.class)
+                    && getHero().getEffect(RecursiveBlockBreak.class).getSource().equals(this)) {
                 getHero().debug("Treefeller already enabled!");
                 return;
             }
@@ -156,7 +156,7 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
                 @Override
                 public void run(PlayerInteractTrigger trigger) throws CombatException {
 
-                    addEffect(getHero(), SpeedBlockBreak.class);
+                    addEffect(getHero(), RecursiveBlockBreak.class);
                 }
             }, Action.LEFT_CLICK_BLOCK);
         }

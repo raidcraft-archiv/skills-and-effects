@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
@@ -15,7 +16,9 @@ import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -40,9 +43,13 @@ public class RecursiveBlockBreak extends ExpirableEffect<Skill> implements Trigg
     private String activateMsg;
     private String deactivateMsg;
     private int toolId;
+    private Player player = null;
 
     public RecursiveBlockBreak(Skill source, CharacterTemplate target, EffectData data) {
         super(source, target, data);
+        if(target instanceof Hero) {
+            this.player = ((Hero) target).getPlayer();
+        }
     }
 
     @Override
@@ -104,16 +111,31 @@ public class RecursiveBlockBreak extends ExpirableEffect<Skill> implements Trigg
             return;
         }
 
+        if(player != null) {
+            breakRecursive(event.getClickedBlock().getLocation());
+        }
+    }
+
+    private void breakRecursive(Location blockLocation) {
+
+        Block block = blockLocation.getWorld().getBlockAt(blockLocation.getBlockX(), blockLocation.getBlockY(), blockLocation.getBlockZ());
         // check if clicked block is in list
-        if (event.getClickedBlock() == null || !knownBlocks.contains(event.getClickedBlock().getType())) {
+        if (block == null || !knownBlocks.contains(block.getType())) {
             return;
         }
 
-        BlockBreakEvent fakeBreakEvent = new BlockBreakEvent(event.getClickedBlock(), event.getPlayer());
+        BlockBreakEvent fakeBreakEvent = new BlockBreakEvent(block, player);
         RaidCraft.callEvent(fakeBreakEvent);
         if (!fakeBreakEvent.isCancelled()) {
-            event.getClickedBlock().breakNaturally(event.getPlayer().getItemInHand());
-            event.getClickedBlock().setType(Material.AIR);
+           block.breakNaturally(player.getItemInHand());
+            block.setType(Material.AIR);
         }
+
+        breakRecursive(blockLocation.add(0, 1, 0));
+        breakRecursive(blockLocation.add(1, 0, 0));
+        breakRecursive(blockLocation.add(0, 0, 1));
+        breakRecursive(blockLocation.add(-1, 0, 0));
+        breakRecursive(blockLocation.add(0, 0, -1));
+        breakRecursive(blockLocation.add(0, -1, 0));
     }
 }
