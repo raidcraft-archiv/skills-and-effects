@@ -1,17 +1,17 @@
-package de.raidcraft.skillsandeffects.skills.physical;
+package de.raidcraft.skillsandeffects.skills.bow;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.callback.Callback;
-import de.raidcraft.skills.api.effect.common.QueuedAttack;
+import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.effect.common.QueuedRangedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.AbstractSkill;
+import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.damaging.Bleed;
 import de.raidcraft.skills.effects.damaging.Burn;
 import de.raidcraft.skills.effects.disabling.Disarm;
@@ -20,33 +20,29 @@ import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.effects.potion.Slowness;
 import de.raidcraft.skills.effects.potion.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
-import de.raidcraft.skillsandeffects.skills.bow.Shot;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "strike",
-        desc = "Schlägt das Ziel mit voller Wucht und stößt es zurück.",
-        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL},
-        triggerCombat = true
+        name = "Shot",
+        desc = "Schiesst einen Pfeil mit extra Fähigkeiten ab.",
+        types = {EffectType.DAMAGING, EffectType.PHYSICAL, EffectType.HARMFUL}
 )
-public class Strike extends AbstractSkill implements CommandTriggered, Triggered {
+public class Shot extends AbstractLevelableSkill implements CommandTriggered {
 
     private boolean knockBack = false;
     private boolean bleed = false;
     private boolean stun = false;
     private boolean sunderArmor = false;
     private boolean disarm = false;
-    private boolean ignoreArmor = false;
     private boolean slow = false;
     private boolean weaken = false;
     private boolean burn = false;
 
-    public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Shot(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -59,28 +55,28 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         stun = data.getBoolean("stun", false);
         sunderArmor = data.getBoolean("sunder-armor", false);
         disarm = data.getBoolean("disarm", false);
-        ignoreArmor = data.getBoolean("ignoreArmor", false);
         slow = data.getBoolean("slow", false);
         weaken = data.getBoolean("weaken", false);
         burn = data.getBoolean("burn", false);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        QueuedRangedAttack<RangedCallback> attack = addEffect(getHero(), QueuedRangedAttack.class);
+        attack.addCallback(new RangedCallback() {
             @Override
-            public void run(AttackTrigger trigger) throws CombatException {
+            public void run(CharacterTemplate target) throws CombatException {
 
-                if (knockBack) Strike.this.addEffect(getHero().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
-                if (bleed) Strike.this.addEffect(trigger.getAttack().getTarget(), Bleed.class);
-                if (stun) Strike.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
-                if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);
-                if (disarm) Strike.this.addEffect(trigger.getAttack().getTarget(), Disarm.class);
-                if (ignoreArmor) trigger.getAttack().addAttackTypes(EffectType.IGNORE_ARMOR);
-                if (slow) Strike.this.addEffect(trigger.getAttack().getTarget(), Slowness.class);
-                if (weaken) Strike.this.addEffect(trigger.getAttack().getTarget(), Weakness.class);
-                if (burn) Strike.this.addEffect(trigger.getSource().getTarget(), Burn.class);
+                if (knockBack) Shot.this.addEffect(getHero().getEntity().getLocation(), target, KnockBack.class);
+                if (bleed) Shot.this.addEffect(target, Bleed.class);
+                if (stun) Shot.this.addEffect(target, Stun.class);
+                if (sunderArmor) Shot.this.addEffect(target, SunderingArmor.class);
+                if (disarm) Shot.this.addEffect(target, Disarm.class);
+                if (slow) Shot.this.addEffect(target, Slowness.class);
+                if (weaken) Shot.this.addEffect(target, Weakness.class);
+                if (burn) Shot.this.addEffect(target, Burn.class);
             }
         });
     }
