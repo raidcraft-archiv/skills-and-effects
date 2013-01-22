@@ -18,7 +18,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.effects.tools.RecursiveBlockBreak;
-import de.raidcraft.util.ItemUtils;
+import de.raidcraft.util.ItemUtils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

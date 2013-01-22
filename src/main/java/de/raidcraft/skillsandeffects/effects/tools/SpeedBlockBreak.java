@@ -13,7 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
-import de.raidcraft.util.ItemUtils;
+import de.raidcraft.util.ItemUtils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
