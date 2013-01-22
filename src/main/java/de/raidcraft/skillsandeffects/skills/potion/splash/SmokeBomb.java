@@ -12,10 +12,14 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.potion.Blindness;
+import de.raidcraft.skills.effects.potion.Blind;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PotionSplashTrigger;
 import de.raidcraft.skills.util.HeroUtil;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 /**
  * @author Silthus
@@ -35,13 +39,22 @@ public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggere
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        Potion potion = new Potion(PotionType.SLOWNESS);
+        potion.setSplash(true);
+        ItemStack item = potion.toItemStack(1);
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
+        meta.setDisplayName("Rauchbombe");
+        item.setItemMeta(meta);
+
+        getHero().getPlayer().getInventory().addItem(item);
+
         addEffect(getHero(), QueuedSplashPotion.class).addCallback(new Callback<PotionSplashTrigger>() {
             @Override
             public void run(PotionSplashTrigger trigger) throws CombatException {
 
                 for (CharacterTemplate character : HeroUtil.toCharacters(trigger.getEvent().getAffectedEntities())) {
 
-                    SmokeBomb.this.addEffect(character, Blindness.class);
+                    SmokeBomb.this.addEffect(character, Blind.class);
                 }
             }
         });
