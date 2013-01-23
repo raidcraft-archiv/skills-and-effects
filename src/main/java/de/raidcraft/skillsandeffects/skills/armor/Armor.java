@@ -20,7 +20,7 @@ import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
-import de.raidcraft.util.ItemUtils.ItemUtils;
+import de.raidcraft.util.itemutils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

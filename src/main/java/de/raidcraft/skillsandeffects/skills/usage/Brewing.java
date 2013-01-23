@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BrewTrigger;
-import de.raidcraft.util.ItemUtils.ItemUtils;
+import de.raidcraft.util.itemutils.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
