@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
@@ -16,7 +17,7 @@ import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skillsandeffects.effects.armor.Shielded;
-import de.raidcraft.util.itemutils.ItemUtils;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,7 +38,8 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Material, Integer> shieldLevels = new EnumMap<>(Material.class);
     private final Map<Material, Double> shieldExp = new EnumMap<>(Material.class);
-    private double staminaCostPerBlockedDamage = 0.01;
+    private double resourceCostPerBlockedDamage = 0.01;
+    private String resourceName = "stamina";
 
     public Shield(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -59,7 +61,8 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                 }
             }
         }
-        staminaCostPerBlockedDamage = data.getDouble("stamina-cost-per-damage", 0.01);
+        resourceName = data.getString("resource.name", "stamina");
+        resourceCostPerBlockedDamage = data.getDouble("resource.cost-per-damage", 0.01);
     }
 
     @TriggerHandler
@@ -70,6 +73,11 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
             getHero().removeEffect(Shielded.class);
             return;
         }
+
+        if (getProfession().getResource(resourceName) == null) {
+            return;
+        }
+
         final Material type = item.getType();
         if (ItemUtil.isShield(type) && shieldLevels.containsKey(type)) {
             if (shieldLevels.get(type) > getLevel().getLevel()) {
@@ -86,16 +94,17 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                             trigger.getAttack().setCancelled(true);
                             return;
                         }
+                        Resource resource = getProfession().getResource(resourceName);
                         // lets check if he has enough stamina to block the damage
-                        int staminaCost = (int) (staminaCostPerBlockedDamage * effect.getBlockedDamage());
-                        if (getHero().getStamina() < staminaCost) {
+                        int resourceCost = (int) (resourceCostPerBlockedDamage * effect.getBlockedDamage());
+                        if (resource.getCurrent() < resourceCost) {
                             int oldBlock = effect.getBlockedDamage();
                             // lets set the blocked damage to the remaining stamina
-                            effect.setBlockedDamage((int) (getHero().getStamina() / staminaCostPerBlockedDamage));
+                            effect.setBlockedDamage((int) (resource.getCurrent() / resourceCostPerBlockedDamage));
                             throw new CombatException(
                                     "Du konntest nur " + effect.getBlockedDamage() + " von " + oldBlock + " Schaden blocken.");
                         } else {
-                            getHero().setStamina(getHero().getStamina() - staminaCost);
+                            resource.setCurrent(resource.getCurrent() - resourceCost);
                         }
                         getLevel().addExp((int) (effect.getBlockedDamage() * shieldExp.get(type)));
                     }

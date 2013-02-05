@@ -21,6 +21,8 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class ManaRegenAura extends AbstractAura {
 
+    public static final String RESOURCE_NAME = "mana";
+
     private ConfigurationSection regen;
     private double oldManaRegen;
 
@@ -44,9 +46,9 @@ public class ManaRegenAura extends AbstractAura {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         Hero hero = getSource().getHero();
-        oldManaRegen = hero.getResourceBar().getRegenPercent();
+        oldManaRegen = getSource().getProfession().getResource(RESOURCE_NAME).getRegenPercent();
         double newManaRegen = oldManaRegen + oldManaRegen * getManaIncrease();
-        hero.getResourceBar().setRegenPercent(newManaRegen);
+        getSource().getProfession().getResource(RESOURCE_NAME).setRegenPercent(newManaRegen);
         super.apply(target);
         hero.combatLog("[" + getFriendlyName() + "] " +
                 "Mana Regeneration auf " + (int) (newManaRegen * 100) + "% erhöht.");
@@ -57,7 +59,7 @@ public class ManaRegenAura extends AbstractAura {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         Hero hero = getSource().getHero();
-        hero.getResourceBar().setRegenPercent(oldManaRegen);
+        getSource().getProfession().getResource(RESOURCE_NAME).setRegenPercent(oldManaRegen);
         super.remove(target);
         hero.combatLog("[" + getFriendlyName() + "] " +
                 "Mana Regeneration auf " + (int) (oldManaRegen * 100) + "% verringert.");

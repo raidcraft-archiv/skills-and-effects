@@ -4,7 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.hero.ResourceBar;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
@@ -49,36 +49,36 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
-        ResourceBar resourceBar = getSource().getHero().getResourceBar();
-        resourceBar.setCurrent((int) (resourceBar.getCurrent() + trigger.getAttack().getDamage() * ragePerAttackDamage));
+        Resource resource = getSource().getHero().getResource(Rage.RESOURCE_NAME);
+        resource.setCurrent((int) (resource.getCurrent() + trigger.getAttack().getDamage() * ragePerAttackDamage));
     }
 
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
-        ResourceBar resourceBar = getSource().getHero().getResourceBar();
-        resourceBar.setCurrent((int) (resourceBar.getCurrent() + trigger.getAttack().getDamage() * ragePerDamage));
+        Resource resource = getSource().getHero().getResource(Rage.RESOURCE_NAME);
+        resource.setCurrent((int) (resource.getCurrent() + trigger.getAttack().getDamage() * ragePerDamage));
     }
 
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        ResourceBar resourceBar = getSource().getHero().getResourceBar();
-        resourceBar.setCurrent(resourceBar.getCurrent() + getRageAmount());
+        Resource resource = getSource().getHero().getResource(Rage.RESOURCE_NAME);
+        resource.setCurrent(resource.getCurrent() + getRageAmount());
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         // lets disable the normal rage deregeneration
-        getSource().getHero().getResourceBar().setEnabled(false);
+        getSource().getHero().getResource(Rage.RESOURCE_NAME).setEnabled(false);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         // reenable the rage deregeneration
-        getSource().getHero().getResourceBar().setEnabled(true);
+        getSource().getHero().getResource(Rage.RESOURCE_NAME).setEnabled(true);
     }
 
     @Override

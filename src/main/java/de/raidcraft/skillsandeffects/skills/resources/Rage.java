@@ -3,7 +3,6 @@ package de.raidcraft.skillsandeffects.skills.resources;
 import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
-import de.raidcraft.skills.api.hero.ResourceType;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
@@ -23,6 +22,8 @@ import de.raidcraft.skillsandeffects.effects.resources.RageEffect;
 )
 public class Rage extends AbstractSkill implements Triggered {
 
+    public static final String RESOURCE_NAME = "rage";
+
     public Rage(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
@@ -31,7 +32,7 @@ public class Rage extends AbstractSkill implements Triggered {
     @TriggerHandler
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
-        if (getHero().getResourceBar().getType() != ResourceType.RAGE) {
+        if (getProfession().getResource(RESOURCE_NAME) == null) {
             return;
         }
 
