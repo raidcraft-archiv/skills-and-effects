@@ -86,6 +86,8 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (trigger.getAttack().isCancelled()) {
             return;
         }
+        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
+
         ItemStack item = getHero().getPlayer().getItemInHand();
         if (item == null || item.getTypeId() == 0
                 || !ItemUtil.isWeapon(item.getType())
