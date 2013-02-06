@@ -32,7 +32,7 @@ public class Rage extends AbstractSkill implements Triggered {
     @TriggerHandler
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
-        if (getProfession().getResource(RESOURCE_NAME) == null) {
+        if (getHero().getResource(RESOURCE_NAME) == null) {
             return;
         }
 

@@ -58,7 +58,7 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
         }
         target.heal(target.getMaxHealth());
         addEffect(this, target, LayhandsEffect.class);
-        for (Resource resource : getProfession().getResources()) {
+        for (Resource resource : getHero().getResources()) {
             if (resource.getType() != VisualResourceType.HEALTH) {
                 resource.setCurrent(resource.getDefault());
             }
