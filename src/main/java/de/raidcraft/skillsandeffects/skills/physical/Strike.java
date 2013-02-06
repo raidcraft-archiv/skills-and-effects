@@ -22,7 +22,6 @@ import de.raidcraft.skills.effects.potion.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
-import de.raidcraft.skillsandeffects.skills.bow.Shot;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -59,7 +58,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         stun = data.getBoolean("stun", false);
         sunderArmor = data.getBoolean("sunder-armor", false);
         disarm = data.getBoolean("disarm", false);
-        ignoreArmor = data.getBoolean("ignoreArmor", false);
+        ignoreArmor = data.getBoolean("ignore-armor", false);
         slow = data.getBoolean("slow", false);
         weaken = data.getBoolean("weaken", false);
         burn = data.getBoolean("burn", false);

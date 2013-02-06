@@ -9,12 +9,11 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.util.ItemUtils;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -27,7 +26,7 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Parry extends AbstractLevelableSkill implements Triggered {
 
-    private Material weapon;
+    private WeaponType weapon;
     private ConfigurationSection chance;
     private int exp;
 
@@ -40,12 +39,12 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     public void load(ConfigurationSection data) {
 
         attachLevel(new ConfigurableSkillLevel(this, database, data));
-        weapon = ItemUtils.getItem(data.getString("weapon"));
+        weapon = WeaponType.fromString(data.getString("weapon"));
         chance = data.getConfigurationSection("chance");
         exp = data.getInt("exp");
     }
 
-    private double getParyChance() {
+    private double getParryChance() {
 
         return ConfigUtil.getTotalValue(this, chance);
     }
@@ -54,10 +53,10 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
-                || getHero().getItemTypeInHand() != weapon) {
+                || !weapon.isOfType(getHero().getItemTypeInHand())) {
             return;
         }
-        if (Math.random() < getParyChance()) {
+        if (Math.random() < getParryChance()) {
             getHero().combatLog("Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
             getLevel().addExp(exp);
             throw new CombatException(CombatException.Type.PARRIED);

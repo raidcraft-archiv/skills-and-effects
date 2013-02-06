@@ -100,6 +100,11 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         this.blockedDamage = blockedDamage;
     }
 
+    public void setDamageReduction(double damageReduction) {
+
+        this.damageReduction = damageReduction;
+    }
+
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 

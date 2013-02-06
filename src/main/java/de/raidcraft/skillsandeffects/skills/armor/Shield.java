@@ -15,6 +15,7 @@ import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skillsandeffects.effects.armor.Shielded;
 import de.raidcraft.util.ItemUtils;
@@ -38,6 +39,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Material, Integer> shieldLevels = new EnumMap<>(Material.class);
     private final Map<Material, Double> shieldExp = new EnumMap<>(Material.class);
+    private final Map<Material, Double> shieldReduction = new EnumMap<>(Material.class);
     private double resourceCostPerBlockedDamage = 0.01;
     private String resourceName = "stamina";
 
@@ -58,6 +60,8 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                 if (item != null) {
                     shieldLevels.put(item, shields.getInt(key + ".level", 1));
                     shieldExp.put(item, shields.getDouble(key + ".exp", 0.3));
+                    shieldReduction.put(item,
+                            ConfigUtil.getTotalValue(this, data.getConfigurationSection("shields." + key + ".reduction")));
                 }
             }
         }
@@ -84,6 +88,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                 getHero().sendMessage(ChatColor.RED + "Du kannst diesen Schild erst ab Level " + shieldLevels.get(type) + " tragen.");
             } else {
                 final Shielded effect = addEffect(getHero(), Shielded.class);
+                effect.setDamageReduction(shieldReduction.get(type));
                 effect.addCallback(new Callback<DamageTrigger>() {
                     @Override
                     public void run(DamageTrigger trigger) throws CombatException {

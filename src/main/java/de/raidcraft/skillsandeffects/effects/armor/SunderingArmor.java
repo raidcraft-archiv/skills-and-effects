@@ -14,15 +14,16 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @EffectInformation(
-        name = "SunderingArmor",
+        name = "Sundering Armor",
         description = "Verringt der Rüstung des Ziels - Stapelbar.",
         types = {EffectType.HARMFUL, EffectType.DEBUFF, EffectType.PHYSICAL},
         priority = 1.0
 )
 public class SunderingArmor extends ExpirableEffect<Skill> {
 
-    private double armorReduction = 0.0;
+    private double armorReduction = 0.05;
     private double armorReductionPerStack;
+    private double armorReductionCap = 0.6;
 
     public SunderingArmor(Skill source, CharacterTemplate target, EffectData data) {
 
@@ -44,9 +45,10 @@ public class SunderingArmor extends ExpirableEffect<Skill> {
         if (getSource() instanceof LevelableSkill) {
             armorReductionPerStack += data.getDouble("reduction.skill-level-modifier") * ((LevelableSkill) getSource()).getLevel().getLevel();
         }
+        armorReductionCap = data.getDouble("reduction.cap", 0.6);
         // cap reduction default is 60%
-        if (data.getDouble("reduction.cap", 1.0) < armorReductionPerStack) {
-            armorReductionPerStack = data.getDouble("reduction.cap", 1.0);
+        if (armorReductionCap < armorReductionPerStack) {
+            armorReductionPerStack = armorReductionCap;
         }
     }
 
@@ -64,6 +66,9 @@ public class SunderingArmor extends ExpirableEffect<Skill> {
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
+        if (armorReduction + armorReductionPerStack > armorReductionCap) {
+            return;
+        }
         armorReduction += armorReductionPerStack;
     }
 }
