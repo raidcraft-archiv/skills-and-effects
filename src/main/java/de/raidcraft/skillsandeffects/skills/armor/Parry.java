@@ -37,7 +37,7 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        weapon = WeaponType.fromString(data.getString("weapon"));
+        weapon = WeaponType.fromString(data.getString("weapon", "sword"));
         chance = data.getConfigurationSection("chance");
         exp = data.getInt("exp");
     }
