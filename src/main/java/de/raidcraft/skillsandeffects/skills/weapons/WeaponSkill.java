@@ -11,7 +11,6 @@ import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.CombatTrigger;
@@ -24,7 +23,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -46,8 +49,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         if (!allowedWeapons.containsKey(getHero().getName())) {
             allowedWeapons.put(getHero().getName(), new EnumMap<Material, Weapon>(Material.class));

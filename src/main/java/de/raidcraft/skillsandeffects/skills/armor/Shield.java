@@ -11,7 +11,6 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
@@ -50,8 +49,6 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         ConfigurationSection shields = data.getConfigurationSection("shields");
         if (shields != null) {

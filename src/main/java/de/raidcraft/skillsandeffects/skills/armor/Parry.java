@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.WeaponType;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -38,7 +37,6 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
         weapon = WeaponType.fromString(data.getString("weapon"));
         chance = data.getConfigurationSection("chance");
         exp = data.getInt("exp");

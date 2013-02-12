@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BrewTrigger;
 import de.raidcraft.util.ItemUtils;
@@ -44,8 +43,6 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         this.cleverBrewingChancePerLevel = data.getDouble("clever-brewing-chance-per-level", 0.1);
         this.maxCleverBrewingChance = data.getDouble("max-clever-brewing-chance", 33);

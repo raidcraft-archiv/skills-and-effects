@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.ChatColor;
@@ -40,8 +39,6 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         this.data = data.getValues(false);
         this.expPerDamage = data.getDouble("exp-per-damage", 1.0);

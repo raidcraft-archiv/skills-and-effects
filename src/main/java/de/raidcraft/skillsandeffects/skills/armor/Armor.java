@@ -12,7 +12,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.ArmorType;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.InventoryClickTrigger;
@@ -57,8 +56,6 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         allowedArmor = new EnumMap<>(Material.class);
         playerArmor = new EnumMap<>(ArmorType.class);

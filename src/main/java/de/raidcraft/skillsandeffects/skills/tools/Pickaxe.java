@@ -13,7 +13,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
-import de.raidcraft.skills.skills.ConfigurableSkillLevel;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
@@ -57,8 +56,6 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
 
     @Override
     public void load(ConfigurationSection data) {
-
-        attachLevel(new ConfigurableSkillLevel(this, database, data));
 
         this.plusVariant = data.getBoolean("plus-variant", false);
         this.toolId = data.getInt("tool-id", 270);
