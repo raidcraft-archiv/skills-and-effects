@@ -15,9 +15,10 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.effects.damaging.Bleed;
 import de.raidcraft.skills.effects.damaging.Burn;
 import de.raidcraft.skills.effects.disabling.Disarm;
+import de.raidcraft.skills.effects.disabling.Interrupt;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
-import de.raidcraft.skills.effects.potion.Slowness;
+import de.raidcraft.skills.effects.potion.Slow;
 import de.raidcraft.skills.effects.potion.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
@@ -44,6 +45,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean slow = false;
     private boolean weaken = false;
     private boolean burn = false;
+    private boolean interrupt = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -62,6 +64,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         slow = data.getBoolean("slow", false);
         weaken = data.getBoolean("weaken", false);
         burn = data.getBoolean("burn", false);
+        interrupt = data.getBoolean("interrupt", false);
     }
 
     @Override
@@ -77,9 +80,10 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);
                 if (disarm) Strike.this.addEffect(trigger.getAttack().getTarget(), Disarm.class);
                 if (ignoreArmor) trigger.getAttack().addAttackTypes(EffectType.IGNORE_ARMOR);
-                if (slow) Strike.this.addEffect(trigger.getAttack().getTarget(), Slowness.class);
+                if (slow) Strike.this.addEffect(trigger.getAttack().getTarget(), Slow.class);
                 if (weaken) Strike.this.addEffect(trigger.getAttack().getTarget(), Weakness.class);
                 if (burn) Strike.this.addEffect(trigger.getSource().getTarget(), Burn.class);
+                if (interrupt) Strike.this.addEffect(trigger.getSource().getTarget(), Interrupt.class);
             }
         });
     }

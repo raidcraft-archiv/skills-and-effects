@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.effects.disabling.Stun;
-import de.raidcraft.skills.effects.potion.Slowness;
+import de.raidcraft.skills.effects.potion.Slow;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.effects.movement.Charging;
 import org.bukkit.Location;
@@ -60,7 +60,7 @@ public class Charge extends AbstractSkill implements CommandTriggered {
             Charge.this.addEffect(target, Stun.class);
         }
         if (slow) {
-            Charge.this.addEffect(target, Slowness.class);
+            Charge.this.addEffect(target, Slow.class);
         }
         if (getTotalDamage() > 0) {
             attack(target);

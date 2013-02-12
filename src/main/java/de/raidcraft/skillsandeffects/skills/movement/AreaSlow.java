@@ -10,14 +10,14 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.potion.Slowness;
+import de.raidcraft.skills.effects.potion.Slow;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "AreaSlow",
+        name = "Area Slow",
         desc = "Verlangsammt alle Gegner um dich herum.",
         types = {EffectType.MAGICAL, EffectType.DEBUFF, EffectType.MOVEMENT, EffectType.HARMFUL}
 )
@@ -32,7 +32,7 @@ public class AreaSlow extends AbstractLevelableSkill implements CommandTriggered
     public void runCommand(CommandContext args) throws CombatException {
 
         for (CharacterTemplate target : getNearbyTargets()) {
-            addEffect(target, Slowness.class);
+            addEffect(target, Slow.class);
         }
     }
 }

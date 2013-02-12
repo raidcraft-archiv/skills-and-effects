@@ -49,6 +49,10 @@ public class Cleave extends AbstractSkill implements CommandTriggered {
 
                 int i = 0;
                 for (CharacterTemplate target : trigger.getAttack().getTarget().getNearbyTargets(getTotalRange())) {
+
+                    if (target.equals(getHero())) {
+                        continue;
+                    }
                     if (!(i < maxTargets)) {
                         break;
                     }

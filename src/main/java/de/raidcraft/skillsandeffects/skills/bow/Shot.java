@@ -17,7 +17,7 @@ import de.raidcraft.skills.effects.damaging.Burn;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
-import de.raidcraft.skills.effects.potion.Slowness;
+import de.raidcraft.skills.effects.potion.Slow;
 import de.raidcraft.skills.effects.potion.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
@@ -74,7 +74,7 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
                 if (stun) Shot.this.addEffect(target, Stun.class);
                 if (sunderArmor) Shot.this.addEffect(target, SunderingArmor.class);
                 if (disarm) Shot.this.addEffect(target, Disarm.class);
-                if (slow) Shot.this.addEffect(target, Slowness.class);
+                if (slow) Shot.this.addEffect(target, Slow.class);
                 if (weaken) Shot.this.addEffect(target, Weakness.class);
                 if (burn) Shot.this.addEffect(target, Burn.class);
             }

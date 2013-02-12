@@ -40,6 +40,26 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
         ragePerDamage = data.getDouble("rage-per-damage", 0.1);
     }
 
+    public double getRagePerAttackDamage() {
+
+        return ragePerAttackDamage;
+    }
+
+    public void setRagePerAttackDamage(double ragePerAttackDamage) {
+
+        this.ragePerAttackDamage = ragePerAttackDamage;
+    }
+
+    public double getRagePerDamage() {
+
+        return ragePerDamage;
+    }
+
+    public void setRagePerDamage(double ragePerDamage) {
+
+        this.ragePerDamage = ragePerDamage;
+    }
+
     private int getRageAmount() {
 
         // rage amount per interval tick

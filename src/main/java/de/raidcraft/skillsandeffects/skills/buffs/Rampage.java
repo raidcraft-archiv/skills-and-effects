@@ -10,15 +10,18 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.effects.buffs.damage.BloodlustEffect;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "Wutanfall",
+        name = "Rampage",
         desc = "Versetzt dich in einen Wutanfall und generiert sofort die max. Anzahl an Blutrausch Stacks."
 )
 public class Rampage extends AbstractSkill implements CommandTriggered {
+
+    private double healthCostPercent = 0.25;
 
     public Rampage(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -26,8 +29,18 @@ public class Rampage extends AbstractSkill implements CommandTriggered {
     }
 
     @Override
+    public void load(ConfigurationSection data) {
+
+        healthCostPercent = data.getDouble("health-cost", 0.25);
+    }
+
+    @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        int healthCost = (int) (getHero().getMaxHealth() * healthCostPercent);
+        if (getHero().getHealth() - healthCost < 1) {
+            throw new CombatException(CombatException.Type.LOW_HEALTH);
+        }
         if (getHero().hasEffect(BloodlustEffect.class)) {
             BloodlustEffect effect = getHero().getEffect(BloodlustEffect.class);
             effect.setStacks(effect.getMaxStacks());
@@ -35,5 +48,6 @@ public class Rampage extends AbstractSkill implements CommandTriggered {
             BloodlustEffect effect = addEffect(getHero(), BloodlustEffect.class);
             effect.setStacks(effect.getMaxStacks());
         }
+        getHero().setHealth(getHero().getHealth() - healthCost);
     }
 }
