@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.skills.weapons;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.events.RCCombatEvent;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -82,23 +83,30 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     }
 
     @TriggerHandler
-    public void onAttack(AttackTrigger trigger) {
+    public void onAttack(AttackTrigger trigger) throws CombatException {
 
         if (trigger.getAttack().isCancelled()) {
             return;
         }
-        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
+        boolean movedItems = checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
 
         ItemStack item = getHero().getPlayer().getItemInHand();
         if (item == null || item.getTypeId() == 0
-                || !ItemUtil.isWeapon(item.getType())
-                || !allowedWeapons.get(getHero().getName()).containsKey(item.getType())) {
-            checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
+                || !ItemUtil.isWeapon(item.getType())) {
             return;
         }
+
+        if(!allowedWeapons.get(getHero().getName()).containsKey(item.getType()) || movedItems) {
+            checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
+            trigger.setCancelled(true);
+            trigger.getAttack().setCancelled(true);
+            throw new CombatException(CombatException.Type.INVALID_WEAPON);
+        }
+
         if (!myWeapons.contains(item.getType())) {
             return;
         }
+
         int oldDamage = trigger.getAttack().getDamage();
         Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
         trigger.getAttack().setDamage(weapon.getTotalDamage(this));
@@ -120,10 +128,10 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         }
     }
 
-    private void checkTaskbar(int slot) {
+    private boolean checkTaskbar(int slot) {
 
         if (!getHero().isInCombat()) {
-            return;
+            return false;
         }
 
         PlayerInventory inventory = getHero().getPlayer().getInventory();
@@ -132,7 +140,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         // only check the slot he is currently holding
         ItemStack item = inventory.getItem(slot);
         if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
-            return;
+            return false;
         }
         Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
         // this can be null at this point
@@ -145,6 +153,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (movedItem) {
             getHero().sendMessage(ChatColor.RED + "Du kannst diese Waffe nicht tragen. Sie wurde in dein Inventar gelegt.");
         }
+        return movedItem;
     }
 
     public static class Weapon {
