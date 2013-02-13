@@ -142,7 +142,7 @@ public class Armor extends AbstractLevelableSkill implements Triggered {
 
         trigger.getAttack().setDamage(newDamage);
         getHero().debug("damage reduced by " + damageReduced);
-        getHero().combatLog("Schaden durch Rüstung um " + damageReduced + " reduziert.");
+        getHero().combatLog(this, "Schaden um " + (int)(damageReduction * 100) + "% (" + (damageReduced) + ") reduziert.");
         // now lets add some exp to the player to unlock more armor
         getLevel().addExp(damageReduced * EXP_PER_DAMAGE_POINT_REDUCED);
     }

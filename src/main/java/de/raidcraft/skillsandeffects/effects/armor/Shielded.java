@@ -87,7 +87,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         }
         trigger.getAttack().setDamage(newDamage);
         getSource().getHero().debug("reduced damage " + oldDamage + "->" + newDamage + " - skill: " + getSource());
-        getSource().getHero().combatLog(getBlockedDamage() + "dmg wurden vom Schild absorbiert.");
+        getSource().getHero().combatLog(this, getBlockedDamage() + " Schaden absorbiert.");
     }
 
     public int getBlockedDamage() {
