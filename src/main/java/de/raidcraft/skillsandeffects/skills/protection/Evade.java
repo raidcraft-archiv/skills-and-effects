@@ -1,5 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.protection;
 
+import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -50,7 +51,9 @@ public class Evade extends AbstractSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
+        if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
+                || trigger.getAttack().getAttackSource() == AttackSource.ENVIRONMENT
+                || trigger.getAttack().getAttackSource() == AttackSource.EFFECT) {
             return;
         }
 
