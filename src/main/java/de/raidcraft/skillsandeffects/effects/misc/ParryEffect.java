@@ -1,24 +1,23 @@
-package de.raidcraft.skillsandeffects.effects.debuff;
+package de.raidcraft.skillsandeffects.effects.misc;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
-import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skillsandeffects.skills.healing.Layhands;
+import de.raidcraft.skillsandeffects.skills.armor.Parry;
 
 /**
  * @author Silthus
  */
 @EffectInformation(
-        name = "Lay Hands",
-        description = "Verhindert dass du in der nächsten Zeit von Handauflegen betroffen sein kannst.",
-        types = {EffectType.DEBUFF}
+        name = "Parry",
+        description = "Es kann für einige Zeit nicht parriert werden.",
+        priority = -1.0
 )
-public class LayhandsEffect extends ExpirableEffect<Layhands> {
+public class ParryEffect extends ExpirableEffect<Parry> {
 
-    public LayhandsEffect(Layhands source, CharacterTemplate target, EffectData data) {
+    public ParryEffect(Parry source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }

@@ -14,7 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @EffectInformation(
-        name = "ManaRegain Aura",
+        name = "Mana Regain Aura",
         description = "Erhöht deine Mana Regeneration",
         types = {EffectType.AURA, EffectType.MAGICAL, EffectType.BUFF, EffectType.HELPFUL},
         priority = 1.0
@@ -34,7 +34,7 @@ public class ManaRegenAura extends AbstractAura {
     @Override
     public void load(ConfigurationSection data) {
 
-        regen = data.getConfigurationSection("mana-regen");
+        regen = data.getConfigurationSection("mana-regain");
     }
 
     private double getManaIncrease() {

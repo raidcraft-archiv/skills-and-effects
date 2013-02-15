@@ -13,6 +13,7 @@ import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.effects.misc.ParryEffect;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -51,10 +52,12 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
-                || !weapon.isOfType(getHero().getItemTypeInHand())) {
+                || !weapon.isOfType(getHero().getItemTypeInHand())
+                || getHero().hasEffect(ParryEffect.class)) {
             return;
         }
         if (Math.random() < getParryChance()) {
+            addEffect(getHero(), ParryEffect.class);
             getHero().combatLog(this, "Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
             getLevel().addExp(exp);
             throw new CombatException(CombatException.Type.PARRIED);

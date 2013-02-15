@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.skills.physical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
+import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -19,11 +20,13 @@ import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skillsandeffects.effects.armor.Shielded;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.List;
+
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "ShieldBash",
+        name = "Shield Bash",
         desc = "Zieht deinem Ziel mit voller Wucht eins mit dem Schild drüber.",
         types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING}
 )
@@ -31,6 +34,7 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
 
     private boolean stun = false;
     private boolean knockback = false;
+    private int purge = 0;
 
     public ShieldBash(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -42,6 +46,7 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
 
         stun = data.getBoolean("stun", false);
         knockback = data.getBoolean("knockback", false);
+        purge = data.getInt("purge", 0);
     }
 
     @Override
@@ -58,6 +63,19 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
                 if (stun) ShieldBash.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
                 if (knockback) ShieldBash.this.addEffect(
                         getHero().getPlayer().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                if (purge > 0) {
+                    List<Effect> effects = trigger.getAttack().getTarget().getEffects();
+                    int i = 0;
+                    for (Effect effect : effects) {
+                        if (effect.isOfType(EffectType.PURGEABLE)) {
+                            trigger.getAttack().getTarget().removeEffect(effect.getClass());
+                            i++;
+                        }
+                        if (i >= purge) {
+                            break;
+                        }
+                    }
+                }
             }
         });
     }

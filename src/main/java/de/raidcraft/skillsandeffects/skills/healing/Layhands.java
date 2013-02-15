@@ -1,6 +1,9 @@
-package de.raidcraft.skillsandeffects.skills.holy;
+package de.raidcraft.skillsandeffects.skills.healing;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -21,7 +24,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @SkillInformation(
-        name = "LayHands",
+        name = "Layhands",
         desc = "Heilt dich oder das Ziel um 100%, kostet allerdings 100% deiner Resourcen.",
         types = {EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL},
         elements = {EffectElement.LIGHT}
@@ -46,7 +49,13 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
     public void runCommand(CommandContext args) throws CombatException {
 
         CharacterTemplate target;
-        if (selfHeal || getHero().getPlayer().isSneaking()) {
+        if (args.argsLength() > 0) {
+            try {
+                target = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
+            } catch (UnknownPlayerException e) {
+                throw new CombatException(e.getMessage());
+            }
+        } else if (selfHeal || getHero().getPlayer().isSneaking()) {
             target = getHero();
         } else if (getTarget().isFriendly(getHero())) {
             target = getTarget();

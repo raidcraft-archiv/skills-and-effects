@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.skills.holy.Purification;
+import de.raidcraft.skillsandeffects.skills.healing.Purification;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**

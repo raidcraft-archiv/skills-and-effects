@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.skills.holy;
+package de.raidcraft.skillsandeffects.skills.healing;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
