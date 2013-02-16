@@ -30,6 +30,10 @@ public class Stealth extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), Invisibility.class);
+        if (getHero().hasEffect(Invisibility.class)) {
+            getHero().removeEffect(Invisibility.class);
+        } else {
+            addEffect(getHero(), Invisibility.class);
+        }
     }
 }

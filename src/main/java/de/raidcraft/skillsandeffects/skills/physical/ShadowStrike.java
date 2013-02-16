@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.effects.potion.Invisibility;
@@ -25,7 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
         desc = "Verursacht extra Schaden wenn du Unsichtbar angreifst.",
         types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING}
 )
-public class ShadowStrike extends AbstractLevelableSkill implements CommandTriggered {
+public class ShadowStrike extends AbstractSkill implements CommandTriggered {
 
     private ConfigurationSection bonusDamage;
 
