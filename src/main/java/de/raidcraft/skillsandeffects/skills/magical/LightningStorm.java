@@ -59,6 +59,8 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        cancel();
+
         final Location center = getHero().getBlockTarget();
         final List<Location> circle = EffectUtil.circle(center, radius, 1, true, false, 10);
         final World world = getHero().getPlayer().getWorld();
@@ -72,11 +74,15 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                     EffectUtil.playFirework(world, circle.get(i), effect);
                     i++;
                 } else {
+                    world.strikeLightningEffect(center);
                     Entity[] entities = LocationUtil.getNearbyEntities(center, radius);
                     for (Entity entity : entities) {
                         if (entity instanceof LivingEntity) {
                             CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class)
                                     .getCharacterManager().getCharacter((LivingEntity) entity);
+                            if (character.equals(getHero())) {
+                                continue;
+                            }
                             try {
                                 new MagicalAttack(getHero(), character, getTotalDamage()).run();
                                 world.strikeLightningEffect(entity.getLocation());
@@ -85,10 +91,16 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                             }
                         }
                     }
-                    i = 0;
-                    task.cancel();
+                    cancel();
                 }
             }
         }, 1L, 1L);
+    }
+
+    private void cancel() {
+
+        i = 0;
+        if (task != null) task.cancel();
+        task = null;
     }
 }
