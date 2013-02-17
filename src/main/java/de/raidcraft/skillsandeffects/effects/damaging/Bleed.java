@@ -28,6 +28,7 @@ public class Bleed extends PeriodicExpirableEffect<Skill> {
     private static final FireworkEffect BLEED_EFFECT = FireworkEffect.builder()
             .with(FireworkEffect.Type.BURST)
             .withColor(Color.RED)
+            .withFade(Color.BLACK)
             .build();
 
     public Bleed(Skill source, CharacterTemplate target, EffectData data) {
@@ -48,7 +49,7 @@ public class Bleed extends PeriodicExpirableEffect<Skill> {
         Location location = target.getEntity().getLocation();
         EffectUtil.playFirework(world, location, BLEED_EFFECT);
         world.playSound(location, Sound.SHEEP_SHEAR, 100F, 1F);
-        world.playSound(location, Sound.SLIME_WALK, 1000000F, 0.0001F);
+        world.playSound(location, Sound.SLIME_ATTACK, 10000F, 0.0001F);
         warn("Blutungseffekt erhalten!");
     }
 

@@ -12,6 +12,8 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skillsandeffects.skills.protection.DivineShield;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 
 /**
  * @author Silthus
@@ -42,6 +44,8 @@ public class DivineShieldEffect extends ExpirableEffect<DivineShield> implements
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
+
+        FireworkEffect effect = FireworkEffect.builder().with(FireworkEffect.Type.CREEPER).withColor(Color.YELLOW).withFlicker().build();
 
     }
 
