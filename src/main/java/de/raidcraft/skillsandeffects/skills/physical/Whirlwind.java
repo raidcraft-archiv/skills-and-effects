@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skillsandeffects.effects.disabling.KnockBack;
+import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.configuration.ConfigurationSection;
 

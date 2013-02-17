@@ -10,7 +10,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skillsandeffects.effects.disabling.Stun;
+import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skillsandeffects.effects.potion.Slow;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.effects.movement.Charging;
