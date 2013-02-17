@@ -9,7 +9,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.effects.damaging.Bleed;
+import de.raidcraft.skillsandeffects.effects.damaging.Bleed;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skillsandeffects.effects.resources.RageEffect;

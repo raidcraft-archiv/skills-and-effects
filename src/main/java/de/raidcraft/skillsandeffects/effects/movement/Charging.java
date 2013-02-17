@@ -1,5 +1,7 @@
 package de.raidcraft.skillsandeffects.effects.movement;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
@@ -10,9 +12,14 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * @author Silthus
@@ -26,6 +33,8 @@ public class Charging extends ExpirableEffect<Skill> implements Triggered {
 
     private final PotionEffect speed;
     private Callback<DamageTrigger> callback;
+    private BukkitTask task;
+    private Location oldLoc;
 
     public Charging(Skill source, CharacterTemplate target, EffectData data) {
 
@@ -57,13 +66,26 @@ public class Charging extends ExpirableEffect<Skill> implements Triggered {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().addPotionEffect(speed);
+        final LivingEntity entity = target.getEntity();
+        entity.addPotionEffect(speed);
+        oldLoc = entity.getLocation();
+        task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+            @Override
+            public void run() {
+
+                oldLoc.getWorld().playEffect(oldLoc, Effect.SMOKE, 1);
+                oldLoc.getWorld().playEffect(oldLoc, Effect.SMOKE, 1);
+                oldLoc.getWorld().playEffect(oldLoc, Effect.SMOKE, 1);
+                oldLoc = entity.getLocation();
+            }
+        }, 0L, 1L);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.getEntity().removePotionEffect(PotionEffectType.SPEED);
+        task.cancel();
     }
 
     @Override

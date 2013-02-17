@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.potion.Blind;
+import de.raidcraft.skillsandeffects.effects.potion.Blind;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PotionSplashTrigger;
 import de.raidcraft.skills.util.HeroUtil;

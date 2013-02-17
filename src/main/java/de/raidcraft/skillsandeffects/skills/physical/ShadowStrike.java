@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.potion.Invisibility;
+import de.raidcraft.skillsandeffects.effects.potion.Invisibility;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;

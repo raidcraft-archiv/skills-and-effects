@@ -10,7 +10,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.potion.Slow;
+import de.raidcraft.skillsandeffects.effects.potion.Slow;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**

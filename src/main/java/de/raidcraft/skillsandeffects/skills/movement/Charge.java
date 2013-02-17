@@ -10,11 +10,12 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.disabling.Stun;
-import de.raidcraft.skills.effects.potion.Slow;
+import de.raidcraft.skillsandeffects.effects.disabling.Stun;
+import de.raidcraft.skillsandeffects.effects.potion.Slow;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.effects.movement.Charging;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
@@ -55,6 +56,7 @@ public class Charge extends AbstractSkill implements CommandTriggered {
         Vector v = new Vector(xDir / 3.0D, 0.5D, zDir / 3.0D);
         getHero().getPlayer().setVelocity(v);
         addEffect(getHero(), Charging.class);
+        playerLoc.getWorld().playSound(playerLoc, Sound.WITHER_IDLE, 10F, 100F);
         // lets add a stun effect if configured
         if (stun) {
             Charge.this.addEffect(target, Stun.class);
