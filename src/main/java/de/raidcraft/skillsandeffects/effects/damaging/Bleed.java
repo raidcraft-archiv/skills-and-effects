@@ -48,8 +48,8 @@ public class Bleed extends PeriodicExpirableEffect<Skill> {
         World world = target.getEntity().getWorld();
         Location location = target.getEntity().getLocation();
         EffectUtil.playFirework(world, location, BLEED_EFFECT);
-        world.playSound(location, Sound.SHEEP_SHEAR, 100F, 1F);
-        world.playSound(location, Sound.SLIME_ATTACK, 10000F, 0.0001F);
+        world.playSound(location, Sound.SHEEP_SHEAR, 10F, 1F);
+        world.playSound(location, Sound.SLIME_ATTACK, 10F, 0.0001F);
         warn("Blutungseffekt erhalten!");
     }
 
