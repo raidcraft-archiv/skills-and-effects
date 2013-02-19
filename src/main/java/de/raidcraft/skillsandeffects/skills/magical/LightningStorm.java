@@ -37,7 +37,7 @@ import java.util.List;
         name = "Lightning Storm",
         desc = "Lässt ein Blitzgewitter auf deine Feinde herab regnen.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.DAMAGING},
-        elements = {EffectElement.LIGHTING}
+        elements = {EffectElement.LIGHTNING}
 )
 public class LightningStorm extends AbstractSkill implements CommandTriggered {
 
