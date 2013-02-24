@@ -15,10 +15,8 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.effects.damaging.ChainLightningEffect;
 import org.bukkit.configuration.ConfigurationSection;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Silthus
@@ -31,9 +29,10 @@ import java.util.Set;
 )
 public class ChainLightning extends AbstractSkill implements CommandTriggered {
 
-    private Set<CharacterTemplate> hitList = new HashSet<>();
     private ConfigurationSection jumps;
     private ConfigurationSection reductionPerJump;
+    private int jumpRange;
+    private int jumpCount = 0;
 
     public ChainLightning(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -45,6 +44,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
 
         jumps = data.getConfigurationSection("jumps");
         reductionPerJump = data.getConfigurationSection("reduction-per-jump");
+        jumpRange = data.getInt("jump-range", 10);
     }
 
     private int getJumpCount() {
@@ -60,20 +60,33 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        int damage = getTotalDamage();
-        CharacterTemplate target = getTarget();
-        hitList.add(target);
         // damage the intial target
+        strikeChainLightning(getTarget(), getTotalDamage());
+        jumpCount = 0;
     }
 
-    private void strikeLightning(CharacterTemplate target, int damage) {
+    private void strikeChainLightning(CharacterTemplate target, final int damage) throws CombatException {
 
-        new MagicalAttack(getHero(), target, damage, new RangedCallback() {
+        MagicalAttack magicalAttack = new MagicalAttack(getHero(), target, damage, new RangedCallback() {
             @Override
             public void run(CharacterTemplate trigger) throws CombatException {
 
-                
+                ++jumpCount;
+                ChainLightning.this.addEffect(trigger, ChainLightningEffect.class);
+                if (jumpCount < getJumpCount()) {
+                    for (CharacterTemplate target : trigger.getNearbyTargets(jumpRange)) {
+                        if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHero())) {
+                            continue;
+                        }
+                        int newDamage = (int) (damage * getReductionPerJump());
+                        if (newDamage > 0) {
+                            strikeChainLightning(target, newDamage);
+                        }
+                        break;
+                    }
+                }
             }
         });
+        magicalAttack.run();
     }
 }
