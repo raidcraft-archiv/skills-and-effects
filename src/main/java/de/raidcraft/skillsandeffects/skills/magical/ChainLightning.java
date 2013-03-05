@@ -1,6 +1,8 @@
 package de.raidcraft.skillsandeffects.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -16,6 +18,8 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.effects.damaging.ChainLightningEffect;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -74,13 +78,23 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                 ++jumpCount;
                 ChainLightning.this.addEffect(trigger, ChainLightningEffect.class);
                 if (jumpCount < getJumpCount()) {
-                    for (CharacterTemplate target : trigger.getNearbyTargets(jumpRange)) {
+                    for (final CharacterTemplate target : trigger.getNearbyTargets(jumpRange)) {
                         if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHero())) {
                             continue;
                         }
-                        int newDamage = (int) (damage * getReductionPerJump());
+                        final int newDamage = (int) (damage * getReductionPerJump());
                         if (newDamage > 0) {
-                            strikeChainLightning(target, newDamage);
+                            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    try {
+                                        strikeChainLightning(target, newDamage);
+                                    } catch (CombatException e) {
+                                        getHero().sendMessage(ChatColor.RED + e.getMessage());
+                                    }
+                                }
+                            }, 4L);
                         }
                         break;
                     }
