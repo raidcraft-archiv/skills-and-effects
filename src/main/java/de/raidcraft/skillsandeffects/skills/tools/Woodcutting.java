@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.tools;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -34,8 +33,7 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Woodcutting",
-        desc = "Macht das Holzfällen spannender und effektiver",
-        types = {EffectType.UNBINDABLE}
+        desc = "Macht das Holzfällen spannender und effektiver"
 )
 public class Woodcutting extends AbstractLevelableSkill implements Triggered {
 

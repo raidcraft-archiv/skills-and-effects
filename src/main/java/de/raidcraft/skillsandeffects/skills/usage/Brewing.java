@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.skills.usage;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -27,7 +26,6 @@ import java.util.Map;
 @SkillInformation(
         name = "Brewing",
         desc = "Reguliert das Brauen von Tränken",
-        types = {EffectType.UNBINDABLE},
         triggerCombat = false
 )
 public class Brewing extends AbstractLevelableSkill implements Triggered {

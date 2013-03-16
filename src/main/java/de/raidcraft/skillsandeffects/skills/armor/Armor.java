@@ -41,7 +41,7 @@ import java.util.Map;
 @SkillInformation(
         name = "Armor",
         desc = "Verringert erlittenen Schaden.",
-        types = {EffectType.UNBINDABLE, EffectType.HELPFUL, EffectType.REDUCING}
+        types = {EffectType.HELPFUL, EffectType.REDUCING}
 )
 public class Armor extends AbstractLevelableSkill implements Triggered {
 

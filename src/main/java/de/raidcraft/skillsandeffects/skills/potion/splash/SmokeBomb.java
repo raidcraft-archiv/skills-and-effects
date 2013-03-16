@@ -1,10 +1,10 @@
 package de.raidcraft.skillsandeffects.skills.potion.splash;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.callback.Callback;
-import de.raidcraft.skills.api.effect.common.QueuedSplashPotion;
+import de.raidcraft.skills.api.combat.ProjectileType;
+import de.raidcraft.skills.api.combat.action.RangedAttack;
+import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,24 +12,34 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skillsandeffects.effects.potion.Blind;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.PotionSplashTrigger;
-import de.raidcraft.skills.util.HeroUtil;
+import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import de.raidcraft.util.BukkitUtil;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
         name = "Smoke Bomb",
-        desc = "Hüllt alle am Aufschlagsort in Rausch ein und blendet diese.",
+        desc = "Hüllt alle am Aufschlagsort in Rauch ein und blendet diese.",
         types = {EffectType.HARMFUL, EffectType.DEBUFF}
 )
-public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggered {
+public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggered, Triggered {
+
+    private static final short MUNDANE_SPLASH_DATA = 16384;
+    private static final String INVISIBLE_IDENTIFIER = "§1§1§1";
+    private static final String DISPLAY_NAME = "Rauchbombe";
 
     public SmokeBomb(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -39,24 +49,57 @@ public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggere
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Potion potion = new Potion(PotionType.SLOWNESS);
-        potion.setSplash(true);
-        ItemStack item = potion.toItemStack(1);
+        // 16384 is the data bit of the splash potion
+        // this will create a mundane splash potion
+        ItemStack item = new ItemStack(Material.POTION, 1, MUNDANE_SPLASH_DATA);
         PotionMeta meta = (PotionMeta) item.getItemMeta();
-        meta.setDisplayName("Rauchbombe");
+        meta.setMainEffect(PotionEffectType.BLINDNESS);
+        meta.setDisplayName(DISPLAY_NAME);
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add(INVISIBLE_IDENTIFIER);
+        meta.setLore(lore);
         item.setItemMeta(meta);
 
         getHero().getPlayer().getInventory().addItem(item);
+    }
 
-        addEffect(getHero(), QueuedSplashPotion.class).addCallback(new Callback<PotionSplashTrigger>() {
+    @TriggerHandler(ignoreCancelled = true)
+    public void onPlayerInteract(PlayerInteractTrigger trigger) throws CombatException {
+
+        PlayerInteractEvent event = trigger.getEvent();
+        if (event.getAction() != Action.RIGHT_CLICK_AIR
+                || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        ItemStack item = event.getItem();
+        if (item == null || item.getType() != Material.POTION || item.getData().getData() != MUNDANE_SPLASH_DATA) {
+            return;
+        }
+
+        // the held item is a mundane splash potion
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
+        if (!meta.getDisplayName().equals(DISPLAY_NAME)) {
+            return;
+        }
+        try {
+            if (!meta.getLore().get(0).equals(INVISIBLE_IDENTIFIER)) {
+                return;
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+            return;
+        }
+        // at this point we asume the potion is the one we created
+        // now lets cancel the interact event and spawn our own splash potion
+        event.setCancelled(true);
+        final RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.SPLASH_POTION);
+        attack.addCallback(new LocationCallback() {
             @Override
-            public void run(PotionSplashTrigger trigger) throws CombatException {
+            public void run(Location trigger) throws CombatException {
 
-                for (CharacterTemplate character : HeroUtil.toCharacters(trigger.getEvent().getAffectedEntities())) {
-
-                    SmokeBomb.this.addEffect(character, Blind.class);
-                }
+                BukkitUtil.getNearbyEntities(attack.getProjectile(), getTotalRange());
             }
         });
+        attack.run();
     }
 }
