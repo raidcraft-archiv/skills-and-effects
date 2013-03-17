@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.effects.buffs.damage.RagingFireEffect;
 import de.raidcraft.skillsandeffects.skills.magical.Fireball;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,7 +38,7 @@ public class RagingFire extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        castDecreasePerStack = data.getDouble("casttime-bonus-per-stack");
+        castDecreasePerStack = ConfigUtil.getTotalValue(this, data.getConfigurationSection("casttime-bonus-per-stack"));
     }
 
     @TriggerHandler(ignoreCancelled = true)

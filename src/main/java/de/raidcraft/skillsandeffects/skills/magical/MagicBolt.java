@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
@@ -55,6 +56,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     @Override
     public void load(ConfigurationSection data) {
 
+        addElements(EffectElement.fromString(data.getString("element")));
         knockBack = data.getBoolean("knockback", false);
         bleed = data.getBoolean("bleed", false);
         stun = data.getBoolean("stun", false);
