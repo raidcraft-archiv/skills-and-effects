@@ -24,8 +24,7 @@ import de.raidcraft.skills.tables.THeroSkill;
         name = "Fireball",
         desc = "Schießt einen Feuerball auf den Gegener",
         types = {EffectType.MAGICAL, EffectType.DAMAGING, EffectType.SILENCABLE, EffectType.HARMFUL},
-        elements = {EffectElement.FIRE},
-        triggerCombat = true
+        elements = {EffectElement.FIRE}
 )
 public class Fireball extends AbstractLevelableSkill implements CommandTriggered {
 

@@ -27,8 +27,6 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable, Triggered, Buff {
 
-    private int stacks = 0;
-    private int maxStacks = 5;
     private double damageIncreasePerStack;
     private double attackIncreasePerStack;
 
@@ -40,7 +38,6 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
     @Override
     public void load(ConfigurationSection data) {
 
-        maxStacks = data.getInt("max-stacks", 5);
         damageIncreasePerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-increase"));
         attackIncreasePerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("attack-increase"));
     }
@@ -89,25 +86,6 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
     protected void renew(CharacterTemplate target) throws CombatException {
 
         setStacks(getStacks() + 1);
-    }
-
-    @Override
-    public int getStacks() {
-
-        return stacks;
-    }
-
-    @Override
-    public void setStacks(int stacks) {
-
-        if (stacks > maxStacks) stacks = getMaxStacks();
-        this.stacks = stacks;
-    }
-
-    @Override
-    public int getMaxStacks() {
-
-        return maxStacks;
     }
 
     @Override
