@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.skills.magical.LivingBomb;
+import de.raidcraft.util.EffectUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
@@ -57,7 +58,7 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
 
                         // create an explosion that does not damage
                         Location location = target.getEntity().getLocation();
-                        location.getWorld().createExplosion(location, 0.0F, false);
+                        EffectUtil.fakeExplosion(location);
                         // and launch the target into the air
                         target.getEntity().setVelocity(new Vector(0, 1, 0));
                         hit++;
