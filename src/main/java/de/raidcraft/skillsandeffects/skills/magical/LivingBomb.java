@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -12,21 +13,21 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.disabling.Root;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.effects.debuff.LivingBombEffect;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
-        name = "Frostnova",
-        desc = "Frostet alle Gegner im Umkreis am Boden fest.",
-        types = {EffectType.HARMFUL, EffectType.MAGICAL, EffectType.DAMAGING, EffectType.MOVEMENT, EffectType.AREA},
-        elements = {EffectElement.ICE}
+        name = "Living Bomb",
+        desc = "Sprengt alle Gegner nach Ablauf der Zeit um das Ziel.",
+        types = {EffectType.DAMAGING, EffectType.DEBUFF, EffectType.MAGICAL, EffectType.SILENCABLE},
+        elements = {EffectElement.FIRE}
 )
-public class Frostnova extends AbstractSkill implements CommandTriggered {
+public class LivingBomb extends AbstractSkill implements CommandTriggered {
 
-    public Frostnova(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public LivingBomb(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -34,14 +35,12 @@ public class Frostnova extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (CharacterTemplate target : getNearbyTargets()) {
-            magicalAttack(target, new RangedCallback() {
-                @Override
-                public void run(CharacterTemplate target) throws CombatException {
+        magicalAttack(MagicalAttackType.FIRE, new RangedCallback() {
+            @Override
+            public void run(CharacterTemplate target) throws CombatException {
 
-                    Frostnova.this.addEffect(target, Root.class);
-                }
-            });
-        }
+                LivingBomb.this.addEffect(target, LivingBombEffect.class);
+            }
+        });
     }
 }

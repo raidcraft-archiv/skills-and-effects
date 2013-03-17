@@ -95,7 +95,7 @@ public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggere
         final RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.SPLASH_POTION);
         attack.addCallback(new LocationCallback() {
             @Override
-            public void run(Location trigger) throws CombatException {
+            public void run(Location location) throws CombatException {
 
                 BukkitUtil.getNearbyEntities(attack.getProjectile(), getTotalRange());
             }

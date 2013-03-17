@@ -44,9 +44,9 @@ public abstract class AbstractBowTrap extends AbstractLevelableSkill implements 
 
         addEffect(getHero(), QueuedProjectile.class).addCallback(new LocationCallback() {
             @Override
-            public void run(Location trigger) throws CombatException {
+            public void run(Location location) throws CombatException {
 
-                runTrap(trigger);
+                runTrap(location);
             }
         }, ProjectileType.ARROW);
     }

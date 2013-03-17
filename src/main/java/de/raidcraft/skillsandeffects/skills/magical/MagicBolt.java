@@ -3,7 +3,7 @@ package de.raidcraft.skillsandeffects.skills.magical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
+import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -24,13 +24,7 @@ import de.raidcraft.skillsandeffects.effects.damaging.Burn;
 import de.raidcraft.skillsandeffects.effects.disabling.Pigify;
 import de.raidcraft.skillsandeffects.effects.potion.Slow;
 import de.raidcraft.skillsandeffects.effects.potion.Weakness;
-import de.raidcraft.util.EffectUtil;
-import org.bukkit.Effect;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-
-import java.util.List;
 
 /**
  * @author Silthus
@@ -76,13 +70,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        CharacterTemplate target = getTarget();
-        List<Block> lineOfSight = getHero().getPlayer().getLineOfSight(null, getTotalRange());
-        EffectUtil.playSound(getHero().getPlayer().getLocation(), Sound.GHAST_FIREBALL, 5F, 1F);
-        for (Block block : lineOfSight) {
-            EffectUtil.playEffect(block.getLocation(), Effect.SMOKE, 1);
-        }
-        new MagicalAttack(getHero(), target, getTotalDamage(), new RangedCallback() {
+        magicalAttack(MagicalAttackType.SMOKE, new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
@@ -97,6 +85,6 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 if (interrupt) MagicBolt.this.addEffect(target, Interrupt.class);
                 if (disable) MagicBolt.this.addEffect(target, Pigify.class);
             }
-        }).run();
+        });
     }
 }
