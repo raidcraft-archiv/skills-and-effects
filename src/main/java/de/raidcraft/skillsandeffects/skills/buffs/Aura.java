@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.skills.buffs;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -92,11 +93,11 @@ public class Aura extends AbstractSkill implements CommandTriggered {
 
         if (auraType == null) return;
 
-        for (Hero hero : getHero().getGroup().getMembers()) {
-            if (hero.hasEffect(auraType.getEffectClass())) {
-                hero.getEffect(auraType.getEffectClass()).renew();
+        for (CharacterTemplate member : getHero().getParty().getMembers()) {
+            if (member.hasEffect(auraType.getEffectClass())) {
+                member.getEffect(auraType.getEffectClass()).renew();
             } else {
-                hero.removeEffectTypes(EffectType.AURA);
+                member.removeEffectTypes(EffectType.AURA);
                 addEffect(this, getHero(), auraType.getEffectClass());
             }
         }

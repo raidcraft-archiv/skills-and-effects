@@ -47,7 +47,7 @@ public class PurificationEffect extends ExpirableEffect<Purification> implements
     public void onDamage(DamageTrigger trigger) {
 
         int healAmount = (int) (trigger.getAttack().getDamage() * getHealingPercentage());
-        getSource().getHero().getGroup().heal(healAmount);
+        getSource().getHero().getParty().heal(healAmount);
     }
 
     @Override

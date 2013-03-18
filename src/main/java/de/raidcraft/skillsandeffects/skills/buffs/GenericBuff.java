@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.skills.buffs;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -68,8 +69,8 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
             return;
         }
 
-        for (Hero hero : getHero().getGroup().getMembers()) {
-            addEffect(hero, type.clazz());
+        for (CharacterTemplate member : getHero().getParty().getMembers()) {
+            addEffect(member, type.clazz());
         }
     }
 }
