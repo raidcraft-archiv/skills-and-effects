@@ -80,17 +80,17 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
                 @Override
                 public void run(EntityAttack attack) throws CombatException {
 
-                    if (knockBack) addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
-                    if (bleed) addEffect(attack.getTarget(), Bleed.class);
-                    if (stun) addEffect(attack.getTarget(), Stun.class);
-                    if (sunderArmor) addEffect(attack.getTarget(), SunderingArmor.class);
-                    if (disarm) addEffect(attack.getTarget(), Disarm.class);
-                    if (slow) addEffect(attack.getTarget(), Slow.class);
-                    if (weaken) addEffect(attack.getTarget(), Weakness.class);
-                    if (burn) addEffect(attack.getTarget(), Burn.class);
-                    if (interrupt) addEffect(attack.getTarget(), Interrupt.class);
-                    if (disable) addEffect(attack.getTarget(), Pigify.class);
-                    if (poison) addEffect(attack.getTarget(), Poison.class);
+                    if (knockBack) AreaCast.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                    if (bleed) AreaCast.this.addEffect(attack.getTarget(), Bleed.class);
+                    if (stun) AreaCast.this.addEffect(attack.getTarget(), Stun.class);
+                    if (sunderArmor) AreaCast.this.addEffect(attack.getTarget(), SunderingArmor.class);
+                    if (disarm) AreaCast.this.addEffect(attack.getTarget(), Disarm.class);
+                    if (slow) AreaCast.this.addEffect(attack.getTarget(), Slow.class);
+                    if (weaken) AreaCast.this.addEffect(attack.getTarget(), Weakness.class);
+                    if (burn) AreaCast.this.addEffect(attack.getTarget(), Burn.class);
+                    if (interrupt) AreaCast.this.addEffect(attack.getTarget(), Interrupt.class);
+                    if (disable) AreaCast.this.addEffect(attack.getTarget(), Pigify.class);
+                    if (poison) AreaCast.this.addEffect(attack.getTarget(), Poison.class);
                 }
             }).run();
         }
