@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.effects.debuff.WitherEffect;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -28,9 +29,17 @@ import de.raidcraft.skillsandeffects.effects.debuff.WitherEffect;
 )
 public class Soulleecher extends AbstractSkill implements CommandTriggered {
 
+    private String resourceName;
+
     public Soulleecher(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        resourceName = data.getString("resource", "souls");
     }
 
     @Override
@@ -44,7 +53,7 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
                     @Override
                     public void run(CharacterTemplate target) throws CombatException {
 
-                        Resource souls = getHero().getResource("souls");
+                        Resource souls = getHero().getResource(resourceName);
                         souls.setCurrent(souls.getCurrent() + 1);
                     }
                 });
