@@ -18,6 +18,7 @@ import de.raidcraft.skills.effects.disabling.Interrupt;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
 import de.raidcraft.skillsandeffects.effects.damaging.Bleed;
 import de.raidcraft.skillsandeffects.effects.damaging.Burn;
@@ -48,6 +49,8 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
     private boolean interrupt = false;
     private boolean disable = false;
     private boolean poison = false;
+    private boolean isLifeLeech = false;
+    private ConfigurationSection lifeLeech;
 
     public AreaCast(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -69,6 +72,15 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
         interrupt = data.getBoolean("interrupt", false);
         disable = data.getBoolean("disable", false);
         poison = data.getBoolean("poison", false);
+
+    }
+
+    private double getLifeLeechPercentage() {
+
+        if (!isLifeLeech) {
+            return 0.0;
+        }
+        return ConfigUtil.getTotalValue(this, lifeLeech);
     }
 
     @Override
@@ -91,6 +103,9 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
                     if (interrupt) AreaCast.this.addEffect(attack.getTarget(), Interrupt.class);
                     if (disable) AreaCast.this.addEffect(attack.getTarget(), Pigify.class);
                     if (poison) AreaCast.this.addEffect(attack.getTarget(), Poison.class);
+                    if (isLifeLeech) {
+                        getHero().heal((int) (attack.getDamage() * getLifeLeechPercentage()));
+                    }
                 }
             }).run();
         }

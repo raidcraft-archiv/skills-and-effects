@@ -18,6 +18,7 @@ import de.raidcraft.skills.effects.disabling.Interrupt;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
 import de.raidcraft.skillsandeffects.effects.damaging.Bleed;
 import de.raidcraft.skillsandeffects.effects.damaging.Burn;
@@ -49,6 +50,8 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
     private boolean interrupt = false;
     private boolean disable = false;
     private boolean poison = false;
+    private boolean isLifeLeech = false;
+    private ConfigurationSection lifeLeech;
 
     public ConeCast(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -71,7 +74,17 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
         interrupt = data.getBoolean("interrupt", false);
         disable = data.getBoolean("disable", false);
         poison = data.getBoolean("poison", false);
+        isLifeLeech = lifeLeech != null;
     }
+
+    private double getLifeLeechPercentage() {
+
+        if (!isLifeLeech) {
+            return 0.0;
+        }
+        return ConfigUtil.getTotalValue(this, lifeLeech);
+    }
+
 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
@@ -93,6 +106,9 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
                     if (interrupt) ConeCast.this.addEffect(attack.getTarget(), Interrupt.class);
                     if (disable) ConeCast.this.addEffect(attack.getTarget(), Pigify.class);
                     if (poison) ConeCast.this.addEffect(attack.getTarget(), Poison.class);
+                    if (isLifeLeech) {
+                        getHero().heal((int) (attack.getDamage() * getLifeLeechPercentage()));
+                    }
                 }
             }).run();
         }
