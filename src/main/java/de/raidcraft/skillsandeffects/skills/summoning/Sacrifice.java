@@ -50,12 +50,17 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
 
         int heal = 0;
         int healthPerSacrifice = getHealthPerSacrifice();
+        int i = 0;
         for (CharacterTemplate partyMember : getHero().getParty().getMembers()) {
 
+            if (i >= maxSacrifice) {
+                break;
+            }
             if (partyMember.hasEffect(Summoned.class)) {
                 // this will kill the creature
                 partyMember.removeEffect(Summoned.class);
                 heal += healthPerSacrifice;
+                i++;
             }
         }
         // issue the heal
