@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.skills.magical;
+package de.raidcraft.skillsandeffects.skills.physical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -36,7 +36,7 @@ import org.bukkit.configuration.ConfigurationSection;
         desc = "Kegelförmiger Zauber mit einigen Effekten.",
         types = {EffectType.AREA, EffectType.SILENCABLE, EffectType.MAGICAL, EffectType.HARMFUL}
 )
-public class ConeCast extends AbstractSkill implements CommandTriggered {
+public class ConeAttack extends AbstractSkill implements CommandTriggered {
 
     private float degrees = 45.0F;
     private boolean knockBack = false;
@@ -53,7 +53,7 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
     private boolean isLifeLeech = false;
     private ConfigurationSection lifeLeech;
 
-    public ConeCast(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public ConeAttack(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -92,21 +92,21 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
 
         for (CharacterTemplate target : getTargetsInFront(degrees)) {
 
-            magicalAttack(target, new EntityAttackCallback() {
+            attack(target, new EntityAttackCallback() {
                 @Override
                 public void run(EntityAttack attack) throws CombatException {
 
-                    if (knockBack) ConeCast.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
-                    if (bleed) ConeCast.this.addEffect(attack.getTarget(), Bleed.class);
-                    if (stun) ConeCast.this.addEffect(attack.getTarget(), Stun.class);
-                    if (sunderArmor) ConeCast.this.addEffect(attack.getTarget(), SunderingArmor.class);
-                    if (disarm) ConeCast.this.addEffect(attack.getTarget(), Disarm.class);
-                    if (slow) ConeCast.this.addEffect(attack.getTarget(), Slow.class);
-                    if (weaken) ConeCast.this.addEffect(attack.getTarget(), Weakness.class);
-                    if (burn) ConeCast.this.addEffect(attack.getTarget(), Burn.class);
-                    if (interrupt) ConeCast.this.addEffect(attack.getTarget(), Interrupt.class);
-                    if (disable) ConeCast.this.addEffect(attack.getTarget(), Pigify.class);
-                    if (poison) ConeCast.this.addEffect(attack.getTarget(), Poison.class);
+                    if (knockBack) ConeAttack.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                    if (bleed) ConeAttack.this.addEffect(attack.getTarget(), Bleed.class);
+                    if (stun) ConeAttack.this.addEffect(attack.getTarget(), Stun.class);
+                    if (sunderArmor) ConeAttack.this.addEffect(attack.getTarget(), SunderingArmor.class);
+                    if (disarm) ConeAttack.this.addEffect(attack.getTarget(), Disarm.class);
+                    if (slow) ConeAttack.this.addEffect(attack.getTarget(), Slow.class);
+                    if (weaken) ConeAttack.this.addEffect(attack.getTarget(), Weakness.class);
+                    if (burn) ConeAttack.this.addEffect(attack.getTarget(), Burn.class);
+                    if (interrupt) ConeAttack.this.addEffect(attack.getTarget(), Interrupt.class);
+                    if (disable) ConeAttack.this.addEffect(attack.getTarget(), Pigify.class);
+                    if (poison) ConeAttack.this.addEffect(attack.getTarget(), Poison.class);
                     if (isLifeLeech) {
                         getHero().heal((int) (attack.getDamage() * getLifeLeechPercentage()));
                     }

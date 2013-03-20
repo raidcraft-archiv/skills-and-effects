@@ -72,7 +72,8 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
         interrupt = data.getBoolean("interrupt", false);
         disable = data.getBoolean("disable", false);
         poison = data.getBoolean("poison", false);
-
+        lifeLeech = data.getConfigurationSection("life-leech");
+        isLifeLeech = lifeLeech != null;
     }
 
     private double getLifeLeechPercentage() {
