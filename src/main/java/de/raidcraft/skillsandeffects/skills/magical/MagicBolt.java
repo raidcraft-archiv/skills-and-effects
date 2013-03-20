@@ -1,11 +1,11 @@
 package de.raidcraft.skillsandeffects.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.MagicalAttackType;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.combat.action.EntityAttack;
+import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -72,20 +72,20 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        magicalAttack(MagicalAttackType.SMOKE, new RangedCallback() {
+        magicalAttack(MagicalAttackType.SMOKE, new EntityAttackCallback() {
             @Override
-            public void run(CharacterTemplate target) throws CombatException {
+            public void run(EntityAttack attack) throws CombatException {
 
-                if (knockBack) MagicBolt.this.addEffect(getHero().getEntity().getLocation(), target, KnockBack.class);
-                if (bleed) MagicBolt.this.addEffect(target, Bleed.class);
-                if (stun) MagicBolt.this.addEffect(target, Stun.class);
-                if (sunderArmor) MagicBolt.this.addEffect(target, SunderingArmor.class);
-                if (disarm) MagicBolt.this.addEffect(target, Disarm.class);
-                if (slow) MagicBolt.this.addEffect(target, Slow.class);
-                if (weaken) MagicBolt.this.addEffect(target, Weakness.class);
-                if (burn) MagicBolt.this.addEffect(target, Burn.class);
-                if (interrupt) MagicBolt.this.addEffect(target, Interrupt.class);
-                if (disable) MagicBolt.this.addEffect(target, Pigify.class);
+                if (knockBack) MagicBolt.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                if (bleed) MagicBolt.this.addEffect(attack.getTarget(), Bleed.class);
+                if (stun) MagicBolt.this.addEffect(attack.getTarget(), Stun.class);
+                if (sunderArmor) MagicBolt.this.addEffect(attack.getTarget(), SunderingArmor.class);
+                if (disarm) MagicBolt.this.addEffect(attack.getTarget(), Disarm.class);
+                if (slow) MagicBolt.this.addEffect(attack.getTarget(), Slow.class);
+                if (weaken) MagicBolt.this.addEffect(attack.getTarget(), Weakness.class);
+                if (burn) MagicBolt.this.addEffect(attack.getTarget(), Burn.class);
+                if (interrupt) MagicBolt.this.addEffect(attack.getTarget(), Interrupt.class);
+                if (disable) MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
             }
         });
     }

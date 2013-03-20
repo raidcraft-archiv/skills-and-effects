@@ -6,8 +6,9 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -71,14 +72,14 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
 
     private void strikeChainLightning(CharacterTemplate target, final int damage) throws CombatException {
 
-        MagicalAttack magicalAttack = new MagicalAttack(getHero(), target, damage, new RangedCallback() {
+        MagicalAttack magicalAttack = new MagicalAttack(getHero(), target, damage, new EntityAttackCallback() {
             @Override
-            public void run(CharacterTemplate trigger) throws CombatException {
+            public void run(EntityAttack attack) throws CombatException {
 
                 ++jumpCount;
-                ChainLightning.this.addEffect(trigger, ChainLightningEffect.class);
+                ChainLightning.this.addEffect(attack.getTarget(), ChainLightningEffect.class);
                 if (jumpCount < getJumpCount()) {
-                    for (final CharacterTemplate target : trigger.getNearbyTargets(jumpRange)) {
+                    for (final CharacterTemplate target : attack.getTarget().getNearbyTargets(jumpRange)) {
                         if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHero())) {
                             continue;
                         }

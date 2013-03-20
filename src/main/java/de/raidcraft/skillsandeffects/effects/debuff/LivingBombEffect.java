@@ -3,8 +3,9 @@ package de.raidcraft.skillsandeffects.effects.debuff;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
-import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -52,15 +53,15 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
         for (final CharacterTemplate victim : target.getNearbyTargets(blastRadius)) {
 
             if (!victim.isFriendly(getSource().getHero())) {
-                target.damage(new MagicalAttack(getSource().getHero(), target, getDamage(), new RangedCallback() {
+                target.damage(new MagicalAttack(getSource().getHero(), target, getDamage(), new EntityAttackCallback() {
                     @Override
-                    public void run(CharacterTemplate target) throws CombatException {
+                    public void run(EntityAttack attack) throws CombatException {
 
                         // create an explosion that does not damage
-                        Location location = target.getEntity().getLocation();
+                        Location location = attack.getTarget().getEntity().getLocation();
                         EffectUtil.fakeExplosion(location);
                         // and launch the target into the air
-                        target.getEntity().setVelocity(new Vector(0, 1, 0));
+                        attack.getTarget().getEntity().setVelocity(new Vector(0, 1, 0));
                         hit++;
                     }
                 }));
