@@ -89,7 +89,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 if (burn) MagicBolt.this.addEffect(attack.getTarget(), Burn.class);
                 if (interrupt) MagicBolt.this.addEffect(attack.getTarget(), Interrupt.class);
                 if (disable) MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
-                if (poison) addEffect(attack.getTarget(), Poison.class);
+                if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
             }
         });
     }
