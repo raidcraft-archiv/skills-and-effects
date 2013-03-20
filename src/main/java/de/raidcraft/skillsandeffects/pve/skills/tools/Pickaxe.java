@@ -15,7 +15,7 @@ import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
-import de.raidcraft.skillsandeffects.pve.effects.tools.SpeedBlockBreak;
+import de.raidcraft.skillsandeffects.pve.effects.tools.SpeedBlockBreakEffect;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -114,8 +114,8 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
             return;
         }
 
-        boolean superBreakerActive = (getHero().hasEffect(SpeedBlockBreak.class)
-                && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this));
+        boolean superBreakerActive = (getHero().hasEffect(SpeedBlockBreakEffect.class)
+                && getHero().getEffect(SpeedBlockBreakEffect.class).getSource().equals(this));
 
         // add exp based on mined block
         KnownBlock knownBlock = knownBlocks.get(event.getBlock().getType());
@@ -170,8 +170,8 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
             checkUsage();
-            if (getHero().hasEffect(SpeedBlockBreak.class)
-                    && getHero().getEffect(SpeedBlockBreak.class).getSource().equals(this)) {
+            if (getHero().hasEffect(SpeedBlockBreakEffect.class)
+                    && getHero().getEffect(SpeedBlockBreakEffect.class).getSource().equals(this)) {
                 getHero().debug("Super Breaker already enabled!");
                 return;
             }
@@ -182,7 +182,7 @@ public class Pickaxe extends AbstractLevelableSkill implements Triggered {
                 @Override
                 public void run(PlayerInteractTrigger trigger) throws CombatException {
 
-                    addEffect(getHero(), SpeedBlockBreak.class);
+                    addEffect(getHero(), SpeedBlockBreakEffect.class);
                 }
             }, Action.LEFT_CLICK_BLOCK);
         }
