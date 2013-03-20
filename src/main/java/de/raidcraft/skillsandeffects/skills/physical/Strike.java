@@ -22,7 +22,7 @@ import de.raidcraft.skillsandeffects.effects.potion.Slow;
 import de.raidcraft.skillsandeffects.effects.potion.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
-import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
+import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**

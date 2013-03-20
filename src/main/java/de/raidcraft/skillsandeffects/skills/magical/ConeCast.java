@@ -19,7 +19,7 @@ import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.effects.armor.SunderingArmor;
+import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import de.raidcraft.skillsandeffects.effects.damaging.Bleed;
 import de.raidcraft.skillsandeffects.effects.damaging.Burn;
 import de.raidcraft.skillsandeffects.effects.damaging.Poison;
