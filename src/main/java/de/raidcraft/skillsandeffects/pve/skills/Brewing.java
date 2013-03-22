@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BrewTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,8 +32,7 @@ import java.util.Map;
 public class Brewing extends AbstractLevelableSkill implements Triggered {
 
     private Map<Material, IngredientSetting> knownIngredients = new HashMap<>();
-    private double cleverBrewingChancePerLevel;
-    private double maxCleverBrewingChance;
+    private ConfigurationSection cleverBrewingChance;
 
     public Brewing(Hero hero, SkillProperties skillData, Profession profession, THeroSkill database) {
 
@@ -42,26 +42,30 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        this.cleverBrewingChancePerLevel = data.getDouble("clever-brewing-chance-per-level", 0.1);
-        this.maxCleverBrewingChance = data.getDouble("max-clever-brewing-chance", 33);
+        this.cleverBrewingChance = data.getConfigurationSection("clever-brewing-chance");
 
         ConfigurationSection ingredients = data.getConfigurationSection("ingredients");
         if (ingredients == null) {
             return;
         }
 
-        for(String key : ingredients.getKeys(false)) {
+        for (String key : ingredients.getKeys(false)) {
             Material material = ItemUtils.getItem(key);
-            if(material == null) {
+            if (material == null) {
                 RaidCraft.LOGGER.warning("Unknown material '" + key + "' in " + getClass().getSimpleName());
                 continue;
             }
             ConfigurationSection blockSettings = ingredients.getConfigurationSection(key);
-            int minLevel = blockSettings.getInt("min-level");
+            int level = blockSettings.getInt("level");
             int exp = blockSettings.getInt("exp");
 
-            knownIngredients.put(material, new IngredientSetting(material, exp, minLevel));
+            knownIngredients.put(material, new IngredientSetting(material, exp, level));
         }
+    }
+
+    public double getCleverBrewingChance() {
+
+        return ConfigUtil.getTotalValue(this, cleverBrewingChance);
     }
 
     @TriggerHandler(checkUsage = false)
@@ -99,18 +103,13 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         getLevel().addExp(ingredientSetting.getExp());
         getHero().debug("Brewing: Added " + ingredientSetting.getExp() + " EXP");
 
-        // calculate clever brewing
-        double chance = getLevel().getLevel() * cleverBrewingChancePerLevel;
-        if(chance > maxCleverBrewingChance) {
-            chance = maxCleverBrewingChance;
-        }
-        double random = Math.random() * 100.;
-        if (chance > random) {
+        if (Math.random() < getCleverBrewingChance()) {
             ingredient.setAmount(ingredient.getAmount() + 1);
         }
     }
 
     public class IngredientSetting {
+
         private Material ingredient;
         private int exp;
         private int minLevel;
