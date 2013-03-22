@@ -96,7 +96,7 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
         Hero hero = getHero();
         boolean movedItem = false;
         for (ItemStack item : hero.getPlayer().getEquipment().getArmorContents()) {
-            if (item != null && !isAllowedItem(item.getTypeId())) {
+            if (item != null && item.getTypeId() != 0 && !isAllowedItem(item.getTypeId())) {
                 ItemUtil.moveItem(hero, -1, item);
                 movedItem = true;
             }
