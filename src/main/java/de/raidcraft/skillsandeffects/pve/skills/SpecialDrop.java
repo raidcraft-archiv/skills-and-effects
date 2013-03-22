@@ -1,5 +1,6 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
+import com.sk89q.worldedit.blocks.BlockID;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
@@ -16,13 +17,17 @@ import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
+import de.raidcraft.skills.trigger.PlayerFishTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +43,10 @@ import java.util.Set;
 )
 public class SpecialDrop extends AbstractSkill implements Triggered {
 
-    private static final Map<Integer, Drop> specialDrops = new HashMap<>();
+    private static final Map<Integer, List<Drop>> specialDrops = new HashMap<>();
     private static final Map<Integer, ToolType> requiredTools = new HashMap<>();
+
+    private boolean fishing = false;
 
     public SpecialDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -49,6 +56,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        fishing = data.getBoolean("fishing", false);
         if (specialDrops.isEmpty()) {
             CustomConfig config = CustomConfig.getConfig("special-block-drops");
             for (String key : config.getKeys(false)) {
@@ -73,8 +81,11 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                             drop.setMinAmount(section.getInt("min-amount", 1));
                             drop.setMinAmount(section.getInt("max-amount", 1));
                             drop.setChance(section.getConfigurationSection("chance"));
+                            if (!specialDrops.containsKey(item.getId())) {
+                                specialDrops.put(item.getId(), new ArrayList<Drop>());
+                            }
                             // finally add the created dropping item to our list
-                            specialDrops.put(item.getId(), drop);
+                            specialDrops.get(item.getId()).add(drop);
                         } else {
                             RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
                         }
@@ -97,12 +108,37 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         if (!specialDrops.containsKey(blockId)) {
             return;
         }
+        dropItems(blockId, block.getLocation());
+    }
 
-        ItemStack drops = specialDrops.get(blockId).getDrops(this);
-        if (drops == null) {
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onPlayerFishTrigger(PlayerFishTrigger trigger) {
+
+        if (!fishing) {
             return;
         }
-        block.getWorld().dropItemNaturally(block.getLocation(), drops);
+        if (!specialDrops.containsKey(BlockID.WATER)) {
+            return;
+        }
+        if (trigger.getEvent().getState() != PlayerFishEvent.State.CAUGHT_FISH) {
+            return;
+        }
+        dropItems(BlockID.WATER, trigger.getEvent().getPlayer().getLocation());
+    }
+
+    private void dropItems(int blockId, Location location) {
+
+        List<ItemStack> drops = new ArrayList<>();
+        for (Drop drop : specialDrops.get(blockId)) {
+            ItemStack stack = drop.getDrops(this);
+            if (stack != null) {
+                drops.add(stack);
+            }
+        }
+        // TODO: maybe only drop a maximum of possible drops
+        for (ItemStack itemStack : drops) {
+            location.getWorld().dropItemNaturally(location, itemStack);
+        }
     }
 
     public static class Drop {
