@@ -20,7 +20,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -32,8 +31,6 @@ import java.util.Set;
         triggerCombat = false
 )
 public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
-
-    private static final Random RANDOM = new Random();
 
     private final Set<Integer> blockIds = new HashSet<>();
     private ConfigurationSection chanceConfig;
@@ -73,7 +70,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
         boolean doubleDrop = false;
         if (blockIds.contains(block.getTypeId())) {
             // lets check for a double drop
-            if (RANDOM.nextDouble() < getChance()) {
+            if (Math.random() < getChance()) {
                 // lets drop all normal drops again
                 for (ItemStack item : block.getDrops(trigger.getEvent().getPlayer().getItemInHand())) {
                     block.getWorld().dropItemNaturally(block.getLocation(), item);
