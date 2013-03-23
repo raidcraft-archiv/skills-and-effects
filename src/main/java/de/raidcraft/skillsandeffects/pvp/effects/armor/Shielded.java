@@ -29,7 +29,10 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
     private double damageReduction = 0.0;
     private int blockedDamage = 0;
+    private int maxAbsorption;
+    private int absorbed = 0;
     private boolean reflect = false;
+    private boolean reductionInPercent = true;
     private boolean slow = false;
     private Callback<DamageTrigger> callback;
 
@@ -42,7 +45,9 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     public void load(ConfigurationSection data) {
 
         reflect = data.getBoolean("reflect", false);
+        reductionInPercent = data.getBoolean("reduction-in-percent", true);
         damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
+        maxAbsorption = (int) ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("max-absorption"));
     }
 
     public void addCallback(Callback<DamageTrigger> callback) {
@@ -50,11 +55,16 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         this.callback = callback;
     }
 
-    @TriggerHandler
-    public void onDamage(DamageTrigger trigger) {
+    @TriggerHandler(ignoreCancelled = true)
+    public void onDamage(DamageTrigger trigger) throws CombatException {
 
         int oldDamage = trigger.getAttack().getDamage();
-        int newDamage = (int) (oldDamage - oldDamage * damageReduction);
+        int newDamage;
+        if (isReductionInPercent()) {
+            newDamage = (int) (oldDamage - oldDamage * damageReduction);
+        } else {
+            newDamage = (int) (oldDamage - damageReduction);
+        }
         blockedDamage = oldDamage - newDamage;
 
         try {
@@ -75,7 +85,11 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
             return;
         }
 
-        // lets rese the blocked damage maybe the callback changed it
+        // respect the max damage that can be absorbed
+        if (maxAbsorption > 0 && absorbed + getBlockedDamage() > maxAbsorption) {
+            setBlockedDamage(maxAbsorption);
+        }
+        // lets reset the blocked damage maybe the callback changed it
         newDamage = oldDamage - getBlockedDamage();
 
         try {
@@ -85,9 +99,16 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         } catch (CombatException e) {
             getSource().getHero().sendMessage("Schaden konnte nicht reflektiert werden: " + e.getMessage());
         }
+
         trigger.getAttack().setDamage(newDamage);
         getSource().getHero().debug("reduced damage " + oldDamage + "->" + newDamage + " - skill: " + getSource());
         getSource().getHero().combatLog(this, getBlockedDamage() + " Schaden absorbiert.");
+        absorbed += getBlockedDamage();
+
+        // remove the effect when the limit is reached
+        if (maxAbsorption > 0 && absorbed >= maxAbsorption) {
+            remove();
+        }
     }
 
     public int getBlockedDamage() {
@@ -105,12 +126,15 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         this.damageReduction = damageReduction;
     }
 
+    public boolean isReductionInPercent() {
+
+        return reductionInPercent;
+    }
+
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        if (slow) {
-            target.addEffect(getSource(), getSource(), Slow.class);
-        }
+        renew(target);
     }
 
     @Override
@@ -119,6 +143,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         if (slow) {
             target.removeEffect(Slow.class);
         }
+        absorbed = 0;
     }
 
     @Override
@@ -127,5 +152,6 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         if (slow) {
             target.addEffect(getSource(), getSource(), Slow.class);
         }
+        absorbed = 0;
     }
 }

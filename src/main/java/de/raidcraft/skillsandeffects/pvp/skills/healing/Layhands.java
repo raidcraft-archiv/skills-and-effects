@@ -1,9 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.healing;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -48,20 +45,8 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        CharacterTemplate target;
-        if (args.argsLength() > 0) {
-            try {
-                target = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
-            } catch (UnknownPlayerException e) {
-                throw new CombatException(e.getMessage());
-            }
-        } else if (selfHeal || getHero().getPlayer().isSneaking()) {
-            target = getHero();
-        } else if (getTarget().isFriendly(getHero())) {
-            target = getTarget();
-        } else {
-            throw new CombatException(CombatException.Type.INVALID_TARGET);
-        }
+        CharacterTemplate target = getTarget(args, selfHeal);
+
         if (target.hasEffect(LayhandsEffect.class)) {
             throw new CombatException(CombatException.Type.IMMUNE);
         }

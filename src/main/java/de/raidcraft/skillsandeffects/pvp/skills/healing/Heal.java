@@ -1,9 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.healing;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -16,7 +13,6 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.util.LocationUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -50,29 +46,8 @@ public class Heal extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (args.argsLength() > 0) {
-            try {
-                Hero hero = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
-                if (!LocationUtil.isWithinRadius(getHero().getPlayer().getLocation(), hero.getPlayer().getLocation(), getTotalRange())) {
-                    throw new CombatException(CombatException.Type.OUT_OF_RANGE);
-                }
-                if (!hero.isFriendly(getHero())) {
-                    throw new CombatException("Ziel kann nicht geheilt werden da es nicht in deiner Gruppe ist.");
-                }
-                hero.heal(getTotalDamage());
-                return;
-            } catch (UnknownPlayerException e) {
-                throw new CombatException(e.getMessage());
-            }
-        }
+        CharacterTemplate target = getTarget(args, selfHeal);
 
-        if (selfHeal || getHero().getPlayer().isSneaking()) {
-            // self holy
-            getHero().heal(getTotalDamage());
-            return;
-        }
-
-        CharacterTemplate target = getTarget();
         if (target.isFriendly(getHero())) {
             target.heal(getTotalDamage());
         } else if (target instanceof Hero) {

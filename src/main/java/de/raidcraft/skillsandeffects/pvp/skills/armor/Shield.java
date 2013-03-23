@@ -32,7 +32,7 @@ import java.util.Map;
 @SkillInformation(
         name = "Shield",
         desc = "Absorbiert Schaden durch das Tragen eines Schildes.",
-        types = {EffectType.HELPFUL, EffectType.ABSORBING}
+        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL}
 )
 public class Shield extends AbstractLevelableSkill implements Triggered {
 
