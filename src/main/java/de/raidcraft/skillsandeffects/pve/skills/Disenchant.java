@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.worldedit.blocks.ItemID;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -52,8 +53,8 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
             throw new CombatException("Bitte nehme das Item das zu entzaubern willst in die Hand.");
         }
         Map<Enchantment,Integer> enchantments = item.getEnchantments();
-        if (enchantments.size() < 1) {
-            throw new CombatException("Dieses Item hat keine Verzauberungen.");
+        if (enchantments.size() < 1 || item.getTypeId() == ItemID.WRITTEN_BOOK) {
+            throw new CombatException("Dieses Item hat keine Verzauberungen die du entfernen kannst.");
         }
         for (Enchantment enchantment : enchantments.keySet()) {
             item.removeEnchantment(enchantment);
@@ -61,6 +62,8 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
                 ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
                 book.addEnchantment(enchantment, enchantments.get(enchantment));
                 getHero().getPlayer().getInventory().addItem(book);
+                // to balance it out we reduce the durability of the item
+                item.setDurability((short) (item.getDurability() / 2));
             }
         }
     }
