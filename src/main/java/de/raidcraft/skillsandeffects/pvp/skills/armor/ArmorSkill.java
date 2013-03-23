@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
@@ -18,6 +19,7 @@ import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -95,9 +97,28 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
 
         Hero hero = getHero();
         boolean movedItem = false;
-        for (ItemStack item : hero.getPlayer().getEquipment().getArmorContents()) {
+        EntityEquipment equipment = hero.getEntity().getEquipment();
+        for (ItemStack item : equipment.getArmorContents()) {
             if (item != null && item.getTypeId() != 0 && !isAllowedItem(item.getTypeId())) {
-                ItemUtil.moveItem(hero, -1, item);
+                int slot = -1;
+                switch (ArmorType.fromItemId(item.getTypeId())) {
+                    case HEAD:
+                        equipment.setHelmet(null);
+                        break;
+                    case CHEST:
+                        equipment.setChestplate(null);
+                        break;
+                    case LEGS:
+                        equipment.setLeggings(null);
+                        break;
+                    case FEET:
+                        equipment.setBoots(null);
+                        break;
+                    case SHIELD:
+                        slot = getHero().getPlayer().getInventory().getHeldItemSlot();
+                        break;
+                }
+                ItemUtil.moveItem(hero, slot, item);
                 movedItem = true;
             }
         }
