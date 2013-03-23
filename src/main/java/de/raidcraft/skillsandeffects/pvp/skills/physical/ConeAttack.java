@@ -32,7 +32,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @SkillInformation(
-        name = "Cone Cast",
+        name = "Cone Attack",
         desc = "Kegelförmiger Zauber mit einigen Effekten.",
         types = {EffectType.AREA, EffectType.SILENCABLE, EffectType.MAGICAL, EffectType.HARMFUL}
 )

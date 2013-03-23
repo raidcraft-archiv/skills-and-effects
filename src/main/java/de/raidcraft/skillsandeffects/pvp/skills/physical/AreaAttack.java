@@ -31,7 +31,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @SkillInformation(
-        name = "Area Cast",
+        name = "Area Attack",
         desc = "Standard Attacke um den Zauberer herum.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HARMFUL, EffectType.AREA}
 )
