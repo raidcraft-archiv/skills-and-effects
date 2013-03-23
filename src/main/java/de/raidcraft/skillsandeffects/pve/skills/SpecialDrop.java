@@ -17,6 +17,7 @@ import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
+import de.raidcraft.skills.trigger.CraftTrigger;
 import de.raidcraft.skills.trigger.PlayerFishTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
@@ -43,10 +44,10 @@ import java.util.Set;
 )
 public class SpecialDrop extends AbstractSkill implements Triggered {
 
-    private static final Map<Integer, List<Drop>> specialDrops = new HashMap<>();
+    private static final Map<Integer, List<Drop>> specialBlockDrops = new HashMap<>();
+    private static final Map<Integer, List<Drop>> specialFishingDrops = new HashMap<>();
+    private static final Map<Integer, List<Drop>> specialCraftingDrops = new HashMap<>();
     private static final Map<Integer, ToolType> requiredTools = new HashMap<>();
-
-    private boolean fishing = false;
 
     public SpecialDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -56,45 +57,54 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        fishing = data.getBoolean("fishing", false);
-        if (specialDrops.isEmpty()) {
-            CustomConfig config = CustomConfig.getConfig("special-block-drops");
-            for (String key : config.getKeys(false)) {
-                // each key is an item that has registered drops
-                Material item = ItemUtils.getItem(key);
-                if (item != null) {
-                    // also add the required tool to trigger drops
-                    Material material = ItemUtils.getItem(config.getString(key + ".tool"));
+        CustomConfig config = CustomConfig.getConfig("special-drops");
+        if (specialBlockDrops.isEmpty()) specialBlockDrops.putAll(parseConfig(config.getConfigurationSection("blocks")));
+        if (specialFishingDrops.isEmpty()) specialFishingDrops.putAll(parseConfig(config.getConfigurationSection("fishing")));
+        if (specialCraftingDrops.isEmpty()) specialCraftingDrops.putAll(parseConfig(config.getConfigurationSection("crafting")));
+    }
+
+    private Map<Integer, List<Drop>> parseConfig(ConfigurationSection config) {
+
+        Map<Integer, List<Drop>> map = new HashMap<>();
+        for (String key : config.getKeys(false)) {
+            // each key is an item that has registered drops
+            Material item = ItemUtils.getItem(key);
+            if (item != null) {
+                // also add the required tool to trigger drops
+                String toolName = config.getString(key + ".tool", "none");
+                if (!toolName.equalsIgnoreCase("none")) {
+                    Material material = ItemUtils.getItem(toolName);
                     if (material != null) {
                         requiredTools.put(item.getId(), ToolType.fromItemId(material.getId()));
                     } else {
                         RaidCraft.LOGGER.warning("Wrong tool configured in custom config " + config.getName() + " section - " + key);
                     }
-                    Set<String> drops = config.getConfigurationSection(key + ".drops").getKeys(false);
-                    for (String dropKey : drops) {
-                        Material droppedConfigItem = ItemUtils.getItem(dropKey);
-                        if (droppedConfigItem != null) {
-                            ConfigurationSection section = config.getConfigurationSection(key + ".drops." + dropKey);
-                            Drop drop = new Drop(droppedConfigItem.getId());
-                            drop.setData((byte) ItemUtils.getItemData(dropKey));
-                            drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
-                            drop.setMinAmount(section.getInt("min-amount", 1));
-                            drop.setMinAmount(section.getInt("max-amount", 1));
-                            drop.setChance(section.getConfigurationSection("chance"));
-                            if (!specialDrops.containsKey(item.getId())) {
-                                specialDrops.put(item.getId(), new ArrayList<Drop>());
-                            }
-                            // finally add the created dropping item to our list
-                            specialDrops.get(item.getId()).add(drop);
-                        } else {
-                            RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
-                        }
-                    }
-                } else {
-                    RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
                 }
+                Set<String> drops = config.getConfigurationSection(key + ".drops").getKeys(false);
+                for (String dropKey : drops) {
+                    Material droppedConfigItem = ItemUtils.getItem(dropKey);
+                    if (droppedConfigItem != null) {
+                        ConfigurationSection section = config.getConfigurationSection(key + ".drops." + dropKey);
+                        Drop drop = new Drop(droppedConfigItem.getId());
+                        drop.setData((byte) ItemUtils.getItemData(dropKey));
+                        drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
+                        drop.setMinAmount(section.getInt("min-amount", 1));
+                        drop.setMinAmount(section.getInt("max-amount", 1));
+                        drop.setChance(section.getConfigurationSection("chance"));
+                        if (!map.containsKey(item.getId())) {
+                            map.put(item.getId(), new ArrayList<Drop>());
+                        }
+                        // finally add the created dropping item to our list
+                        map.get(item.getId()).add(drop);
+                    } else {
+                        RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
+                    }
+                }
+            } else {
+                RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
             }
         }
+        return map;
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
@@ -105,38 +115,45 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         if (requiredTools.containsKey(blockId) && !requiredTools.get(blockId).isOfType(getHero().getItemTypeInHand())) {
             return;
         }
-        if (!specialDrops.containsKey(blockId)) {
+        if (!specialBlockDrops.containsKey(blockId)) {
             return;
         }
-        dropItems(blockId, block.getLocation());
+        dropItems(specialBlockDrops.get(blockId), block.getLocation());
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onPlayerFishTrigger(PlayerFishTrigger trigger) {
 
-        if (!fishing) {
-            return;
-        }
-        if (!specialDrops.containsKey(BlockID.WATER)) {
+        if (!specialFishingDrops.containsKey(BlockID.WATER)) {
             return;
         }
         if (trigger.getEvent().getState() != PlayerFishEvent.State.CAUGHT_FISH) {
             return;
         }
-        dropItems(BlockID.WATER, trigger.getEvent().getPlayer().getLocation());
+        dropItems(specialFishingDrops.get(BlockID.WATER), trigger.getEvent().getPlayer().getLocation());
     }
 
-    private void dropItems(int blockId, Location location) {
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onPlayerCraft(CraftTrigger trigger) {
 
-        List<ItemStack> drops = new ArrayList<>();
-        for (Drop drop : specialDrops.get(blockId)) {
+        int itemId = trigger.getEvent().getRecipe().getResult().getTypeId();
+        if (!specialCraftingDrops.containsKey(itemId)) {
+            return;
+        }
+        dropItems(specialCraftingDrops.get(itemId), trigger.getEvent().getWhoClicked().getLocation());
+    }
+
+    private void dropItems(List<Drop> drops, Location location) {
+
+        List<ItemStack> droppedItems = new ArrayList<>();
+        for (Drop drop : drops) {
             ItemStack stack = drop.getDrops(this);
             if (stack != null) {
-                drops.add(stack);
+                droppedItems.add(stack);
             }
         }
         // TODO: maybe only drop a maximum of possible drops
-        for (ItemStack itemStack : drops) {
+        for (ItemStack itemStack : droppedItems) {
             location.getWorld().dropItemNaturally(location, itemStack);
         }
     }
