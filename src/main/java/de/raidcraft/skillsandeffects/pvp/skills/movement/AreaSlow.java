@@ -18,7 +18,7 @@ import de.raidcraft.skills.tables.THeroSkill;
  */
 @SkillInformation(
         name = "Area Slow",
-        desc = "Verlangsammt alle Gegner um dich herum.",
+        description = "Verlangsammt alle Gegner um dich herum.",
         types = {EffectType.MAGICAL, EffectType.DEBUFF, EffectType.MOVEMENT, EffectType.HARMFUL}
 )
 public class AreaSlow extends AbstractLevelableSkill implements CommandTriggered {

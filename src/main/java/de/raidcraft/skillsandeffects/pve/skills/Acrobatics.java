@@ -24,7 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 @SkillInformation(
         name = "Acrobatics",
-        desc = "Minimiert Fallschaden",
+        description = "Minimiert Fallschaden",
         types = {EffectType.REDUCING},
         triggerCombat = false
 )

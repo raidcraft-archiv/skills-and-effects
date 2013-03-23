@@ -21,7 +21,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Parry",
-        desc = "Hat die Chance einen Angriff zu parrieren.",
+        description = "Hat die Chance einen Angriff zu parrieren.",
         types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL}
 )
 public class Parry extends AbstractLevelableSkill implements Triggered {

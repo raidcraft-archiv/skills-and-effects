@@ -23,7 +23,7 @@ import java.util.Random;
  */
 @SkillInformation(
         name = "Evade",
-        desc = "Geringe Chance bei Angriffen auszuweichen.",
+        description = "Geringe Chance bei Angriffen auszuweichen.",
         types = {EffectType.PROTECTION, EffectType.HELPFUL, EffectType.PHYSICAL}
 )
 public class Evade extends AbstractSkill implements Triggered {

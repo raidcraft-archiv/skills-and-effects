@@ -33,7 +33,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Area Cast",
-        desc = "Standard Attacke um den Zauberer herum.",
+        description = "Standard Attacke um den Zauberer herum.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HARMFUL, EffectType.AREA}
 )
 public class AreaCast extends AbstractSkill implements CommandTriggered {

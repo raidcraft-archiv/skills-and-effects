@@ -17,7 +17,7 @@ import de.raidcraft.skills.tables.THeroSkill;
  */
 @SkillInformation(
         name = "Stealth",
-        desc = "Du schwindest in die Schatten und wirst für eine Zeit unsichtbar.",
+        description = "Du schwindest in die Schatten und wirst für eine Zeit unsichtbar.",
         types = {EffectType.MOVEMENT, EffectType.BUFF, EffectType.HELPFUL}
 )
 public class Stealth extends AbstractSkill implements CommandTriggered {

@@ -17,7 +17,7 @@ import org.bukkit.block.Block;
  */
 @SkillInformation(
         name = "Instant Growth",
-        desc = "Lässt Pflanzen um den Benutzer sofort voll auswachsen."
+        description = "Lässt Pflanzen um den Benutzer sofort voll auswachsen."
 )
 public class InstantGrowth extends AbstractSkill implements CommandTriggered {
 

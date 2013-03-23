@@ -21,7 +21,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.buffs.protection.ShieldWallEffe
  */
 @SkillInformation(
         name = "Shieldwall",
-        desc = "Du hebst deinen Schild und erhälst weniger Schaden.",
+        description = "Du hebst deinen Schild und erhälst weniger Schaden.",
         types = {EffectType.PROTECTION, EffectType.REDUCING, EffectType.HELPFUL}
 )
 public class ShieldWall extends AbstractSkill implements CommandTriggered, Triggered {

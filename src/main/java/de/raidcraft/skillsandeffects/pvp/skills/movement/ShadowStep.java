@@ -19,7 +19,7 @@ import org.bukkit.util.Vector;
  */
 @SkillInformation(
         name = "Shadow Step",
-        desc = "Nutzte die Schatten um dich rasend schnell hinter dein Ziel zu bewegen.",
+        description = "Nutzte die Schatten um dich rasend schnell hinter dein Ziel zu bewegen.",
         types = {EffectType.MOVEMENT, EffectType.HELPFUL}
 )
 public class ShadowStep extends AbstractLevelableSkill implements CommandTriggered {

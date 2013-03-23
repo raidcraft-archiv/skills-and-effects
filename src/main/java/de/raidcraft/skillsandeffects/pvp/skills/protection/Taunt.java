@@ -18,7 +18,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.movement.Taunted;
  */
 @SkillInformation(
         name = "Taunt",
-        desc = "Zwingt alle Ziele im Umkreis dazu dich anzugreifen.",
+        description = "Zwingt alle Ziele im Umkreis dazu dich anzugreifen.",
         types = {EffectType.DEBUFF, EffectType.AREA},
         triggerCombat = true
 )

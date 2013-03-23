@@ -21,7 +21,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Cleave",
-        desc = "Fügt allen Gegenern neben dem getroffenen Ziel Schaden zu.",
+        description = "Fügt allen Gegenern neben dem getroffenen Ziel Schaden zu.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.AREA},
         triggerCombat = true
 )

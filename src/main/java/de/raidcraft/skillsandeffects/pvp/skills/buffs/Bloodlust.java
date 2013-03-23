@@ -18,7 +18,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.buffs.damage.BloodlustEffect;
  */
 @SkillInformation(
         name = "Bloodlust",
-        desc = "Erhöht deinen Schaden mit jedem erlittenen Treffer.",
+        description = "Erhöht deinen Schaden mit jedem erlittenen Treffer.",
         types = {EffectType.BUFF, EffectType.PHYSICAL, EffectType.HELPFUL}
 )
 public class Bloodlust extends AbstractSkill implements Triggered {

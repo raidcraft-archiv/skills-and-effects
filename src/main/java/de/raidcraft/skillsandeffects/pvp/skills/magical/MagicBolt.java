@@ -34,7 +34,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Magic Bolt",
-        desc = "Greift ein Ziel mit Magie an.",
+        description = "Greift ein Ziel mit Magie an.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HARMFUL, EffectType.DAMAGING}
 )
 public class MagicBolt extends AbstractSkill implements CommandTriggered, Triggered {

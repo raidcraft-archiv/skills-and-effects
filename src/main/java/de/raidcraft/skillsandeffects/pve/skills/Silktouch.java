@@ -16,7 +16,7 @@ import de.raidcraft.skillsandeffects.pve.effects.SilktouchEffect;
  */
 @SkillInformation(
         name = "Silktouch",
-        desc = "Ermöglicht es Blöcke ohne die Verzauberung Silktouch genauso abzubauen."
+        description = "Ermöglicht es Blöcke ohne die Verzauberung Silktouch genauso abzubauen."
 )
 public class Silktouch extends AbstractSkill implements CommandTriggered {
 

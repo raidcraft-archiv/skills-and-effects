@@ -26,7 +26,7 @@ import java.util.List;
  */
 @SkillInformation(
         name = "Conjure Item",
-        desc = "Materialisiert ein Item aus dem Nichts."
+        description = "Materialisiert ein Item aus dem Nichts."
 )
 public class ConjureItem extends AbstractLevelableSkill implements CommandTriggered {
 

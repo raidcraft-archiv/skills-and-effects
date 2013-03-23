@@ -19,7 +19,7 @@ import de.raidcraft.skills.trigger.AttackTrigger;
  */
 @SkillInformation(
         name = "Backstab",
-        desc = "Verursacht sehr hohen Schaden wenn von hinten angegriffen wird.",
+        description = "Verursacht sehr hohen Schaden wenn von hinten angegriffen wird.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL}
 )
 public class Backstab extends AbstractSkill implements CommandTriggered {

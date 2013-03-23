@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Avatar",
-        desc = "Verwandelt dich in einen Halbgott mit übermenschlichen Fähigkeiten.",
+        description = "Verwandelt dich in einen Halbgott mit übermenschlichen Fähigkeiten.",
         types = {EffectType.BUFF, EffectType.MAGICAL, EffectType.AVATAR, EffectType.HELPFUL}
 )
 public class Avatar extends AbstractSkill implements CommandTriggered {

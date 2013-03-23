@@ -23,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Pyroblast",
-        desc = "Grosser Feuerball der mehr Schaden für jeden Flammenschlag Stack macht.",
+        description = "Grosser Feuerball der mehr Schaden für jeden Flammenschlag Stack macht.",
         types = {EffectType.DAMAGING, EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HARMFUL},
         elements = {EffectElement.FIRE}
 )

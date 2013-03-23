@@ -22,7 +22,7 @@ import de.raidcraft.skills.tables.THeroSkill;
  */
 @SkillInformation(
         name = "Fireball",
-        desc = "Schießt einen Feuerball auf den Gegener",
+        description = "Schießt einen Feuerball auf den Gegener",
         types = {EffectType.MAGICAL, EffectType.DAMAGING, EffectType.SILENCABLE, EffectType.HARMFUL},
         elements = {EffectElement.FIRE}
 )

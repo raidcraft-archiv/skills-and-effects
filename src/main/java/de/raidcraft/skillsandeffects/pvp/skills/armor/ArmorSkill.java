@@ -34,7 +34,7 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Armor",
-        desc = "Erlaubt es spezielle Rüstungen zu tragen.",
+        description = "Erlaubt es spezielle Rüstungen zu tragen.",
         types = {EffectType.HELPFUL, EffectType.REDUCING}
 )
 public class ArmorSkill extends AbstractSkill implements Triggered {

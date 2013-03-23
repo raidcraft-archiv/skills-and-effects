@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Heal over Time",
-        desc = "Heilt das Ziel über eine bestimmte Zeit.",
+        description = "Heilt das Ziel über eine bestimmte Zeit.",
         types = {EffectType.HEALING, EffectType.HELPFUL, EffectType.MAGICAL, EffectType.SILENCABLE},
         elements = {EffectElement.LIGHT}
 )

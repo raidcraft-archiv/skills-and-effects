@@ -20,7 +20,7 @@ import org.bukkit.event.EventPriority;
  */
 @SkillInformation(
         name = "Gather Strength",
-        desc = "Wenn deine leben unter 35% fallen heilst du dich um einen Prozentsatz.",
+        description = "Wenn deine leben unter 35% fallen heilst du dich um einen Prozentsatz.",
         types = {EffectType.HELPFUL, EffectType.PROTECTION, EffectType.HEALING}
 )
 public class GatherStrength extends AbstractSkill implements Triggered {

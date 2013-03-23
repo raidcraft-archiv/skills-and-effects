@@ -18,7 +18,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.misc.ParryEffect;
  */
 @SkillInformation(
         name = "Counter Attack",
-        desc = "Der nächste Schlag nach einer Parrade fügt zusätzlichen Schaden zu.",
+        description = "Der nächste Schlag nach einer Parrade fügt zusätzlichen Schaden zu.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING}
 )
 public class CounterAttack extends AbstractSkill implements Triggered {

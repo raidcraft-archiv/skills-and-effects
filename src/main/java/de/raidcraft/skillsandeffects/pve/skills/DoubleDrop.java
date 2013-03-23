@@ -27,7 +27,7 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "Double Drop",
-        desc = "Ermöglicht es von abgebauten Blöcken Doppel Drops zu bekommen.",
+        description = "Ermöglicht es von abgebauten Blöcken Doppel Drops zu bekommen.",
         triggerCombat = false
 )
 public class DoubleDrop extends AbstractLevelableSkill implements Triggered {

@@ -20,7 +20,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.buffs.damage.BloodlustEffect;
  */
 @SkillInformation(
         name = "Blood Strike",
-        desc = "Zerfetzt deinen Gegner mit all deiner Wut.",
+        description = "Zerfetzt deinen Gegner mit all deiner Wut.",
         types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING}
 )
 public class BloodStrike extends AbstractLevelableSkill implements CommandTriggered {

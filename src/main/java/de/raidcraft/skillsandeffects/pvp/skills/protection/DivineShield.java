@@ -17,7 +17,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.buffs.protection.DivineShieldEf
  */
 @SkillInformation(
         name = "Divine Shield",
-        desc = "Verhindert allen Schaden an dir, jedoch kannst du nicht angreifen.",
+        description = "Verhindert allen Schaden an dir, jedoch kannst du nicht angreifen.",
         types = {EffectType.PROTECTION, EffectType.HELPFUL}
 )
 public class DivineShield extends AbstractSkill implements CommandTriggered {

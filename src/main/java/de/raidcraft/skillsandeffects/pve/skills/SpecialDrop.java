@@ -40,7 +40,7 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "Special Drop",
-        desc = "Ermöglicht es spezielle Items in abgebauten Blöcken zu finden."
+        description = "Ermöglicht es spezielle Items in abgebauten Blöcken zu finden."
 )
 public class SpecialDrop extends AbstractSkill implements Triggered {
 

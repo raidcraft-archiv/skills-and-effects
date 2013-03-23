@@ -18,7 +18,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.resources.RageEffect;
  */
 @SkillInformation(
         name = "Rage",
-        desc = "Regeneriert Wut wenn im Kampf."
+        description = "Regeneriert Wut wenn im Kampf."
 )
 public class Rage extends AbstractSkill implements Triggered {
 

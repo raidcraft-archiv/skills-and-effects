@@ -22,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Raging Fire",
-        desc = "Verringert die Zauberzeit des nächsten Feuerzaubers nach einem Feuerball.",
+        description = "Verringert die Zauberzeit des nächsten Feuerzaubers nach einem Feuerball.",
         types = {EffectType.MAGICAL, EffectType.BUFF, EffectType.HELPFUL},
         elements = {EffectElement.FIRE}
 )

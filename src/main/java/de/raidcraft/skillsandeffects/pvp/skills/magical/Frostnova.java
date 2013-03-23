@@ -21,7 +21,7 @@ import de.raidcraft.skills.tables.THeroSkill;
  */
 @SkillInformation(
         name = "Frostnova",
-        desc = "Frostet alle Gegner im Umkreis am Boden fest.",
+        description = "Frostet alle Gegner im Umkreis am Boden fest.",
         types = {EffectType.HARMFUL, EffectType.MAGICAL, EffectType.DAMAGING, EffectType.MOVEMENT, EffectType.AREA},
         elements = {EffectElement.ICE}
 )

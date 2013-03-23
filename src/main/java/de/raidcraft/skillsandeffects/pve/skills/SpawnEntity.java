@@ -26,7 +26,7 @@ import java.util.TreeMap;
  */
 @SkillInformation(
         name = "Spawn Entity",
-        desc = "Lässt zufällig beliebige Entities spawnen."
+        description = "Lässt zufällig beliebige Entities spawnen."
 )
 public class SpawnEntity extends AbstractSkill implements CommandTriggered {
 

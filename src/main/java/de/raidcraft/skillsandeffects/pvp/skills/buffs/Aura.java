@@ -23,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Aura",
-        desc = "Schützt dich und deine Gruppe mit einer Aura.",
+        description = "Schützt dich und deine Gruppe mit einer Aura.",
         types = {EffectType.MAGICAL, EffectType.BUFF, EffectType.HELPFUL, EffectType.AURA}
 )
 public class Aura extends AbstractSkill implements CommandTriggered {

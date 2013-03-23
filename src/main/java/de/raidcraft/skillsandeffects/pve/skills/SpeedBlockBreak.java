@@ -29,7 +29,7 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "Speed Block Break",
-        desc = "Baut Blöcke instant ab."
+        description = "Baut Blöcke instant ab."
 )
 public class SpeedBlockBreak extends AbstractSkill implements Triggered {
 

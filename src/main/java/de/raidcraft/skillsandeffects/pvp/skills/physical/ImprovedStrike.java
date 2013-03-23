@@ -23,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Improved Strike",
-        desc = "Verursacht mehr Schaden beim nächsten normalen Angriff.",
+        description = "Verursacht mehr Schaden beim nächsten normalen Angriff.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL}
 )
 public class ImprovedStrike extends AbstractSkill implements CommandTriggered, Triggered {

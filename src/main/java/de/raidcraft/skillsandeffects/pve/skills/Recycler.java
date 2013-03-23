@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Recycler",
-        desc = "Es besteht die Chance Materialien aus kaputten Items zu gewinnen."
+        description = "Es besteht die Chance Materialien aus kaputten Items zu gewinnen."
 )
 public class Recycler extends AbstractSkill implements Triggered {
 

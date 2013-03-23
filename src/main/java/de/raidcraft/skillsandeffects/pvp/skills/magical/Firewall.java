@@ -24,7 +24,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Firewall",
-        desc = "Erstellt eine Feuerwand vor dir.",
+        description = "Erstellt eine Feuerwand vor dir.",
         types = {EffectType.MAGICAL, EffectType.AREA, EffectType.DAMAGING, EffectType.SILENCABLE},
         elements = {EffectElement.FIRE}
 )

@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Whirlwind",
-        desc = "Fügt allen Gegenern im Umkreis physischen Schaden zu.",
+        description = "Fügt allen Gegenern im Umkreis physischen Schaden zu.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.AREA}
 )
 public class Whirlwind extends AbstractSkill implements CommandTriggered {

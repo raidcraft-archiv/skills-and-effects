@@ -20,7 +20,7 @@ import org.bukkit.FireworkEffect;
  */
 @SkillInformation(
         name = "Area Heal",
-        desc = "Heilt dich und deine Gruppe.",
+        description = "Heilt dich und deine Gruppe.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HEALING, EffectType.HELPFUL, EffectType.AREA}
 )
 public class AreaHeal extends AbstractSkill implements CommandTriggered {

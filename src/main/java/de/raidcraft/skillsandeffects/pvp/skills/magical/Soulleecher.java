@@ -23,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Soul Leecher",
-        desc = "Verschiesst Witherköpfe und sammelt Seelen von den Opfern",
+        description = "Verschiesst Witherköpfe und sammelt Seelen von den Opfern",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.DEBUFF},
         elements = {EffectElement.DARK}
 )

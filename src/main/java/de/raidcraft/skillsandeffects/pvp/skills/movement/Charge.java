@@ -24,7 +24,7 @@ import org.bukkit.util.Vector;
  */
 @SkillInformation(
         name = "Charge",
-        desc = "Stürmt das Ziel an und betäubt es.",
+        description = "Stürmt das Ziel an und betäubt es.",
         types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.MOVEMENT}
 )
 public class Charge extends AbstractSkill implements CommandTriggered {

@@ -16,7 +16,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.misc.AimedShotEffect;
  */
 @SkillInformation(
         name = "Aimed Shot",
-        desc = "Verursacht extra Schaden wenn der Bogen ganz gespannt wurde."
+        description = "Verursacht extra Schaden wenn der Bogen ganz gespannt wurde."
 )
 public class AimedShot extends AbstractSkill implements CommandTriggered {
 

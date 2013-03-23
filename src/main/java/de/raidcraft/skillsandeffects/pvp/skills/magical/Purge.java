@@ -26,7 +26,7 @@ import java.util.Random;
  */
 @SkillInformation(
         name = "Purge",
-        desc = "Entfernt einen positiven Effekt von einem Gegner oder einen negativen Effekt von einem Gruppenmitglied.",
+        description = "Entfernt einen positiven Effekt von einem Gegner oder einen negativen Effekt von einem Gruppenmitglied.",
         types = {EffectType.HELPFUL, EffectType.HARMFUL, EffectType.MAGICAL, EffectType.SILENCABLE}
 )
 public class Purge extends AbstractSkill implements CommandTriggered {

@@ -22,7 +22,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.debuff.PurificationEffect;
  */
 @SkillInformation(
         name = "Purification",
-        desc = "Läutert dein Ziel so dass es dich und deine Gruppe um den erlittenen Schaden heilt.",
+        description = "Läutert dein Ziel so dass es dich und deine Gruppe um den erlittenen Schaden heilt.",
         types = {EffectType.HEALING, EffectType.HELPFUL, EffectType.MAGICAL, EffectType.PHYSICAL},
         elements = {EffectElement.LIGHT}
 )

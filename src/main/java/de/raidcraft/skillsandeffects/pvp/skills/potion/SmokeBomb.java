@@ -32,7 +32,7 @@ import java.util.ArrayList;
  */
 @SkillInformation(
         name = "Smoke Bomb",
-        desc = "Hüllt alle am Aufschlagsort in Rauch ein und blendet diese.",
+        description = "Hüllt alle am Aufschlagsort in Rauch ein und blendet diese.",
         types = {EffectType.HARMFUL, EffectType.DEBUFF}
 )
 public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggered, Triggered {

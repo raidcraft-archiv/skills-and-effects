@@ -35,7 +35,7 @@ import java.util.List;
  */
 @SkillInformation(
         name = "Lightning Storm",
-        desc = "Lässt ein Blitzgewitter auf deine Feinde herab regnen.",
+        description = "Lässt ein Blitzgewitter auf deine Feinde herab regnen.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.DAMAGING},
         elements = {EffectElement.LIGHTNING}
 )

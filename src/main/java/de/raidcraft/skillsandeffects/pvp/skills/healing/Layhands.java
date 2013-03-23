@@ -22,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Layhands",
-        desc = "Heilt dich oder das Ziel um 100%, kostet allerdings 100% deiner Resourcen.",
+        description = "Heilt dich oder das Ziel um 100%, kostet allerdings 100% deiner Resourcen.",
         types = {EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL},
         elements = {EffectElement.LIGHT}
 )

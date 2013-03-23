@@ -17,7 +17,7 @@ import org.bukkit.Material;
  */
 @SkillInformation(
         name = "Flash Freeze",
-        desc = "Friert die Erde rund um den Spieler in Eis ein."
+        description = "Friert die Erde rund um den Spieler in Eis ein."
 )
 public class FlashFreeze extends AbstractSkill implements CommandTriggered {
 

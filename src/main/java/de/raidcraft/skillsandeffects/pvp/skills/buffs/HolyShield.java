@@ -24,7 +24,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Holy Shield",
-        desc = "Beschützt das Ziel durch einen heiligen Schild der Schaden absorbiert.",
+        description = "Beschützt das Ziel durch einen heiligen Schild der Schaden absorbiert.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HELPFUL, EffectType.ABSORBING},
         elements = {EffectElement.LIGHT}
 )

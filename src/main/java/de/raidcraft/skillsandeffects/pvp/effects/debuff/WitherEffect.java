@@ -7,20 +7,20 @@ import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
-import de.raidcraft.skills.api.skill.SkillInformation;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
  * @author Silthus
  */
-@SkillInformation(
+@EffectInformation(
         name = "Wither",
-        desc = "Der standard Minecraft Wither Effekt.",
+        description = "Der standard Minecraft Wither Effekt.",
         types = {EffectType.MAGICAL, EffectType.DEBUFF, EffectType.HARMFUL, EffectType.DAMAGING, EffectType.PURGEABLE},
         elements = {EffectElement.DARK}
 )

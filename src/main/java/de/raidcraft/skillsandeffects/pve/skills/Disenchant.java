@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Disenchant",
-        desc = "Entfernt alle Verzauberungen von einem Item."
+        description = "Entfernt alle Verzauberungen von einem Item."
 )
 public class Disenchant extends AbstractSkill implements CommandTriggered {
 

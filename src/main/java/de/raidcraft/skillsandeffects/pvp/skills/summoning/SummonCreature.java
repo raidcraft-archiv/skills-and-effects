@@ -29,7 +29,7 @@ import java.util.Random;
  */
 @SkillInformation(
         name = "Summon Creature",
-        desc = "Beschwört eine Kreatur die für den Beschwörer kämpft.",
+        description = "Beschwört eine Kreatur die für den Beschwörer kämpft.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.SUMMON}
 )
 public class SummonCreature extends AbstractSkill implements CommandTriggered {

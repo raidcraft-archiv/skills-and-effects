@@ -21,7 +21,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.debuff.FlamestrikeEffect;
  */
 @SkillInformation(
         name = "Flamestrike",
-        desc = "Verursacht Feuerschaden und nachhaltige Verbrennungen.",
+        description = "Verursacht Feuerschaden und nachhaltige Verbrennungen.",
         types = {EffectType.MAGICAL, EffectType.DAMAGING, EffectType.SILENCABLE},
         elements = {EffectElement.FIRE}
 )

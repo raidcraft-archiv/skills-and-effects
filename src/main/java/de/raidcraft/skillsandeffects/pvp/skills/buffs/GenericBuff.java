@@ -22,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Buff",
-        desc = "Verbessert einen oder mehrere Werte der Gruppe.",
+        description = "Verbessert einen oder mehrere Werte der Gruppe.",
         types = {EffectType.MAGICAL, EffectType.HELPFUL, EffectType.BUFF}
 )
 public class GenericBuff extends AbstractSkill implements CommandTriggered {

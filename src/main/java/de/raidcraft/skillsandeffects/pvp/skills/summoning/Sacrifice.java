@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Sacrifice",
-        desc = "Opfert beschworene Kreaturen und stellt Leben wieder her.",
+        description = "Opfert beschworene Kreaturen und stellt Leben wieder her.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HELPFUL, EffectType.HEALING}
 )
 public class Sacrifice extends AbstractSkill implements CommandTriggered {

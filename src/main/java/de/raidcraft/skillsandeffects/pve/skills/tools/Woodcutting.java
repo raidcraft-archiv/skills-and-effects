@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Woodcutting",
-        desc = "Macht das Holzfällen spannender und effektiver"
+        description = "Macht das Holzfällen spannender und effektiver"
 )
 public class Woodcutting extends AbstractLevelableSkill implements Triggered {
 

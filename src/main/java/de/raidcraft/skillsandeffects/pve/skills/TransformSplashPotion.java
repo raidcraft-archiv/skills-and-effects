@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 @SkillInformation(
         name = "Transform Splash Potion",
-        desc = "Verwandelt einen normalen Trank in einen Wurftrank."
+        description = "Verwandelt einen normalen Trank in einen Wurftrank."
 )
 public class TransformSplashPotion extends AbstractSkill implements CommandTriggered {
 

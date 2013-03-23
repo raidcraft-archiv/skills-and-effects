@@ -35,7 +35,7 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "weapons",
-        desc = "Erhöht den Schaden deiner Waffen.",
+        description = "Erhöht den Schaden deiner Waffen.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.DEFAULT_ATTACK}
 )
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {

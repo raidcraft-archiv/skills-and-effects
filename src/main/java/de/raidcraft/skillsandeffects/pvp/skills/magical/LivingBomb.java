@@ -21,7 +21,7 @@ import de.raidcraft.skillsandeffects.pvp.effects.debuff.LivingBombEffect;
  */
 @SkillInformation(
         name = "Living Bomb",
-        desc = "Sprengt alle Gegner nach Ablauf der Zeit um das Ziel.",
+        description = "Sprengt alle Gegner nach Ablauf der Zeit um das Ziel.",
         types = {EffectType.DAMAGING, EffectType.DEBUFF, EffectType.MAGICAL, EffectType.SILENCABLE},
         elements = {EffectElement.FIRE}
 )

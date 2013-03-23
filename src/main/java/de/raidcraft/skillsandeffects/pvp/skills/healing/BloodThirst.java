@@ -19,7 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Bloodthirst",
-        desc = "Heilt dich basierend auf der Menge deiner Wut.",
+        description = "Heilt dich basierend auf der Menge deiner Wut.",
         types = {EffectType.HEALING, EffectType.HELPFUL, EffectType.MAGICAL}
 )
 public class BloodThirst extends AbstractSkill implements CommandTriggered {

@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Heal",
-        desc = "Heilt dein Ziel oder dich selbst",
+        description = "Heilt dein Ziel oder dich selbst",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HELPFUL, EffectType.HEALING},
         elements = {EffectElement.LIGHT}
 )

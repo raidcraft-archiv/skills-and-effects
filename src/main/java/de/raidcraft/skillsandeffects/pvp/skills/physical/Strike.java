@@ -30,7 +30,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "strike",
-        desc = "Schlägt das Ziel mit voller Wucht und stößt es zurück.",
+        description = "Schlägt das Ziel mit voller Wucht und stößt es zurück.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL},
         triggerCombat = true
 )

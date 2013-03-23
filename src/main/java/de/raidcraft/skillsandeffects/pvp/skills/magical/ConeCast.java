@@ -33,7 +33,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Cone Cast",
-        desc = "Kegelförmiger Zauber mit einigen Effekten.",
+        description = "Kegelförmiger Zauber mit einigen Effekten.",
         types = {EffectType.AREA, EffectType.SILENCABLE, EffectType.MAGICAL, EffectType.HARMFUL}
 )
 public class ConeCast extends AbstractSkill implements CommandTriggered {

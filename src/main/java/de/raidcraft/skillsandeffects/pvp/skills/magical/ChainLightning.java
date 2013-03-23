@@ -28,7 +28,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Chain Lightning",
-        desc = "Lässt einen Blitz auf Nachbarn überspringen.",
+        description = "Lässt einen Blitz auf Nachbarn überspringen.",
         types = {EffectType.DAMAGING, EffectType.MAGICAL, EffectType.SILENCABLE},
         elements = {EffectElement.LIGHTNING}
 )

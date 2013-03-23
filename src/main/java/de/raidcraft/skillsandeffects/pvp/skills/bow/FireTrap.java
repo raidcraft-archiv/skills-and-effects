@@ -21,7 +21,7 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "Fire Trap",
-        desc = "Lässt am Aufschlag des Pfeils eine Feuerfalle entstehen.",
+        description = "Lässt am Aufschlag des Pfeils eine Feuerfalle entstehen.",
         types = {EffectType.HARMFUL, EffectType.DAMAGING, EffectType.AREA},
         elements = {EffectElement.FIRE}
 )

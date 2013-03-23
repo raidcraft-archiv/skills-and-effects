@@ -25,7 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Multi-Shot",
-        desc = "Schiesst mehrere Pfeile auf einmal ab."
+        description = "Schiesst mehrere Pfeile auf einmal ab."
 )
 public class Multishot extends AbstractLevelableSkill implements CommandTriggered, Triggered {
 

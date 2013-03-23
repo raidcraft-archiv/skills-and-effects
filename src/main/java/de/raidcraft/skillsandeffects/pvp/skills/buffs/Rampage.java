@@ -17,7 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 @SkillInformation(
         name = "Rampage",
-        desc = "Versetzt dich in einen Wutanfall und generiert sofort die max. Anzahl an Blutrausch Stacks."
+        description = "Versetzt dich in einen Wutanfall und generiert sofort die max. Anzahl an Blutrausch Stacks."
 )
 public class Rampage extends AbstractSkill implements CommandTriggered {
 

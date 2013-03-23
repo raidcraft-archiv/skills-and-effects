@@ -22,7 +22,7 @@ import java.util.List;
  */
 @SkillInformation(
         name = "Blink",
-        desc = "Teleportiert dich nach vorne und entfernt alle Stun Effekte.",
+        description = "Teleportiert dich nach vorne und entfernt alle Stun Effekte.",
         types = {EffectType.MOVEMENT, EffectType.HELPFUL}
 )
 public class Blink extends AbstractSkill implements CommandTriggered {

@@ -3,10 +3,10 @@ package de.raidcraft.skillsandeffects.pve.effects;
 import com.sk89q.worldedit.blocks.ItemID;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
@@ -24,9 +24,9 @@ import java.util.List;
 /**
  * @author Silthus
  */
-@SkillInformation(
+@EffectInformation(
         name = "Silktouch",
-        desc = "Ermöglicht es Blöcke in ihrer Ursprungsform abzubauen."
+        description = "Ermöglicht es Blöcke in ihrer Ursprungsform abzubauen."
 )
 public class SilktouchEffect extends ExpirableEffect<Silktouch> implements Triggered {
 

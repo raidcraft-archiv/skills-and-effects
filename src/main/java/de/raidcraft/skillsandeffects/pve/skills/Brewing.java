@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @SkillInformation(
         name = "Brewing",
-        desc = "Reguliert das Brauen von Tränken",
+        description = "Reguliert das Brauen von Tränken",
         triggerCombat = false
 )
 public class Brewing extends AbstractLevelableSkill implements Triggered {
