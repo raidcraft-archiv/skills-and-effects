@@ -34,6 +34,9 @@ public class TransformSplashPotion extends AbstractSkill implements CommandTrigg
             throw new CombatException("Du musst für diesen Skill den Trank den du anritzen willst in der Hand haben.");
         }
         ItemStack itemInHand = getHero().getEntity().getEquipment().getItemInHand();
+        if (itemInHand == null) {
+            throw new CombatException("Bitte nehme den Trank den du anritzten willst in die Hand.");
+        }
         byte data = (byte) itemInHand.getDurability();
         // lets check if the splash potion bit is already set
         // here we shift the 14 position (the splash potion bit) so
