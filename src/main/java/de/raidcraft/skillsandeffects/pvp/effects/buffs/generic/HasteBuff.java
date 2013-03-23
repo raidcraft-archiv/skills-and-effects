@@ -6,50 +6,43 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.skills.buffs.GenericBuff;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * @author Silthus
  */
 @EffectInformation(
-        name = "Health Buff",
-        description = "Erhöht die maximale Lebensenergie.",
+        name = "Haste Buff",
+        description = "Erhöht die Bewegungsgeschwindigkeit.",
         types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE}
 )
-public class HealthBuff extends ExpirableEffect<GenericBuff> {
+public class HasteBuff extends ExpirableEffect<GenericBuff> {
 
-    private int oldMaxHealth;
-    private double modifier;
+    private final PotionEffect potionEffect;
 
-    public HealthBuff(GenericBuff source, CharacterTemplate target, EffectData data) {
+    public HasteBuff(GenericBuff source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-
-        modifier = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health"));
+        this.potionEffect = new PotionEffect(PotionEffectType.SPEED, (int) getDuration(), 3, true);
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        oldMaxHealth = target.getMaxHealth();
-        target.setMaxHealth((int) (oldMaxHealth + oldMaxHealth * modifier));
+        renew(target);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        target.setMaxHealth(oldMaxHealth);
+        target.getEntity().removePotionEffect(PotionEffectType.SPEED);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-
+        target.getEntity().addPotionEffect(potionEffect);
     }
 }

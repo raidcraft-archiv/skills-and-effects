@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.generic.HasteBuff;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.generic.HealthBuff;
 import de.raidcraft.util.EnumUtils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,7 +29,8 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
 
     public enum BuffType {
 
-        HEALTH(HealthBuff.class);
+        HEALTH(HealthBuff.class),
+        HASTE(HasteBuff.class);
 
         private final Class<? extends Effect<GenericBuff>> aClass;
 
