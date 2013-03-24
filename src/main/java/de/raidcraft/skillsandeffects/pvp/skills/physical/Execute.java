@@ -23,7 +23,8 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Execute",
         description = "Richtet dein Ziel hin und verursacht maximalen Schaden.",
-        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL}
+        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL},
+        queuedAttack = true
 )
 public class Execute extends AbstractLevelableSkill implements CommandTriggered {
 

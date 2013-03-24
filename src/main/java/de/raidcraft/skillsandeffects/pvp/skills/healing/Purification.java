@@ -24,7 +24,8 @@ import de.raidcraft.skillsandeffects.pvp.effects.debuff.PurificationEffect;
         name = "Purification",
         description = "Läutert dein Ziel so dass es dich und deine Gruppe um den erlittenen Schaden heilt.",
         types = {EffectType.HEALING, EffectType.HELPFUL, EffectType.MAGICAL, EffectType.PHYSICAL},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.LIGHT},
+        queuedAttack = true
 )
 public class Purification extends AbstractLevelableSkill implements CommandTriggered {
 

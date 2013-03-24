@@ -23,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Cleave",
         description = "Fügt allen Gegenern neben dem getroffenen Ziel Schaden zu.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL, EffectType.AREA},
-        triggerCombat = true
+        queuedAttack = true
 )
 public class Cleave extends AbstractSkill implements CommandTriggered {
 

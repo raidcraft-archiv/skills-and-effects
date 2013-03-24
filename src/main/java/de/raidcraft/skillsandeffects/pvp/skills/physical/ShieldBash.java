@@ -28,7 +28,8 @@ import java.util.List;
 @SkillInformation(
         name = "Shield Bash",
         description = "Zieht deinem Ziel mit voller Wucht eins mit dem Schild drüber.",
-        types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING}
+        types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING},
+        queuedAttack = true
 )
 public class ShieldBash extends AbstractLevelableSkill implements CommandTriggered {
 

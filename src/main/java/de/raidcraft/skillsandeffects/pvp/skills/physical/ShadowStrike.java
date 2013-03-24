@@ -23,7 +23,8 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Shadow Strike",
         description = "Verursacht extra Schaden wenn du Unsichtbar angreifst.",
-        types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING}
+        types = {EffectType.PHYSICAL, EffectType.HARMFUL, EffectType.DAMAGING},
+        queuedAttack = true
 )
 public class ShadowStrike extends AbstractSkill implements CommandTriggered {
 

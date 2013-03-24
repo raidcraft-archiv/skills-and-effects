@@ -23,7 +23,8 @@ import java.util.Set;
         name = "Fire Trap",
         description = "Lässt am Aufschlag des Pfeils eine Feuerfalle entstehen.",
         types = {EffectType.HARMFUL, EffectType.DAMAGING, EffectType.AREA},
-        elements = {EffectElement.FIRE}
+        elements = {EffectElement.FIRE},
+        queuedAttack = true
 )
 public class FireTrap extends AbstractBowTrap {
 

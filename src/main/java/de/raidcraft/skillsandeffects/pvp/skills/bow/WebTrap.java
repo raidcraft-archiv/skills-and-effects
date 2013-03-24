@@ -21,7 +21,8 @@ import java.util.Set;
 @SkillInformation(
         name = "Web Trap",
         description = "Lässt beim Aufprall des Pfeils Spinnennetze entstehen.",
-        types = {EffectType.MOVEMENT, EffectType.HARMFUL}
+        types = {EffectType.MOVEMENT, EffectType.HARMFUL},
+        queuedAttack = true
 )
 public class WebTrap extends AbstractBowTrap {
 

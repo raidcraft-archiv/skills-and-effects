@@ -29,7 +29,8 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Shot",
         description = "Schiesst einen Pfeil mit extra Fähigkeiten ab.",
-        types = {EffectType.DAMAGING, EffectType.PHYSICAL, EffectType.HARMFUL}
+        types = {EffectType.DAMAGING, EffectType.PHYSICAL, EffectType.HARMFUL},
+        queuedAttack = true
 )
 public class Shot extends AbstractLevelableSkill implements CommandTriggered {
 
