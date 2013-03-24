@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
+import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -12,6 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.BowFireTrigger;
 import de.raidcraft.skillsandeffects.pvp.skills.bow.AimedShot;
+import org.bukkit.entity.Projectile;
 
 /**
  * @author Silthus
@@ -19,7 +21,7 @@ import de.raidcraft.skillsandeffects.pvp.skills.bow.AimedShot;
 @EffectInformation(
         name = "Aimed Shot",
         description = "Spannt den Bogen ganz fest und verursacht erhöhten Schaden.",
-        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL}
+        types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HELPFUL}
 )
 public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Triggered {
 
@@ -33,7 +35,13 @@ public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Trigg
 
         // bow force of 1.0 is max
         if (trigger.getEvent().getForce() >= 1.0) {
-            new RangedAttack<>(getSource().getHero(), ProjectileType.ARROW, getSource().getTotalDamage()).run();
+            RangedAttack<ProjectileCallback> attack = new RangedAttack<>(
+                    getSource().getHero(),
+                    ProjectileType.ARROW,
+                    getSource().getTotalDamage()
+            );
+            attack.setProjectile((Projectile) trigger.getEvent().getProjectile());
+            attack.run();
             remove();
         }
     }
@@ -41,6 +49,7 @@ public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Trigg
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
+        info("Du sammelst all deine Kraft für einen gezielten Schuss.");
     }
 
     @Override

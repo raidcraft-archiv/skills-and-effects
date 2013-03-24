@@ -11,6 +11,9 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.trigger.EntityTargetTrigger;
+import de.raidcraft.util.EffectUtil;
+import org.bukkit.Effect;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -49,6 +52,14 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
         removeOnAttack = data.getBoolean("remove-on-attack", true);
     }
 
+    @TriggerHandler(ignoreCancelled = true)
+    public void onTarget(EntityTargetTrigger trigger) {
+
+        if (trigger.getEvent().getTarget().equals(getTarget().getEntity())) {
+            trigger.getEvent().setCancelled(true);
+        }
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
@@ -69,8 +80,8 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         info("Du bist nun unsichtbar.");
-        target.getEntity().addPotionEffect(invisibility);
-        if (slow) target.getEntity().addPotionEffect(slowEffect);
+        EffectUtil.playEffect(target.getEntity().getLocation(), Effect.SMOKE, 5);
+        renew(target);
     }
 
     @Override

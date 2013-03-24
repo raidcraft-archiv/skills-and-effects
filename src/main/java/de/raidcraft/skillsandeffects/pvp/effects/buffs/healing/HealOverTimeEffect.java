@@ -8,7 +8,6 @@ import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.pvp.skills.healing.HealOverTime;
-import de.raidcraft.util.EffectUtil;
 
 /**
  * @author Silthus
@@ -30,7 +29,7 @@ public class HealOverTimeEffect extends PeriodicExpirableEffect<HealOverTime> {
     protected void tick(CharacterTemplate target) throws CombatException {
 
         target.heal(getDamage());
-        EffectUtil.playWolfHearts(target.getEntity().getLocation());
+        // EffectUtil.playWolfHearts(target.getEntity().getLocation());
     }
 
     @Override
