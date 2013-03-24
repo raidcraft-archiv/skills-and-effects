@@ -32,7 +32,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "strike",
         description = "Schlägt das Ziel mit voller Wucht und stößt es zurück.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL},
-        triggerCombat = true
+        queuedAttack = true
 )
 public class Strike extends AbstractSkill implements CommandTriggered, Triggered {
 
