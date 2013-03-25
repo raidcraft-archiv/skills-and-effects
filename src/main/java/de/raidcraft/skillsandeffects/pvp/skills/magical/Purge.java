@@ -16,10 +16,10 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.LocationUtil;
+import de.raidcraft.util.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author Silthus
@@ -31,7 +31,6 @@ import java.util.Random;
 )
 public class Purge extends AbstractSkill implements CommandTriggered {
 
-    private static final Random RANDOM = new Random();
     private boolean selfCast = false;
 
     public Purge(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -74,7 +73,7 @@ public class Purge extends AbstractSkill implements CommandTriggered {
         } else {
             effects = target.getEffects(EffectType.PURGEABLE, EffectType.BUFF);
         }
-        Effect effect = effects.get(RANDOM.nextInt(effects.size()));
+        Effect effect = effects.get(MathUtil.RANDOM.nextInt(effects.size()));
         target.removeEffect(effect);
     }
 }

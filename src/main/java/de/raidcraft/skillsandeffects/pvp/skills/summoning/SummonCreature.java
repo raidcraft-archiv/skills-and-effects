@@ -16,13 +16,12 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.misc.Summoned;
+import de.raidcraft.util.MathUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-
-import java.util.Random;
 
 /**
  * @author Silthus
@@ -35,8 +34,6 @@ import java.util.Random;
 public class SummonCreature extends AbstractSkill implements CommandTriggered {
 
     private static final CharacterManager CHARACTER_MANAGER = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
-    private static final Random RANDOM = new Random();
-
     private EntityType entityType;
     private int minDamage;
     private int maxDamage;
@@ -67,12 +64,12 @@ public class SummonCreature extends AbstractSkill implements CommandTriggered {
 
     public int getHealth() {
 
-        return RANDOM.nextInt(maxHealth - minHealth + 1) + minHealth;
+        return MathUtil.RANDOM.nextInt(maxHealth - minHealth + 1) + minHealth;
     }
 
     public int getDamage() {
 
-        return RANDOM.nextInt(maxDamage - minDamage + 1) + minDamage;
+        return MathUtil.RANDOM.nextInt(maxDamage - minDamage + 1) + minDamage;
     }
 
     @Override

@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skillsandeffects.pvp.effects.damaging.Bleed;
 import de.raidcraft.skillsandeffects.pvp.effects.damaging.Burn;
 import de.raidcraft.skills.effects.disabling.Disarm;
@@ -46,6 +47,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean weaken = false;
     private boolean burn = false;
     private boolean interrupt = false;
+    private boolean silence = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -65,6 +67,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         weaken = data.getBoolean("weaken", false);
         burn = data.getBoolean("burn", false);
         interrupt = data.getBoolean("interrupt", false);
+        silence = data.getBoolean("silence", false);
     }
 
     @Override
@@ -83,7 +86,8 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (slow) Strike.this.addEffect(trigger.getAttack().getTarget(), Slow.class);
                 if (weaken) Strike.this.addEffect(trigger.getAttack().getTarget(), Weakness.class);
                 if (burn) Strike.this.addEffect(trigger.getSource().getTarget(), Burn.class);
-                if (interrupt) Strike.this.addEffect(trigger.getSource().getTarget(), Interrupt.class);
+                if (silence || interrupt) Strike.this.addEffect(trigger.getSource().getTarget(), Interrupt.class);
+                if (silence) Strike.this.addEffect(trigger.getSource().getTarget(), Silence.class);
             }
         });
     }

@@ -33,8 +33,7 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Area Attack",
         description = "Standard Attacke um den Zauberer herum.",
-        types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HARMFUL, EffectType.AREA},
-        queuedAttack = true
+        types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HARMFUL, EffectType.AREA}
 )
 public class AreaAttack extends AbstractSkill implements CommandTriggered {
 

@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.movement;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -10,8 +11,10 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.generic.DamageBuff;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
 /**
@@ -24,20 +27,37 @@ import org.bukkit.util.Vector;
 )
 public class ShadowStep extends AbstractLevelableSkill implements CommandTriggered {
 
+    private boolean damageBonus = false;
+
     public ShadowStep(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
 
     @Override
+    public void load(ConfigurationSection data) {
+
+        damageBonus = data.getBoolean("bonus-damage", false);
+    }
+
+    @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        shadowStep(getHero(), getTarget());
+
+        if (damageBonus) {
+            addEffect(getHero(), DamageBuff.class);
+        }
+    }
+
+    public static void shadowStep(CharacterTemplate source, CharacterTemplate target) throws CombatException {
+
         // lets get the position behind the target by multiplying the vector
-        Location origin = getTarget().getEntity().getLocation();
+        Location origin = target.getEntity().getLocation();
         Vector behindTarget = origin.getDirection().multiply(2);
         Location teleportLocation = origin.subtract(behindTarget).add(0, 1, 0);
         origin.getWorld().playEffect(origin, Effect.ENDER_SIGNAL, 1);
-        getHero().getPlayer().teleport(teleportLocation);
+        source.getEntity().teleport(teleportLocation);
         teleportLocation.getWorld().playEffect(teleportLocation, Effect.ENDER_SIGNAL, 1);
     }
 }

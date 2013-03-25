@@ -34,8 +34,7 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Cone Attack",
         description = "Kegelförmiger Zauber mit einigen Effekten.",
-        types = {EffectType.AREA, EffectType.SILENCABLE, EffectType.MAGICAL, EffectType.HARMFUL},
-        queuedAttack = true
+        types = {EffectType.AREA, EffectType.SILENCABLE, EffectType.MAGICAL, EffectType.HARMFUL}
 )
 public class ConeAttack extends AbstractSkill implements CommandTriggered {
 

@@ -16,8 +16,6 @@ import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.Random;
-
 /**
  * @author Silthus
  */
@@ -27,8 +25,6 @@ import java.util.Random;
         types = {EffectType.PROTECTION, EffectType.HELPFUL, EffectType.PHYSICAL}
 )
 public class Evade extends AbstractSkill implements Triggered {
-
-    private static final Random RANDOM = new Random();
 
     private ConfigurationSection evadeChance;
 
@@ -57,7 +53,7 @@ public class Evade extends AbstractSkill implements Triggered {
             return;
         }
 
-        if (RANDOM.nextDouble() < getEvadeChance()) {
+        if (Math.random() < getEvadeChance()) {
             throw new CombatException(CombatException.Type.EVADED);
         }
     }

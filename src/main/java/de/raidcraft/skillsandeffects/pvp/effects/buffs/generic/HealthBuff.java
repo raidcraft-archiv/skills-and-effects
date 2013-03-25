@@ -6,8 +6,8 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.pvp.skills.buffs.GenericBuff;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -18,12 +18,12 @@ import org.bukkit.configuration.ConfigurationSection;
         description = "Erhöht die maximale Lebensenergie.",
         types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE}
 )
-public class HealthBuff extends ExpirableEffect<GenericBuff> {
+public class HealthBuff extends ExpirableEffect<Skill> {
 
     private int oldMaxHealth;
     private double modifier;
 
-    public HealthBuff(GenericBuff source, CharacterTemplate target, EffectData data) {
+    public HealthBuff(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }

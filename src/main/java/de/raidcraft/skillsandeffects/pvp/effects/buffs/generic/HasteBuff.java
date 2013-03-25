@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skillsandeffects.pvp.skills.buffs.GenericBuff;
+import de.raidcraft.skills.api.skill.Skill;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,11 +18,11 @@ import org.bukkit.potion.PotionEffectType;
         description = "Erhöht die Bewegungsgeschwindigkeit.",
         types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE}
 )
-public class HasteBuff extends ExpirableEffect<GenericBuff> {
+public class HasteBuff extends ExpirableEffect<Skill> {
 
     private final PotionEffect potionEffect;
 
-    public HasteBuff(GenericBuff source, CharacterTemplate target, EffectData data) {
+    public HasteBuff(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         this.potionEffect = new PotionEffect(PotionEffectType.SPEED, (int) getDuration(), 3, true);

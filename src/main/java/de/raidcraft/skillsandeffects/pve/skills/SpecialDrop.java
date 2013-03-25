@@ -21,6 +21,7 @@ import de.raidcraft.skills.trigger.CraftTrigger;
 import de.raidcraft.skills.trigger.PlayerFishTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
+import de.raidcraft.util.MathUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -160,8 +160,6 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
     public static class Drop {
 
-        private static final Random RANDOM = new Random();
-
         private final int itemId;
         private byte data;
         private int minAmount;
@@ -201,7 +199,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         public int getAmount() {
 
-            return RANDOM.nextInt(maxAmount - minAmount + 1) + minAmount;
+            return MathUtil.RANDOM.nextInt(maxAmount - minAmount + 1) + minAmount;
         }
 
         public byte getData() {
@@ -242,7 +240,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                 }
             }
 
-            if (RANDOM.nextDouble() < getChance(skill)) {
+            if (MathUtil.RANDOM.nextDouble() < getChance(skill)) {
                 return new ItemStack(getItemId(), getAmount(), getData());
             }
             return null;

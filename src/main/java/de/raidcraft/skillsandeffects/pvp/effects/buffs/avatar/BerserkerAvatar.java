@@ -9,14 +9,12 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skillsandeffects.pvp.effects.damaging.Bleed;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skillsandeffects.pvp.effects.damaging.Bleed;
 import de.raidcraft.skillsandeffects.pvp.effects.resources.RageEffect;
 import de.raidcraft.skillsandeffects.pvp.skills.buffs.Avatar;
 import org.bukkit.configuration.ConfigurationSection;
-
-import java.util.Random;
 
 /**
  * @author Silthus
@@ -28,7 +26,6 @@ import java.util.Random;
 )
 public class BerserkerAvatar extends AbstractAvatar implements Triggered {
 
-    private final Random random = new Random();
     private double attackIncrease = 0.25;
     private double damageIncrease = 0.10;
     private double deepWoundChance = 0.05;
@@ -80,7 +77,7 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
         int oldDamage = trigger.getAttack().getDamage();
         trigger.getAttack().setDamage((int) (oldDamage + oldDamage * attackIncrease));
 
-        if (random.nextDouble() < deepWoundChance) {
+        if (Math.random() < deepWoundChance) {
             trigger.getAttack().getTarget().addEffect(getSource(), (Skill) getSource(), Bleed.class);
         }
     }
