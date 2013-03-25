@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.Weapon;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
@@ -116,13 +117,21 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         // only check the slot he is currently holding
         ItemStack item = getHero().getPlayer().getInventory().getItem(slot);
         if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
+            // lets also remove the current weapon from the hero
+            getHero().removeWeapon(Weapon.Slot.MAIN_HAND);
             return;
         }
         // required level < skill level
         if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) < getLevel().getLevel()) {
+            // lets add the item as a weapon if it is the current hold slot
+            if (getHero().getPlayer().getInventory().getHeldItemSlot() == slot) {
+                // in this skill we only add mainhand weapons
+                getHero().setWeapon(new Weapon(item, Weapon.Slot.MAIN_HAND));
+            }
             return;
         }
         // all checks failed so we have to move the item
+        getHero().removeWeapon(Weapon.Slot.MAIN_HAND);
         ItemUtil.moveItem(getHero(), slot, item);
         getHero().sendMessage(ChatColor.RED + "Du kannst diese " + ItemUtils.getFriendlyName(item.getTypeId()) + " nicht tragen. " +
                 "Sie wurde in dein Inventar gelegt.");
