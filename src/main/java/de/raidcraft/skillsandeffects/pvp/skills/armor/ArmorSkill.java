@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.armor;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -10,12 +11,15 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.ArmorPiece;
 import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
+import de.raidcraft.skills.trigger.ItemHeldTrigger;
+import de.raidcraft.skills.trigger.ItemPickupTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -78,19 +82,48 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
-    public void onDamage(DamageTrigger trigger) {
+    public void onItemPickup(ItemPickupTrigger trigger) {
 
-        if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
-                || trigger.getAttack().isOfAttackType(EffectType.IGNORE_ARMOR)) {
-            return;
+        // we need to check after the item was picked up
+        Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+            @Override
+            public void run() {
+
+                checkShield(getHero().getPlayer().getInventory().getItemInHand());
+            }
+        }, 1L);
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
+    public void onItemHeld(ItemHeldTrigger trigger) {
+
+        // lets check if the player can wear the new item
+        checkShield(getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()));
+    }
+
+    private void checkShield(ItemStack item) {
+
+        if (ArmorType.fromItemId(item.getTypeId()) == ArmorType.SHIELD) {
+            if (checkItem(getHero(), item)) {
+                getHero().removeArmor(ArmorType.SHIELD);
+                getHero().sendMessage(ChatColor.RED + "Du kannst keine Schilder tragen! Das Schild wurde in dein Inventar gelegt.");
+            } else {
+                getHero().setArmor(new ArmorPiece(item));
+            }
         }
-        checkArmor();
     }
 
     @TriggerHandler
     public void onInventoryClose(InventoryCloseTrigger trigger) {
 
         checkArmor();
+        // now we need to set the armor of the player
+        EntityEquipment equipment = trigger.getEvent().getPlayer().getEquipment();
+        getHero().clearArmor();
+        for (ItemStack itemStack : equipment.getArmorContents()) {
+            ArmorPiece armor = new ArmorPiece(itemStack);
+            getHero().setArmor(armor);
+        }
     }
 
     private void checkArmor() {
@@ -99,33 +132,40 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
         boolean movedItem = false;
         EntityEquipment equipment = hero.getEntity().getEquipment();
         for (ItemStack item : equipment.getArmorContents()) {
-            if (item != null && item.getTypeId() != 0 && !isAllowedItem(item.getTypeId())) {
-                int slot = -1;
-                switch (ArmorType.fromItemId(item.getTypeId())) {
-                    case HEAD:
-                        equipment.setHelmet(null);
-                        break;
-                    case CHEST:
-                        equipment.setChestplate(null);
-                        break;
-                    case LEGS:
-                        equipment.setLeggings(null);
-                        break;
-                    case FEET:
-                        equipment.setBoots(null);
-                        break;
-                    case SHIELD:
-                        slot = getHero().getPlayer().getInventory().getHeldItemSlot();
-                        break;
-                }
-                ItemUtil.moveItem(hero, slot, item);
-                movedItem = true;
-            }
+            movedItem = (movedItem || checkItem(hero, item));
         }
         if (movedItem) {
             // inform the player
             hero.sendMessage(ChatColor.RED + "Du kannst diese Rüstung nicht tragen. Sie wurde in dein Inventar gelegt.");
         }
+    }
+
+    private boolean checkItem(Hero hero, ItemStack item) {
+
+        EntityEquipment equipment = hero.getEntity().getEquipment();
+        if (item != null && item.getTypeId() != 0 && !isAllowedItem(item.getTypeId())) {
+            int slot = -1;
+            switch (ArmorType.fromItemId(item.getTypeId())) {
+                case HEAD:
+                    equipment.setHelmet(null);
+                    break;
+                case CHEST:
+                    equipment.setChestplate(null);
+                    break;
+                case LEGS:
+                    equipment.setLeggings(null);
+                    break;
+                case FEET:
+                    equipment.setBoots(null);
+                    break;
+                case SHIELD:
+                    slot = getHero().getPlayer().getInventory().getHeldItemSlot();
+                    break;
+            }
+            ItemUtil.moveItem(hero, slot, item);
+            return true;
+        }
+        return false;
     }
 
     private boolean isAllowedItem(int id) {

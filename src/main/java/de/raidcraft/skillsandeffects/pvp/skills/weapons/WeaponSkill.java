@@ -2,33 +2,28 @@ package de.raidcraft.skillsandeffects.pvp.skills.weapons;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.events.RCCombatEvent;
-import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
-import de.raidcraft.skills.api.skill.LevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
-import de.raidcraft.skills.trigger.CombatTrigger;
+import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
+import de.raidcraft.skills.trigger.ItemPickupTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Silthus
@@ -40,8 +35,9 @@ import java.util.Set;
 )
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
-    private static final Map<String, Map<Material, Weapon>> allowedWeapons = new HashMap<>();
-    private final Set<Material> myWeapons = new HashSet<>();
+    private final Map<Integer, Integer> allowedWeapons = new HashMap<>();
+    private double expPerDamage;
+    private int expPerAttack;
 
     public WeaponSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -51,161 +47,84 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        if (!allowedWeapons.containsKey(getHero().getName())) {
-            allowedWeapons.put(getHero().getName(), new EnumMap<Material, Weapon>(Material.class));
-        }
+        expPerDamage = data.getDouble("exp-per-damage", 0.0);
+        expPerAttack = data.getInt("exp-per-attack", 0);
+
         ConfigurationSection weapons = data.getConfigurationSection("weapons");
         if (weapons == null) return;
         for (String key : weapons.getKeys(false)) {
             Material item = ItemUtils.getItem(key);
             if (item != null && ItemUtil.isWeapon(item)) {
-                Weapon weapon = new Weapon(item, data.getConfigurationSection("weapons." + key));
-                allowedWeapons.get(getHero().getName()).put(item, weapon);
-                myWeapons.add(item);
-                getHero().debug("Weapon loaded: " + weapon.getType() + ":L" + weapon.getRequiredLevel());
+                allowedWeapons.put(item.getId(), weapons.getInt(key));
             } else {
                 RaidCraft.LOGGER.warning("The item " + key + " in the skill config " + getName() + " is not an item.");
             }
         }
     }
 
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onAttack(AttackTrigger trigger) {
+
+        if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
+            return;
+        }
+        getLevel().addExp(expPerAttack);
+        getLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
+    }
+
     @Override
     public void onLevelGain() {
 
         super.onLevelGain();
-        for (Weapon weapon : allowedWeapons.get(getHero().getName()).values()) {
-            if (weapon.getRequiredLevel() == getLevel().getLevel()) {
+        for (Map.Entry<Integer, Integer> entry : allowedWeapons.entrySet()) {
+
+            if (entry.getValue() == getLevel().getLevel()) {
                 getHero().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
-                        ItemUtils.getFriendlyName(weapon.getType(), ItemUtils.Language.GERMAN));
+                        ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             }
         }
-        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
     }
 
-    @TriggerHandler
-    public void onAttack(AttackTrigger trigger) throws CombatException {
-
-        if (trigger.getAttack().isCancelled()) {
-            return;
-        }
-        boolean movedItems = checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
-
-        ItemStack item = getHero().getPlayer().getItemInHand();
-        if (item == null || item.getTypeId() == 0
-                || !ItemUtil.isWeapon(item.getType())) {
-            return;
-        }
-
-        if(!allowedWeapons.get(getHero().getName()).containsKey(item.getType()) || movedItems) {
-            checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
-            trigger.setCancelled(true);
-            trigger.getAttack().setCancelled(true);
-            throw new CombatException(CombatException.Type.INVALID_WEAPON);
-        }
-
-        if (!myWeapons.contains(item.getType())) {
-            return;
-        }
-
-        int oldDamage = trigger.getAttack().getDamage();
-        Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
-        trigger.getAttack().setDamage(weapon.getTotalDamage(this));
-        getHero().debug("damaged changed " + oldDamage + "->" + trigger.getAttack().getDamage());
-        getLevel().addExp(weapon.getExpForUse());
-    }
-
-    @TriggerHandler
+    @TriggerHandler(ignoreCancelled = true)
     public void onItemHeld(ItemHeldTrigger trigger) {
 
         checkTaskbar(trigger.getEvent().getNewSlot());
     }
 
-    @TriggerHandler
-    public void onCombat(CombatTrigger trigger) {
+    @TriggerHandler(ignoreCancelled = true)
+    public void onInventoryClose(InventoryCloseTrigger trigger) {
 
-        if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
-            checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot());
+        checkTaskbar();
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onItemPickup(ItemPickupTrigger trigger) {
+
+        checkTaskbar();
+    }
+
+    private void checkTaskbar() {
+
+        // the taskbar has 9 slots so we check all of them
+        for (int i = 0; i < 9; i++) {
+            checkTaskbar(i);
         }
     }
 
-    private boolean checkTaskbar(int slot) {
-
-        if (!getHero().isInCombat()) {
-            return false;
-        }
-
-        PlayerInventory inventory = getHero().getPlayer().getInventory();
-        boolean movedItem = false;
+    private void checkTaskbar(int slot) {
 
         // only check the slot he is currently holding
-        ItemStack item = inventory.getItem(slot);
+        ItemStack item = getHero().getPlayer().getInventory().getItem(slot);
         if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
-            return false;
+            return;
         }
-        Weapon weapon = allowedWeapons.get(getHero().getName()).get(item.getType());
-        // this can be null at this point
-        if (!allowedWeapons.get(getHero().getName()).containsKey(item.getType())
-                || weapon.getRequiredLevel() > getLevel().getLevel()) {
-            ItemUtil.moveItem(getHero(), slot, item);
-            movedItem = true;
+        // required level < skill level
+        if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) < getLevel().getLevel()) {
+            return;
         }
-
-        if (movedItem) {
-            getHero().sendMessage(ChatColor.RED + "Du kannst diese Waffe nicht tragen. Sie wurde in dein Inventar gelegt.");
-        }
-        return movedItem;
-    }
-
-    public static class Weapon {
-
-        private final Material type;
-        private final ConfigurationSection config;
-
-        public Weapon(Material type, ConfigurationSection config) {
-
-            this.type = type;
-            this.config = config;
-        }
-
-        public Material getType() {
-
-            return type;
-        }
-
-        public int getTotalDamage(LevelableSkill skill) {
-
-            return (int) (config.getInt("damage.base", 1)
-                    + config.getDouble("damage.level-modifier", 0.0) * skill.getHero().getLevel().getLevel()
-                    + config.getDouble("damage.prof-level-modifier", 0.0) * skill.getProfession().getLevel().getLevel()
-                    + config.getDouble("damage.skill-level-modifier", 0.0) * skill.getLevel().getLevel());
-        }
-
-        public int getRequiredLevel() {
-
-            return config.getInt("level", 1);
-        }
-
-        public int getExpForUse() {
-
-            return config.getInt("exp", 2);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Weapon weapon = (Weapon) o;
-
-            return type == weapon.type;
-
-        }
-
-        @Override
-        public int hashCode() {
-
-            return type.hashCode();
-        }
+        // all checks failed so we have to move the item
+        ItemUtil.moveItem(getHero(), slot, item);
+        getHero().sendMessage(ChatColor.RED + "Du kannst diese " + ItemUtils.getFriendlyName(item.getTypeId()) + " nicht tragen. " +
+                "Sie wurde in dein Inventar gelegt.");
     }
 }
