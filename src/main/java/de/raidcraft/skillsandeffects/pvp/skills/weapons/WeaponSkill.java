@@ -126,7 +126,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             // lets add the item as a weapon if it is the current hold slot
             if (getHero().getPlayer().getInventory().getHeldItemSlot() == slot) {
                 // in this skill we only add mainhand weapons
-                getHero().setWeapon(new Weapon(item, Weapon.Slot.MAIN_HAND));
+                getHero().setWeapon(new Weapon(slot, item, Weapon.Slot.MAIN_HAND));
             }
             return;
         }
