@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
+import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -32,15 +33,15 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
         HEALTH(HealthBuff.class),
         HASTE(HasteBuff.class);
 
-        private final Class<? extends Effect<GenericBuff>> aClass;
+        private final Class<? extends Effect<Skill>> aClass;
 
-        private BuffType(Class<? extends Effect<GenericBuff>> aClass) {
+        private BuffType(Class<? extends Effect<Skill>> aClass) {
 
             this.aClass = aClass;
         }
 
         @SuppressWarnings("unchecked")
-        public <E extends Effect<GenericBuff>> Class<E> clazz() {
+        public <E extends Effect<Skill>> Class<E> clazz() {
 
             return (Class<E>) aClass;
         }

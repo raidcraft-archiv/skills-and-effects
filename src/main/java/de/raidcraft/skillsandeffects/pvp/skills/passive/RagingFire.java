@@ -48,7 +48,7 @@ public class RagingFire extends AbstractLevelableSkill implements Triggered {
             addEffect(getHero(), RagingFireEffect.class);
         } else if (trigger.getSkill().isOfElement(EffectElement.FIRE) && getHero().hasEffect(RagingFireEffect.class)) {
             int stacks = getHero().getEffect(RagingFireEffect.class).getStacks();
-            trigger.setCastTime((long) (trigger.getCastTime() - trigger.getCastTime() * castDecreasePerStack * stacks));
+            trigger.getAction().setCastTime((int) (trigger.getAction().getCastTime() - trigger.getAction().getCastTime() * castDecreasePerStack * stacks));
             getHero().removeEffect(RagingFireEffect.class);
         }
     }
