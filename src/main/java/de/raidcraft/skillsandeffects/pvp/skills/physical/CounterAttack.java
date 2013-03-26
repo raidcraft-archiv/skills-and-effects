@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.physical;
 
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -37,7 +38,7 @@ public class CounterAttack extends AbstractSkill implements Triggered {
                 && canUseSkill()) {
             if (trigger.getAttack().getDamage() < getTotalDamage()) {
                 trigger.getAttack().setDamage(getTotalDamage());
-                substractUsageCost();
+                substractUsageCost(new SkillAction(this));
             }
         }
     }

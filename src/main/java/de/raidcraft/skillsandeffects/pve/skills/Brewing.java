@@ -68,7 +68,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         return ConfigUtil.getTotalValue(this, cleverBrewingChance);
     }
 
-    @TriggerHandler(checkUsage = false)
+    @TriggerHandler(ignoreCancelled = true)
     public void onBrew(BrewTrigger trigger) {
 
         BrewEvent event = trigger.getEvent();

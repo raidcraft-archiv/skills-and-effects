@@ -4,6 +4,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
@@ -34,7 +35,7 @@ public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Trigg
     public void onBowShoot(BowFireTrigger trigger) throws CombatException {
 
         if (getSource().getProperties().getInformation().queuedAttack()) {
-            getSource().substractUsageCost();
+            getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // bow force of 1.0 is max
         if (trigger.getEvent().getForce() >= 1.0) {

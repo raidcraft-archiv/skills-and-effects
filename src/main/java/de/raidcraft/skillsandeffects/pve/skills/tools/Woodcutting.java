@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pve.skills.tools;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -79,7 +80,7 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
     /*
      * Level increase and Double Drop
      */
-    @TriggerHandler(checkUsage = false)
+    @TriggerHandler(ignoreCancelled = true)
     public void blockBreak(BlockBreakTrigger trigger) throws CombatException {
 
         BlockBreakEvent event = trigger.getEvent();
@@ -120,7 +121,7 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
     /*
      * Super Breaker
      */
-    @TriggerHandler(checkUsage = false)
+    @TriggerHandler(ignoreCancelled = true)
     public void interact(PlayerInteractTrigger trigger) throws CombatException {
 
         PlayerInteractEvent event = trigger.getEvent();
@@ -138,7 +139,7 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
         // activate Treefeller
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
-            checkUsage();
+            checkUsage(new SkillAction(this));
             if (getHero().hasEffect(RecursiveBlockBreak.class)
                     && getHero().getEffect(RecursiveBlockBreak.class).getSource().equals(this)) {
                 getHero().debug("Treefeller already enabled!");

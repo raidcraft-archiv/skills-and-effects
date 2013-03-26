@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.protection;
 
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -45,7 +46,7 @@ public class GatherStrength extends AbstractSkill implements Triggered {
         if (getHero().getHealth() - damage < getHero().getMaxHealth() * triggerPercent) {
             if (!getHero().hasEffect(GatherStrengthEffect.class) && canUseSkill()) {
                 addEffect(getHero(), GatherStrengthEffect.class);
-                substractUsageCost();
+                substractUsageCost(new SkillAction(this));
             }
         }
     }
