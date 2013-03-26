@@ -1,6 +1,8 @@
 package de.raidcraft.skillsandeffects.pvp.skills.weapons;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.requirement.Requirement;
+import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -25,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +41,8 @@ import java.util.Map;
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Integer, Integer> allowedWeapons = new HashMap<>();
-    private int dualWieldLevel = 0;
+    private List<Requirement<WeaponSkill>> dualWielding;
+    private boolean allowDualWielding = false;
     private double expPerDamage;
     private int expPerAttack;
 
@@ -50,7 +54,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        dualWieldLevel = data.getInt("dual-wield-at-level", 0);
+        dualWielding = RequirementManager.createRequirements(this, data.getConfigurationSection("dual-wielding"));
         expPerDamage = data.getDouble("exp-per-damage", 0.0);
         expPerAttack = data.getInt("exp-per-attack", 0);
 
@@ -77,8 +81,34 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                         ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             }
         }
-        if (dualWieldLevel > 0 && dualWieldLevel == getLevel().getLevel()) {
-            getHero().sendMessage(ChatColor.GREEN + "Du hast Beidhändigkeit erlernt und kannst nun mit zwei Waffen gleichzeitig angreifen.");
+        if (!allowDualWielding) {
+            boolean isMet = true;
+            for (Requirement<WeaponSkill> requirement : dualWielding) {
+                if (!requirement.isMet()) {
+                    isMet = false;
+                }
+            }
+            if (isMet) {
+                allowDualWielding = true;
+                getHero().sendMessage(ChatColor.GREEN + "Du hast Beidhändigkeit erlernt und kannst nun mit zwei Waffen gleichzeitig angreifen.");
+            }
+        }
+    }
+
+    @Override
+    public void onLevelLoss() {
+
+        if (allowDualWielding) {
+            boolean isMet = true;
+            for (Requirement<WeaponSkill> requirement : dualWielding) {
+                if (!requirement.isMet()) {
+                    isMet = false;
+                }
+            }
+            if (!isMet) {
+                allowDualWielding = false;
+                getHero().sendMessage(ChatColor.RED + "Du hast Beidhändigkeit verlernt.");
+            }
         }
     }
 
@@ -133,7 +163,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                 // lets first add the main weapon
                 getHero().setWeapon(new Weapon(slot, item, weaponSlot));
                 // and then check for offhand weapons
-                if (weaponSlot != Weapon.Slot.OFF_HAND && dualWieldLevel < getLevel().getLevel() && slot < 9) {
+                if (allowDualWielding && weaponSlot != Weapon.Slot.OFF_HAND && slot < 9) {
                     checkTaskbar(slot + 1, Weapon.Slot.OFF_HAND);
                 }
             }
