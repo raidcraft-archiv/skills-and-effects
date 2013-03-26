@@ -22,6 +22,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.Map;
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Integer, Integer> allowedWeapons = new HashMap<>();
+    private int dualWieldLevel = 0;
     private double expPerDamage;
     private int expPerAttack;
 
@@ -48,6 +50,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        dualWieldLevel = data.getInt("dual-wield-at-level", 0);
         expPerDamage = data.getDouble("exp-per-damage", 0.0);
         expPerAttack = data.getInt("exp-per-attack", 0);
 
@@ -63,16 +66,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         }
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
-    public void onAttack(AttackTrigger trigger) {
-
-        if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
-            return;
-        }
-        getLevel().addExp(expPerAttack);
-        getLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
-    }
-
     @Override
     public void onLevelGain() {
 
@@ -84,12 +77,25 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                         ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             }
         }
+        if (dualWieldLevel > 0 && dualWieldLevel == getLevel().getLevel()) {
+            getHero().sendMessage(ChatColor.GREEN + "Du hast Beidhändigkeit erlernt und kannst nun mit zwei Waffen gleichzeitig angreifen.");
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onAttack(AttackTrigger trigger) {
+
+        if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
+            return;
+        }
+        getLevel().addExp(expPerAttack);
+        getLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
     }
 
     @TriggerHandler(ignoreCancelled = true)
     public void onItemHeld(ItemHeldTrigger trigger) {
 
-        checkTaskbar(trigger.getEvent().getNewSlot());
+        checkTaskbar(trigger.getEvent().getNewSlot(), Weapon.Slot.MAIN_HAND);
     }
 
     @TriggerHandler(ignoreCancelled = true)
@@ -106,32 +112,36 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private void checkTaskbar() {
 
-        // the taskbar has 9 slots so we check all of them
-        for (int i = 0; i < 9; i++) {
-            checkTaskbar(i);
-        }
+        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot(), Weapon.Slot.MAIN_HAND);
     }
 
-    private void checkTaskbar(int slot) {
+    private void checkTaskbar(int slot, Weapon.Slot weaponSlot) {
 
         // only check the slot he is currently holding
-        ItemStack item = getHero().getPlayer().getInventory().getItem(slot);
+        PlayerInventory inventory = getHero().getPlayer().getInventory();
+        ItemStack item = inventory.getItem(slot);
         if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
             // lets also remove the current weapon from the hero
             getHero().removeWeapon(Weapon.Slot.MAIN_HAND);
+            getHero().removeWeapon(Weapon.Slot.OFF_HAND);
             return;
         }
         // required level < skill level
         if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) < getLevel().getLevel()) {
             // lets add the item as a weapon if it is the current hold slot
-            if (getHero().getPlayer().getInventory().getHeldItemSlot() == slot) {
-                // in this skill we only add mainhand weapons
-                getHero().setWeapon(new Weapon(slot, item, Weapon.Slot.MAIN_HAND));
+            if (inventory.getHeldItemSlot() == slot) {
+                // lets first add the main weapon
+                getHero().setWeapon(new Weapon(slot, item, weaponSlot));
+                // and then check for offhand weapons
+                if (weaponSlot != Weapon.Slot.OFF_HAND && dualWieldLevel < getLevel().getLevel() && slot < 9) {
+                    checkTaskbar(slot + 1, Weapon.Slot.OFF_HAND);
+                }
             }
             return;
         }
         // all checks failed so we have to move the item
         getHero().removeWeapon(Weapon.Slot.MAIN_HAND);
+        getHero().removeWeapon(Weapon.Slot.OFF_HAND);
         ItemUtil.moveItem(getHero(), slot, item);
         getHero().sendMessage(ChatColor.RED + "Du kannst diese " + ItemUtils.getFriendlyName(item.getTypeId()) + " nicht tragen. " +
                 "Sie wurde in dein Inventar gelegt.");
