@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.Weapon;
+import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
@@ -27,8 +28,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -41,6 +44,7 @@ import java.util.Map;
 public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Integer, Integer> allowedWeapons = new HashMap<>();
+    private final Set<WeaponType> ignoredWeapons = new HashSet<>();
     private List<Requirement<WeaponSkill>> dualWielding;
     private boolean allowDualWielding = false;
     private double expPerDamage;
@@ -68,6 +72,32 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                 RaidCraft.LOGGER.warning("The item " + key + " in the skill config " + getName() + " is not an item.");
             }
         }
+
+        // also load all ignored weapon types
+        for (String key : data.getStringList("ignored-weapons")) {
+            WeaponType weaponType = WeaponType.fromString(key);
+            if (weaponType != null) {
+                ignoredWeapons.add(weaponType);
+            } else {
+                RaidCraft.LOGGER.warning("Unknown weapon type " + key + " in " + getName() + ".yml");
+            }
+        }
+    }
+
+    @Override
+    public String getDescription() {
+
+        if (allowedWeapons.size() < 1) {
+            return super.getDescription();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GRAY).append("Ermöglicht es dir folgende Waffen ab einem bestimmten " + getFriendlyName() + " Level zu tragen:");
+        for (Map.Entry<Integer, Integer> entry : allowedWeapons.entrySet()) {
+            sb.append(ChatColor.YELLOW).append("\n\t- ").append((entry.getValue() <= getLevel().getLevel()) ? ChatColor.GREEN : ChatColor.RED);
+            sb.append(ItemUtils.getFriendlyName(entry.getKey())).append(ChatColor.YELLOW).append(": Level ");
+            sb.append(ChatColor.AQUA).append(entry.getValue());
+        }
+        return sb.toString();
     }
 
     @Override
@@ -156,8 +186,12 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             getHero().removeWeapon(Weapon.Slot.OFF_HAND);
             return;
         }
+        // dont handle weapons that are ignored and may be handled by other skills
+        if (ignoredWeapons.contains(WeaponType.fromItemId(item.getTypeId()))) {
+            return;
+        }
         // required level < skill level
-        if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) < getLevel().getLevel()) {
+        if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) <= getLevel().getLevel()) {
             // lets add the item as a weapon if it is the current hold slot
             if (inventory.getHeldItemSlot() == slot) {
                 // lets first add the main weapon

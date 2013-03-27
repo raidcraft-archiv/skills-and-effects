@@ -142,7 +142,8 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
             if (item == null || item.getTypeId() == 0) {
                 continue;
             }
-            movedItem = (movedItem || checkItem(hero, item));
+            boolean bool = checkItem(hero, item);
+            movedItem = (movedItem || bool);
         }
         if (movedItem) {
             // inform the player
