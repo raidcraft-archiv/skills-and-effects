@@ -103,6 +103,10 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
 
     private void checkShield(ItemStack item) {
 
+        if (item == null) {
+            getHero().removeArmor(ArmorType.SHIELD);
+            return;
+        }
         if (ArmorType.fromItemId(item.getTypeId()) == ArmorType.SHIELD) {
             if (checkItem(getHero(), item)) {
                 getHero().removeArmor(ArmorType.SHIELD);
@@ -121,6 +125,9 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
         EntityEquipment equipment = trigger.getEvent().getPlayer().getEquipment();
         getHero().clearArmor();
         for (ItemStack itemStack : equipment.getArmorContents()) {
+            if (itemStack == null || itemStack.getTypeId() == 0) {
+                continue;
+            }
             ArmorPiece armor = new ArmorPiece(itemStack);
             getHero().setArmor(armor);
         }
@@ -132,6 +139,9 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
         boolean movedItem = false;
         EntityEquipment equipment = hero.getEntity().getEquipment();
         for (ItemStack item : equipment.getArmorContents()) {
+            if (item == null || item.getTypeId() == 0) {
+                continue;
+            }
             movedItem = (movedItem || checkItem(hero, item));
         }
         if (movedItem) {
