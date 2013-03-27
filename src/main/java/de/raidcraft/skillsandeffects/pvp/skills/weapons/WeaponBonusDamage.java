@@ -15,6 +15,7 @@ import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.EnumMap;
@@ -50,6 +51,21 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
                 RaidCraft.LOGGER.warning("Unknown Weapon Type " + key + " in skill config: " + getName() + ".yml");
             }
         }
+    }
+
+    @Override
+    public String getDescription() {
+
+        if (bonusDamage.size() < 1) {
+            return super.getDescription();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GRAY).append("Erhöht den Schaden mit folgenden Waffen: ");
+        for (WeaponType weaponType : bonusDamage.keySet()) {
+            sb.append(ChatColor.YELLOW).append("\n\t- ").append(ChatColor.AQUA).append(weaponType.getFriendlyName()).append(ChatColor.RED);
+            sb.append((int) getBonusDamage(weaponType) * 100).append("%");
+        }
+        return sb.toString();
     }
 
     public double getBonusDamage(WeaponType weaponType) {
