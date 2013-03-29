@@ -23,7 +23,6 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitTask;
@@ -43,17 +42,10 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
 
     private BukkitTask task;
     private int i = 0;
-    private int radius = 10;
 
     public LightningStorm(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-
-        radius = data.getInt("radius", 10);
     }
 
     @Override
@@ -62,7 +54,7 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
         cancel();
 
         final Location center = getHero().getBlockTarget();
-        final List<Location> circle = EffectUtil.circle(center, radius, 1, true, false, 10);
+        final List<Location> circle = EffectUtil.circle(center, getTotalRange(), 1, true, false, 10);
         final World world = getHero().getPlayer().getWorld();
         final FireworkEffect effect = FireworkEffect.builder().with(FireworkEffect.Type.BALL).withColor(Color.BLUE).build();
 
@@ -75,12 +67,12 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                     i++;
                 } else {
                     world.strikeLightningEffect(center);
-                    Entity[] entities = LocationUtil.getNearbyEntities(center, radius);
+                    Entity[] entities = LocationUtil.getNearbyEntities(center, getTotalRange());
                     for (Entity entity : entities) {
                         if (entity instanceof LivingEntity) {
                             CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class)
                                     .getCharacterManager().getCharacter((LivingEntity) entity);
-                            if (character.equals(getHero())) {
+                            if (character.isFriendly(getHero())) {
                                 continue;
                             }
                             try {

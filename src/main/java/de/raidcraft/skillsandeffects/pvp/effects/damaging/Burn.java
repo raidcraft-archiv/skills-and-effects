@@ -3,12 +3,15 @@ package de.raidcraft.skillsandeffects.pvp.effects.damaging;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.EffectDamage;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.util.EffectUtil;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -19,19 +22,11 @@ import org.bukkit.configuration.ConfigurationSection;
         types = {EffectType.HARMFUL, EffectType.DAMAGING, EffectType.DEBUFF},
         elements = {EffectElement.FIRE}
 )
-public class Burn<S> extends PeriodicExpirableEffect<S> {
+public class Burn extends PeriodicExpirableEffect<Skill> {
 
-    private int fireTicks;
-
-    public Burn(S source, CharacterTemplate target, EffectData data) {
+    public Burn(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-
-        this.fireTicks = data.getInt("fire-ticks", 60);
     }
 
     @Override
@@ -39,24 +34,29 @@ public class Burn<S> extends PeriodicExpirableEffect<S> {
 
         Location location = target.getEntity().getLocation();
         location.getWorld().playSound(location, Sound.FIRE_IGNITE, 10F, 1F);
-        target.getEntity().setFireTicks(fireTicks);
+        renew(target);
     }
 
     @Override
     protected void remove(CharacterTemplate target) {
 
-        target.getEntity().setFireTicks(0);
+
     }
 
     @Override
     protected void renew(CharacterTemplate target) {
 
-        target.getEntity().setFireTicks(fireTicks);
+        EffectUtil.fakeParticles(EffectUtil.Particle.FLAME, target.getEntity().getLocation(), 10);
     }
 
     @Override
     protected void tick(CharacterTemplate target) {
 
-        target.getEntity().setFireTicks(fireTicks);
+        try {
+            renew(target);
+            new EffectDamage(this, getDamage()).run();
+        } catch (CombatException e) {
+            warn(e.getMessage());
+        }
     }
 }

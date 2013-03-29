@@ -47,9 +47,11 @@ public class Pigify extends PeriodicEffect<Skill> implements Triggered {
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
-    public void onAttack(AttackTrigger trigger) {
+    public void onAttack(AttackTrigger trigger) throws CombatException {
 
+        trigger.setCancelled(true);
         trigger.getAttack().setCancelled(true);
+        throw new CombatException(CombatException.Type.CANCELLED);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)

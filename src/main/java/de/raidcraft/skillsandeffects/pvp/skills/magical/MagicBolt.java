@@ -62,6 +62,9 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     public void load(ConfigurationSection data) {
 
         addElements(EffectElement.fromString(data.getString("element")));
+        if (data.getBoolean("default-attack", false)) {
+            addTypes(EffectType.DEFAULT_ATTACK);
+        }
         knockBack = data.getBoolean("knockback", false);
         bleed = data.getBoolean("bleed", false);
         stun = data.getBoolean("stun", false);

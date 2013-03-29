@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.IgnoredSkill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @IgnoredSkill
-public abstract class AbstractBowTrap extends AbstractLevelableSkill implements CommandTriggered {
+public abstract class AbstractBowTrap extends AbstractSkill implements CommandTriggered {
 
     protected int width = 1;
     protected int length = 1;

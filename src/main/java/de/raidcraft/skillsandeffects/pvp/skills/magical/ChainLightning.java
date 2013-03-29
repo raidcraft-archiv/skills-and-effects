@@ -38,6 +38,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
     private ConfigurationSection reductionPerJump;
     private int jumpRange;
     private int jumpCount = 0;
+    private int initialDamage;
 
     public ChainLightning(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -65,8 +66,9 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        initialDamage = getTotalDamage();
         // damage the intial target
-        strikeChainLightning(getTarget(), getTotalDamage());
+        strikeChainLightning(getTarget(), initialDamage);
         jumpCount = 0;
     }
 
@@ -83,7 +85,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                         if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHero())) {
                             continue;
                         }
-                        final int newDamage = (int) (damage * getReductionPerJump());
+                        final int newDamage = (int) (damage - (initialDamage * getReductionPerJump()));
                         if (newDamage > 0) {
                             Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
                                 @Override

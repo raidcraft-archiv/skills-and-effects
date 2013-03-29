@@ -16,7 +16,7 @@ import java.util.Set;
  * @author Silthus
  */
 @EffectInformation(
-        name = "Trap Effect",
+        name = "Trap",
         description = "Entfernt die Falle nach Ablauf.",
         priority = -1.0
 )
