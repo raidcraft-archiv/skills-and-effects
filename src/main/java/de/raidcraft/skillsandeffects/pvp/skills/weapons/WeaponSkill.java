@@ -93,7 +93,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GRAY).append("Ermöglicht es dir folgende Waffen ab einem bestimmten " + getFriendlyName() + " Level zu tragen:");
         for (Map.Entry<Integer, Integer> entry : allowedWeapons.entrySet()) {
-            sb.append(ChatColor.YELLOW).append("\n\t- ").append((entry.getValue() <= getLevel().getLevel()) ? ChatColor.GREEN : ChatColor.RED);
+            sb.append(ChatColor.YELLOW).append("\n\t- ").append((entry.getValue() <= getAttachedLevel().getLevel()) ? ChatColor.GREEN : ChatColor.RED);
             sb.append(ItemUtils.getFriendlyName(entry.getKey())).append(ChatColor.YELLOW).append(": Level ");
             sb.append(ChatColor.AQUA).append(entry.getValue());
         }
@@ -106,7 +106,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         super.onLevelGain();
         for (Map.Entry<Integer, Integer> entry : allowedWeapons.entrySet()) {
 
-            if (entry.getValue() == getLevel().getLevel()) {
+            if (entry.getValue() == getAttachedLevel().getLevel()) {
                 getHero().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
                         ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             }
@@ -148,8 +148,8 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
             return;
         }
-        getLevel().addExp(expPerAttack);
-        getLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
+        getAttachedLevel().addExp(expPerAttack);
+        getAttachedLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
     }
 
     @TriggerHandler(ignoreCancelled = true)
@@ -191,7 +191,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             return;
         }
         // required level < skill level
-        if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) <= getLevel().getLevel()) {
+        if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) <= getAttachedLevel().getLevel()) {
             // lets add the item as a weapon if it is the current hold slot
             if (inventory.getHeldItemSlot() == slot) {
                 // lets first add the main weapon

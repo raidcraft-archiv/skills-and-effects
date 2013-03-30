@@ -88,7 +88,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
             return;
         }
 
-        if (ingredientSetting.getMinLevel() > getLevel().getLevel()) {
+        if (ingredientSetting.getMinLevel() > getAttachedLevel().getLevel()) {
             event.setCancelled(true);
             if (getHero().getPlayer().isOnline()) {
                 getHero().getPlayer().sendMessage(ChatColor.RED + "Du kannst Tränke mit der Zutat " +
@@ -100,7 +100,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
             }
         }
 
-        getLevel().addExp(ingredientSetting.getExp());
+        getAttachedLevel().addExp(ingredientSetting.getExp());
         getHero().debug("Brewing: Added " + ingredientSetting.getExp() + " EXP");
 
         if (Math.random() < getCleverBrewingChance()) {

@@ -59,7 +59,7 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
         if (Math.random() < getParryChance()) {
             addEffect(getHero(), ParryEffect.class);
             getHero().combatLog(this, "Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
-            getLevel().addExp(exp);
+            getAttachedLevel().addExp(exp);
             throw new CombatException(CombatException.Type.PARRIED);
         }
     }

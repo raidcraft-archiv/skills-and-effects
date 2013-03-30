@@ -10,9 +10,10 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
-import de.raidcraft.skills.api.skill.AbstractSkill;
+import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.misc.Summoned;
@@ -31,9 +32,11 @@ import org.bukkit.entity.LivingEntity;
         description = "Beschwört eine Kreatur die für den Beschwörer kämpft.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.SUMMON}
 )
-public class SummonCreature extends AbstractSkill implements CommandTriggered {
+public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
     private static final CharacterManager CHARACTER_MANAGER = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
+
+
     private EntityType entityType;
     private int minDamage;
     private int maxDamage;
@@ -41,7 +44,7 @@ public class SummonCreature extends AbstractSkill implements CommandTriggered {
     private int maxHealth;
     private ConfigurationSection amount;
 
-    public SummonCreature(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Summon(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -89,5 +92,15 @@ public class SummonCreature extends AbstractSkill implements CommandTriggered {
                 throw new CombatException("Bitte überprüfe die Skill Konfiguration! Du musst eine lebende Kreatur beschwören...");
             }
         }
+    }
+
+    public static class SummonedCreature extends Creature {
+
+        public SummonedCreature(LivingEntity entity) {
+
+            super(entity);
+        }
+
+        
     }
 }

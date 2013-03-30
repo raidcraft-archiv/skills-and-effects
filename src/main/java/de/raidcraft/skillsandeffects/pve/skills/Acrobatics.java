@@ -86,7 +86,7 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
 
         int fallHeight = getFallHeight(trigger.getAttack().getDamage());
         // lets add the exp for the fallen block height
-        getLevel().addExp((int) (expPerHeight * fallHeight));
+        getAttachedLevel().addExp((int) (expPerHeight * fallHeight));
 
         // calculate roll chance
         if (Math.random() < getRollChance()) {

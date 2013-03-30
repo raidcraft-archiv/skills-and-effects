@@ -81,7 +81,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
 
         final Material type = item.getType();
         if (ItemUtil.isShield(type) && shieldLevels.containsKey(type)) {
-            if (shieldLevels.get(type) > getLevel().getLevel()) {
+            if (shieldLevels.get(type) > getAttachedLevel().getLevel()) {
                 getHero().sendMessage(ChatColor.RED + "Du kannst diesen Schild erst ab Level " + shieldLevels.get(type) + " tragen.");
             } else {
                 final Shielded effect = addEffect(getHero(), Shielded.class);
@@ -108,7 +108,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                         } else {
                             resource.setCurrent(resource.getCurrent() - resourceCost);
                         }
-                        getLevel().addExp((int) (effect.getBlockedDamage() * shieldExp.get(type)));
+                        getAttachedLevel().addExp((int) (effect.getBlockedDamage() * shieldExp.get(type)));
                     }
                 });
                 return;

@@ -101,11 +101,11 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
         KnownBlock knownBlock = knownBlocks.get(event.getBlock().getTypeId());
         if(knownBlock == null) return;
         int exp = knownBlock.getExp();
-        getLevel().addExp(exp);
+        getAttachedLevel().addExp(exp);
 
         if(plusVariant) {
             // calculate double drop
-            double chance = getLevel().getLevel() * doubleDropChancePerLevel;
+            double chance = getAttachedLevel().getLevel() * doubleDropChancePerLevel;
             if(chance > maxDoubleDropChance) {
                 chance = maxDoubleDropChance;
             }

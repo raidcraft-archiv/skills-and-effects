@@ -181,6 +181,6 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
 
     private boolean isAllowedItem(int id) {
 
-        return allowedArmor.containsKey(id) && allowedArmor.get(id) <= getProfession().getLevel().getLevel();
+        return allowedArmor.containsKey(id) && allowedArmor.get(id) <= getProfession().getAttachedLevel().getLevel();
     }
 }

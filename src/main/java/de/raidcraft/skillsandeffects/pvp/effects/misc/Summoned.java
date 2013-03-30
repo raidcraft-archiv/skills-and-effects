@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skillsandeffects.pvp.skills.summoning.SummonCreature;
+import de.raidcraft.skillsandeffects.pvp.skills.summoning.Summon;
 
 /**
  * @author Silthus
@@ -16,9 +16,9 @@ import de.raidcraft.skillsandeffects.pvp.skills.summoning.SummonCreature;
         description = "Markiert beschwörte Kreaturen.",
         types = {EffectType.SUMMON, EffectType.MAGICAL}
 )
-public class Summoned extends ExpirableEffect<SummonCreature> {
+public class Summoned extends ExpirableEffect<Summon> {
 
-    public Summoned(SummonCreature source, CharacterTemplate target, EffectData data) {
+    public Summoned(Summon source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }

@@ -60,14 +60,14 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
     public void runCommand(CommandContext args) throws CombatException {
 
         for (ConjuredItem item : conjuredItems) {
-            if (item.getRequiredLevel() > getLevel().getLevel()) {
+            if (item.getRequiredLevel() > getAttachedLevel().getLevel()) {
                 continue;
             }
             if (Math.random() < item.getChance(this)) {
                 ItemStack itemStack = new ItemStack(item.getItemId(), item.getAmount(), item.getItemData());
                 Location location = getHero().getEntity().getLocation();
                 location.getWorld().dropItemNaturally(location, itemStack);
-                getLevel().addExp(item.getExp());
+                getAttachedLevel().addExp(item.getExp());
             }
         }
     }
