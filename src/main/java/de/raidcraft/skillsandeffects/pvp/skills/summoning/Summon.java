@@ -23,6 +23,7 @@ import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.skillsandeffects.pvp.effects.misc.Summoned;
 import de.raidcraft.util.MathUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -90,7 +91,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
         List<String> foundConfigs = new ArrayList<>();
         for (SummonedCreatureConfig config : creatureConfigs.values()) {
-            if (config.name.contains(name) || StringUtils.formatName(config.getFriendlyName()).contains(name)) {
+            if (config.name.startsWith(name) || StringUtils.formatName(config.getFriendlyName()).startsWith(name)) {
                 foundConfigs.add(config.name);
             }
         }
@@ -175,7 +176,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             load(config);
         }
 
-        private void load(ConfigurationSection config) throws InvalidConfigurationException {
+        private void load(final ConfigurationSection config) throws InvalidConfigurationException {
 
             this.friendlyName = config.getString("name", name);
 
@@ -185,7 +186,16 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
             expForSummon = config.getInt("exp", 0);
 
-            requirements.addAll(RequirementManager.createRequirements(this, config.getConfigurationSection("requirements")));
+            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                @Override
+                public void run() {
+
+                    requirements.addAll(RequirementManager.createRequirements(
+                            SummonedCreatureConfig.this,
+                            config.getConfigurationSection("requirements")
+                    ));
+                }
+            }, 1L);
 
             amount = config.getConfigurationSection("amount");
 
