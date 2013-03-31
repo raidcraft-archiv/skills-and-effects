@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.items.ToolType;
+import de.raidcraft.skills.requirement.SkillRequirementResolver;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.CraftTrigger;
@@ -85,7 +86,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                     Material droppedConfigItem = ItemUtils.getItem(dropKey);
                     if (droppedConfigItem != null) {
                         ConfigurationSection section = config.getConfigurationSection(key + ".drops." + dropKey);
-                        Drop drop = new Drop(droppedConfigItem.getId());
+                        Drop drop = new Drop(getHero(), droppedConfigItem.getId());
                         drop.setData((byte) ItemUtils.getItemData(dropKey));
                         drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
                         drop.setMinAmount(section.getInt("min-amount", 1));
@@ -158,17 +159,19 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         }
     }
 
-    public static class Drop {
+    public static class Drop implements SkillRequirementResolver {
 
+        private final Hero hero;
         private final int itemId;
         private byte data;
         private int minAmount;
         private int maxAmount;
-        private List<Requirement<Drop>> requirements;
+        private List<Requirement> requirements = new ArrayList<>();
         private ConfigurationSection chance;
 
-        public Drop(int itemId) {
+        public Drop(Hero hero, int itemId) {
 
+            this.hero = hero;
             this.itemId = itemId;
         }
 
@@ -212,14 +215,10 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
             this.data = data;
         }
 
-        public List<Requirement<Drop>> getRequirements() {
+        public void setRequirements(List<Requirement> requirements) {
 
-            return requirements;
-        }
-
-        public void setRequirements(List<Requirement<Drop>> requirements) {
-
-            this.requirements = requirements;
+            this.requirements.clear();
+            this.requirements.addAll(requirements);
         }
 
         public void setChance(ConfigurationSection chance) {
@@ -234,7 +233,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         public ItemStack getDrops(Skill skill) {
 
-            for (Requirement<Drop> requirement : getRequirements()) {
+            for (Requirement requirement : getRequirements()) {
                 if (!requirement.isMet()) {
                     return null;
                 }
@@ -244,6 +243,40 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                 return new ItemStack(getItemId(), getAmount(), getData());
             }
             return null;
+        }
+
+        @Override
+        public Hero getHero() {
+
+            return hero;
+        }
+
+        @Override
+        public List<Requirement> getRequirements() {
+
+            return requirements;
+        }
+
+        @Override
+        public boolean isMeetingAllRequirements() {
+
+            for (Requirement requirement : requirements) {
+                if (!requirement.isMet()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getResolveReason() {
+
+            for (Requirement requirement : requirements) {
+                if (!requirement.isMet()) {
+                    return requirement.getLongReason();
+                }
+            }
+            return "Alle Vorraussetzungen sind erfüllt.";
         }
     }
 }

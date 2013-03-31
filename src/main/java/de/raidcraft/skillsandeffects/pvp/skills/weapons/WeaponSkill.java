@@ -45,7 +45,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Integer, Integer> allowedWeapons = new HashMap<>();
     private final Set<WeaponType> ignoredWeapons = new HashSet<>();
-    private List<Requirement<WeaponSkill>> dualWielding;
+    private List<Requirement> dualWieldingRequirements;
     private boolean allowDualWielding = false;
     private double expPerDamage;
     private int expPerAttack;
@@ -58,7 +58,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        dualWielding = RequirementManager.createRequirements(this, data.getConfigurationSection("dual-wielding"));
+        dualWieldingRequirements = RequirementManager.createRequirements(this, data.getConfigurationSection("dual-wielding"));
         expPerDamage = data.getDouble("exp-per-damage", 0.0);
         expPerAttack = data.getInt("exp-per-attack", 0);
 
@@ -113,7 +113,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         }
         if (!allowDualWielding) {
             boolean isMet = true;
-            for (Requirement<WeaponSkill> requirement : dualWielding) {
+            for (Requirement<WeaponSkill> requirement : dualWieldingRequirements) {
                 if (!requirement.isMet()) {
                     isMet = false;
                 }
@@ -130,7 +130,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
         if (allowDualWielding) {
             boolean isMet = true;
-            for (Requirement<WeaponSkill> requirement : dualWielding) {
+            for (Requirement<WeaponSkill> requirement : dualWieldingRequirements) {
                 if (!requirement.isMet()) {
                     isMet = false;
                 }

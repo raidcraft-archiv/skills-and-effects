@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.requirement.SkillRequirementResolver;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Location;
@@ -47,7 +48,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
                 EntityType type = EntityType.fromName(section.getString("entity"));
                 if (type != null) {
                     int amount = section.getInt("amount", 1);
-                    EntitySpawner spawner = new EntitySpawner(type, amount, section.getConfigurationSection("chance"));
+                    EntitySpawner spawner = new EntitySpawner(type, amount, section.getConfigurationSection("chance"), getHero());
                     spawner.setRequirements(RequirementManager.createRequirements(spawner, section.getConfigurationSection("requirements")));
                     spawnChance.put(priority, spawner);
                 } else {
@@ -64,16 +65,11 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
 
         Location location = getHero().getEntity().getLocation();
         for (EntitySpawner spawner : spawnChance.descendingMap().values()) {
-            boolean requirementMet = true;
-            for (Requirement<EntitySpawner> requirement : spawner.getRequirements()) {
-                if (!requirement.isMet()) {
-                    requirementMet = false;
-                    break;
-                }
-            }
-            if (!requirementMet) {
+
+            if (!spawner.isMeetingAllRequirements()) {
                 continue;
             }
+
             if (Math.random() < spawner.getChance(this)) {
                 for (int i = 0; i < spawner.getAmount(); i++) {
                     location.getWorld().spawnEntity(location, spawner.type);
@@ -83,15 +79,17 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
     }
 
-    public static class EntitySpawner {
+    public static class EntitySpawner implements SkillRequirementResolver {
 
+        private final Hero hero;
         private final EntityType type;
         private final int amount;
         private final ConfigurationSection chance;
-        private List<Requirement<EntitySpawner>> requirements;
+        private List<Requirement> requirements;
 
-        public EntitySpawner(EntityType type, int amount, ConfigurationSection chance) {
+        public EntitySpawner(EntityType type, int amount, ConfigurationSection chance, Hero hero) {
 
+            this.hero = hero;
             this.type = type;
             this.amount = amount;
             this.chance = chance;
@@ -112,12 +110,41 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
             return ConfigUtil.getTotalValue(skill, chance);
         }
 
-        public List<Requirement<EntitySpawner>> getRequirements() {
+        @Override
+        public Hero getHero() {
+
+            return hero;
+        }
+
+        @Override
+        public boolean isMeetingAllRequirements() {
+
+            for (Requirement requirement : requirements) {
+                if (!requirement.isMet()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getResolveReason() {
+
+            for (Requirement requirement : requirements) {
+                if (!requirement.isMet()) {
+                    return requirement.getLongReason();
+                }
+            }
+            return "Erfüllt alle Vorraussetzungen.";
+        }
+
+        @Override
+        public List<Requirement> getRequirements() {
 
             return requirements;
         }
 
-        public void setRequirements(List<Requirement<EntitySpawner>> requirements) {
+        public void setRequirements(List<Requirement> requirements) {
 
             this.requirements = requirements;
         }
