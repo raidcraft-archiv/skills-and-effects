@@ -48,6 +48,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     private static CharacterManager CHARACTER_MANAGER;
 
     private final Map<String, SummonedCreatureConfig> creatureConfigs = new HashMap<>();
+    private String resource;
 
     public Summon(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -58,6 +59,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        resource = data.getString("resource", "souls");
         for (String key : data.getConfigurationSection("creatures").getKeys(false)) {
             try {
                 SummonedCreatureConfig config = new SummonedCreatureConfig(key, data.getConfigurationSection("creatures." + key), this);
