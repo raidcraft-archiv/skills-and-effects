@@ -61,6 +61,7 @@ public class RecursiveBlockBreak extends ExpirableEffect<Skill> implements Trigg
 
         CustomConfig blockConfig = CustomConfig.getConfig(data.getString("custom-block-config", "recursiveblockbreak-block-config.yml"));
         ConfigurationSection blocks = blockConfig.getConfigurationSection("blocks");
+        if (blocks == null) return;
         for(String key : blocks.getKeys(false)) {
             Material material = ItemUtils.getItem(key);
             if(material == null) {

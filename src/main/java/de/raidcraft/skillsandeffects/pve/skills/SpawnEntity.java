@@ -41,7 +41,9 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        for (String key : data.getConfigurationSection("entities").getKeys(false)) {
+        ConfigurationSection entities = data.getConfigurationSection("entities");
+        if (entities == null) return;
+        for (String key : entities.getKeys(false)) {
             try {
                 int priority = Integer.parseInt(key);
                 ConfigurationSection section = data.getConfigurationSection("entities" + key);
