@@ -67,7 +67,10 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     private Map<Integer, List<Drop>> parseConfig(ConfigurationSection config) {
 
         Map<Integer, List<Drop>> map = new HashMap<>();
-        for (String key : config.getKeys(false)) {
+        if (config == null) return map;
+        Set<String> keys = config.getKeys(false);
+        if (keys == null) return map;
+        for (String key : keys) {
             // each key is an item that has registered drops
             Material item = ItemUtils.getItem(key);
             if (item != null) {

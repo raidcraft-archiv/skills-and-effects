@@ -45,7 +45,8 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        toolType = ToolType.fromMaterial(ItemUtils.getItem(data.getString("tool-type")));
+        Material material = ItemUtils.getItem(data.getString("tool-type"));
+        if (material != null) toolType = ToolType.fromMaterial(material);
         for (String key : data.getStringList("blocks")) {
             Material item = ItemUtils.getItem(key);
             if (item != null) {

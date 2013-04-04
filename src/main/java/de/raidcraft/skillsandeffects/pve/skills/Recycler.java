@@ -41,7 +41,9 @@ public class Recycler extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        for (String key : data.getConfigurationSection("items").getKeys(false)) {
+        ConfigurationSection items = data.getConfigurationSection("items");
+        if (items == null) return;
+        for (String key : items.getKeys(false)) {
             Material item = ItemUtils.getItem(key);
             if (item == null) {
                 RaidCraft.LOGGER.warning("Unknown item " + key + " in skill config " + getName());

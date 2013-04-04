@@ -60,7 +60,9 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         resource = data.getString("resource", "souls");
-        for (String key : data.getConfigurationSection("creatures").getKeys(false)) {
+        ConfigurationSection creatures = data.getConfigurationSection("creatures");
+        if (creatures == null) return;
+        for (String key : creatures.getKeys(false)) {
             try {
                 SummonedCreatureConfig config = new SummonedCreatureConfig(key, data.getConfigurationSection("creatures." + key), this);
                 creatureConfigs.put(key, config);
