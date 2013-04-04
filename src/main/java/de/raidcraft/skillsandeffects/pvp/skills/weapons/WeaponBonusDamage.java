@@ -33,7 +33,6 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
 
     private final Map<WeaponType, ConfigurationSection> bonusDamage = new EnumMap<>(WeaponType.class);
     private boolean allAttacks = false;
-    private int expPerAttack;
     private double expPerDamage;
 
     public WeaponBonusDamage(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -45,7 +44,6 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
     public void load(ConfigurationSection data) {
 
         allAttacks = data.getBoolean("all-attacks", false);
-        expPerAttack = data.getInt("exp-per-attack", 0);
         expPerDamage = data.getDouble("exp-per-damage", 0.0);
         for (String key : data.getKeys(false)) {
             WeaponType type = WeaponType.fromString(key);
@@ -98,7 +96,6 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
         int newDamage = (int) (oldDamage + oldDamage * bonusDamage);
         attack.combatLog(this, "Waffenschaden um " + (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
         attack.setDamage(newDamage);
-        getAttachedLevel().addExp(expPerAttack);
         getAttachedLevel().addExp((int) (newDamage * expPerDamage));
     }
 }

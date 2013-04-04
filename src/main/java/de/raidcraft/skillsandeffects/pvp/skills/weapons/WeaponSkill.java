@@ -48,7 +48,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     private List<Requirement> dualWieldingRequirements;
     private boolean allowDualWielding = false;
     private double expPerDamage;
-    private int expPerAttack;
 
     public WeaponSkill(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -60,7 +59,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
         dualWieldingRequirements = RequirementManager.createRequirements(this, data.getConfigurationSection("dual-wielding"));
         expPerDamage = data.getDouble("exp-per-damage", 0.0);
-        expPerAttack = data.getInt("exp-per-attack", 0);
 
         ConfigurationSection weapons = data.getConfigurationSection("weapons");
         if (weapons == null) return;
@@ -148,7 +146,6 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
             return;
         }
-        getAttachedLevel().addExp(expPerAttack);
         getAttachedLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
     }
 
