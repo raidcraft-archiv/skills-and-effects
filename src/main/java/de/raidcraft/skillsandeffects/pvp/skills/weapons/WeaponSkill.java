@@ -91,7 +91,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             return super.getDescription();
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.GRAY).append("Ermöglicht es dir folgende Waffen ab einem bestimmten " + getFriendlyName() + " Level zu tragen:");
+        sb.append(ChatColor.GRAY).append("Ermöglicht es dir folgende Waffen ab einem bestimmten ").append(getFriendlyName()).append(" Level zu tragen:");
         for (Map.Entry<Integer, Integer> entry : allowedWeapons.entrySet()) {
             sb.append(ChatColor.YELLOW).append("\n\t- ").append((entry.getValue() <= getAttachedLevel().getLevel()) ? ChatColor.GREEN : ChatColor.RED);
             sb.append(ItemUtils.getFriendlyName(entry.getKey())).append(ChatColor.YELLOW).append(": Level ");
@@ -113,7 +113,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         }
         if (!allowDualWielding) {
             boolean isMet = true;
-            for (Requirement<WeaponSkill> requirement : dualWieldingRequirements) {
+            for (Requirement requirement : dualWieldingRequirements) {
                 if (!requirement.isMet()) {
                     isMet = false;
                 }
@@ -130,7 +130,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
         if (allowDualWielding) {
             boolean isMet = true;
-            for (Requirement<WeaponSkill> requirement : dualWieldingRequirements) {
+            for (Requirement requirement : dualWieldingRequirements) {
                 if (!requirement.isMet()) {
                     isMet = false;
                 }
