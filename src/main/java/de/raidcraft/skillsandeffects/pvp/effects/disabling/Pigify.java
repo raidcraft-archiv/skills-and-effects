@@ -49,9 +49,12 @@ public class Pigify extends PeriodicEffect<Skill> implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
+        if (trigger.getAttack().getTarget().getEntity().equals(pig)) {
+            return;
+        }
         trigger.setCancelled(true);
         trigger.getAttack().setCancelled(true);
-        throw new CombatException(CombatException.Type.CANCELLED);
+        throw new CombatException("Du kannst nicht angreifen während du auf einem Schwein reitest.");
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
@@ -74,6 +77,7 @@ public class Pigify extends PeriodicEffect<Skill> implements Triggered {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         pig.setPassenger(null);
+        pig.remove();
     }
 
     @Override
@@ -85,6 +89,9 @@ public class Pigify extends PeriodicEffect<Skill> implements Triggered {
             } else {
                 target.setHealth((int) (target.getHealth() + healthRegain));
             }
+        }
+        if (pig.isDead()) {
+            remove();
         }
     }
 
