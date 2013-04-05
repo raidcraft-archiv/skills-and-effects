@@ -189,14 +189,11 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         }
         // required level < skill level
         if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) <= getAttachedLevel().getLevel()) {
-            // lets add the item as a weapon if it is the current hold slot
-            if (inventory.getHeldItemSlot() == slot) {
-                // lets first add the main weapon
-                getHero().setWeapon(new Weapon(slot, item, weaponSlot));
-                // and then check for offhand weapons
-                if (allowDualWielding && weaponSlot != Weapon.Slot.OFF_HAND && slot < 9) {
-                    checkTaskbar(slot + 1, Weapon.Slot.OFF_HAND);
-                }
+            // lets first add the main weapon
+            getHero().setWeapon(new Weapon(slot, item, weaponSlot));
+            // and then check for offhand weapons
+            if (allowDualWielding && weaponSlot != Weapon.Slot.OFF_HAND && slot < 9) {
+                checkTaskbar(slot + 1, Weapon.Slot.OFF_HAND);
             }
             return;
         }
