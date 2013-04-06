@@ -38,7 +38,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     public ConsumeEffect(Consume source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-        regainEffect = new PotionEffect(PotionEffectType.HEAL, (int) (getDuration() + getDelay()), 1, true);
+        regainEffect = new PotionEffect(PotionEffectType.REGENERATION, (int) (getDuration() + getDelay()), 0, true);
     }
 
     @Override
