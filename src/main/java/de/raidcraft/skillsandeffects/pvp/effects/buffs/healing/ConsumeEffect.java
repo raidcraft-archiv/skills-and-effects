@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.CombatTrigger;
 import de.raidcraft.skillsandeffects.pvp.skills.healing.Consume;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -27,16 +28,23 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
 
     private Consume.Consumeable consumeable;
     private int resourceGain;
+    private boolean breakCombat = false;
 
     public ConsumeEffect(Consume source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
 
+    @Override
+    public void load(ConfigurationSection data) {
+
+        breakCombat = data.getBoolean("break-in-combat", false);
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
-        if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
+        if (breakCombat && trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
             remove();
         }
     }
@@ -80,7 +88,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-        if (target.isInCombat()) {
+        if (breakCombat && target.isInCombat()) {
             remove();
         }
         if (consumeable.getType() == Consume.ConsumeableType.HEALTH) {
