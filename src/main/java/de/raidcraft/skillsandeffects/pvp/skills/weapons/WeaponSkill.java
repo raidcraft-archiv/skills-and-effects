@@ -148,7 +148,8 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
             return;
         }
-        if (!allowedWeapons.containsKey(trigger.getSource().getWeapon(Weapon.Slot.MAIN_HAND).getItemId())) {
+        Weapon weapon = trigger.getSource().getWeapon(Weapon.Slot.MAIN_HAND);
+        if (weapon == null || !allowedWeapons.containsKey(weapon.getItemId())) {
             return;
         }
         getAttachedLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
