@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.CombatTrigger;
-import de.raidcraft.skillsandeffects.pvp.skills.healing.EatAndDrink;
+import de.raidcraft.skillsandeffects.pvp.skills.healing.Consume;
 
 /**
  * @author Silthus
@@ -23,12 +23,12 @@ import de.raidcraft.skillsandeffects.pvp.skills.healing.EatAndDrink;
         types = {EffectType.BUFF, EffectType.HEALING},
         priority = -1.0
 )
-public class Consume extends PeriodicExpirableEffect<EatAndDrink> implements Triggered {
+public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements Triggered {
 
-    private EatAndDrink.Consumeable consumeable;
+    private Consume.Consumeable consumeable;
     private int resourceGain;
 
-    public Consume(EatAndDrink source, CharacterTemplate target, EffectData data) {
+    public ConsumeEffect(Consume source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
@@ -41,7 +41,7 @@ public class Consume extends PeriodicExpirableEffect<EatAndDrink> implements Tri
         }
     }
 
-    public void setConsumeable(EatAndDrink.Consumeable consumeable) {
+    public void setConsumeable(Consume.Consumeable consumeable) {
 
         this.consumeable = consumeable;
     }
@@ -55,9 +55,9 @@ public class Consume extends PeriodicExpirableEffect<EatAndDrink> implements Tri
         if (consumeable == null) {
             return;
         }
-        if (consumeable.getType() == EatAndDrink.ConsumeableType.HEALTH) {
+        if (consumeable.getType() == Consume.ConsumeableType.HEALTH) {
             target.heal(resourceGain);
-        } else if (consumeable.getType() == EatAndDrink.ConsumeableType.RESOURCE) {
+        } else if (consumeable.getType() == Consume.ConsumeableType.RESOURCE) {
             Resource resource = consumeable.getResource();
             resource.setCurrent(resource.getCurrent() + resourceGain);
         }
@@ -73,7 +73,7 @@ public class Consume extends PeriodicExpirableEffect<EatAndDrink> implements Tri
     protected void remove(CharacterTemplate target) throws CombatException {
 
         this.resourceGain = 0;
-        info(consumeable.getType() == EatAndDrink.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName()
+        info(consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName()
         + " Regeneration beendet.");
     }
 
@@ -85,7 +85,7 @@ public class Consume extends PeriodicExpirableEffect<EatAndDrink> implements Tri
         }
         this.resourceGain = (int) consumeable.getResourceGain() / getTickCount();
         info("Du regenerierst nun langsam " +
-                (consumeable.getType() == EatAndDrink.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
+                (consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
         );
     }
 }

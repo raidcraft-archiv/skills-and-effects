@@ -15,7 +15,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerConsumeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.pvp.effects.buffs.healing.Consume;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.healing.ConsumeEffect;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,15 +28,15 @@ import java.util.Map;
  * @author Silthus
  */
 @SkillInformation(
-        name = "Eat and Drink",
+        name = "Consume",
         description = "Ermöglicht es durch Essen und Trinken Leben und Mana zu regenrieren.",
         types = {EffectType.HELPFUL, EffectType.BUFF, EffectType.HEALING}
 )
-public class EatAndDrink extends AbstractSkill implements Triggered {
+public class Consume extends AbstractSkill implements Triggered {
 
     private final Map<Integer, Consumeable> consumeables = new HashMap<>();
 
-    public EatAndDrink(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Consume(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -97,7 +97,7 @@ public class EatAndDrink extends AbstractSkill implements Triggered {
             if (this.itemId != itemId) {
                 return;
             }
-            EatAndDrink.this.addEffect(getHero(), Consume.class).setConsumeable(this);
+            Consume.this.addEffect(getHero(), ConsumeEffect.class).setConsumeable(this);
         }
 
         public Resource getResource() {
@@ -112,7 +112,7 @@ public class EatAndDrink extends AbstractSkill implements Triggered {
 
         public double getResourceGain() {
 
-            return ConfigUtil.getTotalValue(EatAndDrink.this, resourceGain);
+            return ConfigUtil.getTotalValue(Consume.this, resourceGain);
         }
     }
 
