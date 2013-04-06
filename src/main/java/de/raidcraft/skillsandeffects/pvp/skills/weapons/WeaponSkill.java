@@ -111,7 +111,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                         ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             }
         }
-        if (!allowDualWielding) {
+        if (!allowDualWielding && dualWieldingRequirements.size() > 1) {
             boolean isMet = true;
             for (Requirement requirement : dualWieldingRequirements) {
                 if (!requirement.isMet()) {
