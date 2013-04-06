@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.armor;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -9,17 +8,13 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
-import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.ArmorPiece;
 import de.raidcraft.skills.items.ArmorType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
-import de.raidcraft.skills.trigger.ItemHeldTrigger;
-import de.raidcraft.skills.trigger.ItemPickupTrigger;
 import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -71,51 +66,18 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
     @Override
     public void apply() {
 
+        super.apply();
         checkArmor();
     }
 
     @Override
     public void remove() {
 
+        super.remove();
         allowedArmor.clear();
         checkArmor();
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
-    public void onItemPickup(ItemPickupTrigger trigger) {
-
-        // we need to check after the item was picked up
-        Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-            @Override
-            public void run() {
-
-                checkShield(getHero().getPlayer().getInventory().getItemInHand());
-            }
-        }, 1L);
-    }
-
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
-    public void onItemHeld(ItemHeldTrigger trigger) {
-
-        // lets check if the player can wear the new item
-        checkShield(getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()));
-    }
-
-    private void checkShield(ItemStack item) {
-
-        if (item == null) {
-            getHero().removeArmor(ArmorType.SHIELD);
-            return;
-        }
-        if (ArmorType.fromItemId(item.getTypeId()) == ArmorType.SHIELD) {
-            if (checkItem(getHero(), item)) {
-                getHero().removeArmor(ArmorType.SHIELD);
-                getHero().sendMessage(ChatColor.RED + "Du kannst keine Schilder tragen! Das Schild wurde in dein Inventar gelegt.");
-            } else {
-                getHero().setArmor(new ArmorPiece(item));
-            }
-        }
-    }
 
     @TriggerHandler
     public void onInventoryClose(InventoryCloseTrigger trigger) {
@@ -168,9 +130,6 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
                     break;
                 case FEET:
                     equipment.setBoots(null);
-                    break;
-                case SHIELD:
-                    slot = getHero().getPlayer().getInventory().getHeldItemSlot();
                     break;
             }
             ItemUtil.moveItem(hero, slot, item);
