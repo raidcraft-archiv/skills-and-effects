@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -16,6 +17,7 @@ import de.raidcraft.skills.items.Weapon;
 import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.CombatTrigger;
 import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.trigger.ItemPickupTrigger;
@@ -146,6 +148,9 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
             return;
         }
+        if (!allowedWeapons.containsKey(trigger.getSource().getWeapon(Weapon.Slot.MAIN_HAND).getItemId())) {
+            return;
+        }
         getAttachedLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
     }
 
@@ -164,6 +169,15 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onItemPickup(ItemPickupTrigger trigger) {
 
+        checkTaskbar();
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onCombat(CombatTrigger trigger) {
+
+        if (trigger.getEvent().getType() != RCCombatEvent.Type.ENTER) {
+            return;
+        }
         checkTaskbar();
     }
 
