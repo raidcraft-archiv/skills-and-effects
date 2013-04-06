@@ -12,8 +12,12 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.CombatTrigger;
+import de.raidcraft.skills.trigger.RegainHealthTrigger;
 import de.raidcraft.skillsandeffects.pvp.skills.healing.Consume;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * @author Silthus
@@ -26,6 +30,7 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements Triggered {
 
+    private final PotionEffect regainEffect;
     private Consume.Consumeable consumeable;
     private int resourceGain;
     private boolean breakCombat = false;
@@ -33,6 +38,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     public ConsumeEffect(Consume source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
+        regainEffect = new PotionEffect(PotionEffectType.HEAL, (int) getDuration(), 0, true);
     }
 
     @Override
@@ -46,6 +52,15 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
 
         if (breakCombat && trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
             remove();
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
+    public void onHealthGain(RegainHealthTrigger trigger) {
+
+        if (trigger.getEvent().getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC_REGEN) {
+            trigger.getEvent().setCancelled(true);
+            trigger.setCancelled(true);
         }
     }
 
@@ -81,8 +96,9 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     protected void remove(CharacterTemplate target) throws CombatException {
 
         this.resourceGain = 0;
+        target.getEntity().removePotionEffect(PotionEffectType.HEAL);
         info(consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName()
-        + " Regeneration beendet.");
+                + " Regeneration beendet.");
     }
 
     @Override
@@ -104,6 +120,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
                 this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
             }
         }
+        target.getEntity().addPotionEffect(regainEffect);
         info("Du regenerierst nun langsam " +
                 (consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
         );
