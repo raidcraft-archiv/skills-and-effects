@@ -1,0 +1,124 @@
+package de.raidcraft.skillsandeffects.pvp.skills.healing;
+
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
+import de.raidcraft.skills.api.persistance.SkillProperties;
+import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
+import de.raidcraft.skills.api.skill.AbstractSkill;
+import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
+import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.trigger.PlayerConsumeTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.healing.Consume;
+import de.raidcraft.util.ItemUtils;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author Silthus
+ */
+@SkillInformation(
+        name = "Eat and Drink",
+        description = "Ermöglicht es durch Essen und Trinken Leben und Mana zu regenrieren.",
+        types = {EffectType.HELPFUL, EffectType.BUFF, EffectType.HEALING}
+)
+public class EatAndDrink extends AbstractSkill implements Triggered {
+
+    private final Map<Integer, Consumeable> consumeables = new HashMap<>();
+
+    public EatAndDrink(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+
+        super(hero, data, profession, database);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        loadConsumables(data.getConfigurationSection("food"));
+        loadConsumables(data.getConfigurationSection("drinks"));
+    }
+
+    private void loadConsumables(ConfigurationSection section) {
+
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                Material item = ItemUtils.getItem(key);
+                if (item != null) {
+                    Consumeable consumeable = new Consumeable(item.getId(), section.getConfigurationSection(key));
+                    consumeables.put(consumeable.itemId, consumeable);
+                } else {
+                    RaidCraft.LOGGER.warning("Wrong item name " + key + " in " + getName() + ".yml config.");
+                }
+            }
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onItemConsume(PlayerConsumeTrigger trigger) throws CombatException {
+
+        if (getHero().isInCombat()) {
+            trigger.setCancelled(true);
+            trigger.getEvent().setCancelled(true);
+            throw new CombatException("Du kannst im Kampf kein Essen zu dir nehmen.");
+        }
+        ItemStack item = trigger.getEvent().getItem();
+        if (item != null && consumeables.containsKey(item.getTypeId())) {
+            consumeables.get(item.getTypeId()).consume(item.getTypeId());
+        }
+    }
+
+    public class Consumeable {
+
+        private final int itemId;
+        private final ConsumeableType type;
+        private final String resourceName;
+        private final ConfigurationSection resourceGain;
+
+        public Consumeable(int itemId, ConfigurationSection config) {
+
+            this.itemId = itemId;
+            this.resourceName = config.getString("resource", "health");
+            this.resourceGain = config.getConfigurationSection("gain");
+            this.type = resourceName.equalsIgnoreCase("health") ? ConsumeableType.HEALTH : ConsumeableType.RESOURCE;
+        }
+
+        public void consume(int itemId) throws CombatException {
+
+            if (this.itemId != itemId) {
+                return;
+            }
+            EatAndDrink.this.addEffect(getHero(), Consume.class).setConsumeable(this);
+        }
+
+        public Resource getResource() {
+
+            return getHero().getResource(resourceName);
+        }
+
+        public ConsumeableType getType() {
+
+            return type;
+        }
+
+        public double getResourceGain() {
+
+            return ConfigUtil.getTotalValue(EatAndDrink.this, resourceGain);
+        }
+    }
+
+    public enum ConsumeableType {
+
+        HEALTH,
+        RESOURCE
+    }
+}
