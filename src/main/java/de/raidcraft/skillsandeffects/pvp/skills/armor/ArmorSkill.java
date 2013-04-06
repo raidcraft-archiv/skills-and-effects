@@ -64,6 +64,22 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
     }
 
     @Override
+    public String getDescription() {
+
+        if (allowedArmor.size() < 1) {
+            return super.getDescription();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GRAY).append("Ermöglicht es dir folgende Rüstung ab einem bestimmten Klassen Level zu tragen:");
+        for (Map.Entry<Integer, Integer> entry : allowedArmor.entrySet()) {
+            sb.append(ChatColor.YELLOW).append("\n\t- ").append((entry.getValue() <= getProfession().getAttachedLevel().getLevel()) ? ChatColor.GREEN : ChatColor.RED);
+            sb.append(ItemUtils.getFriendlyName(entry.getKey())).append(ChatColor.YELLOW).append(": Level ");
+            sb.append(ChatColor.AQUA).append(entry.getValue());
+        }
+        return sb.toString();
+    }
+
+    @Override
     public void apply() {
 
         super.apply();
