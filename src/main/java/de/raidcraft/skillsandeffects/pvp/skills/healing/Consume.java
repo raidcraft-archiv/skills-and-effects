@@ -83,6 +83,7 @@ public class Consume extends AbstractSkill implements Triggered {
         private final ConsumeableType type;
         private final String resourceName;
         private final ConfigurationSection resourceGain;
+        private final boolean percentage;
 
         public Consumeable(int itemId, ConfigurationSection config) {
 
@@ -90,6 +91,7 @@ public class Consume extends AbstractSkill implements Triggered {
             this.resourceName = config.getString("resource", "health");
             this.resourceGain = config.getConfigurationSection("gain");
             this.type = resourceName.equalsIgnoreCase("health") ? ConsumeableType.HEALTH : ConsumeableType.RESOURCE;
+            this.percentage = config.getBoolean("percentage", true);
         }
 
         public void consume(int itemId) throws CombatException {
@@ -113,6 +115,11 @@ public class Consume extends AbstractSkill implements Triggered {
         public double getResourceGain() {
 
             return ConfigUtil.getTotalValue(Consume.this, resourceGain);
+        }
+
+        public boolean isPercentage() {
+
+            return percentage;
         }
     }
 

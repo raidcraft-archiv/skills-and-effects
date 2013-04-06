@@ -83,7 +83,19 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
         if (target.isInCombat()) {
             remove();
         }
-        this.resourceGain = (int) consumeable.getResourceGain() / getTickCount();
+        if (consumeable.getType() == Consume.ConsumeableType.HEALTH) {
+            if (consumeable.isPercentage()) {
+                this.resourceGain = (int) ((target.getMaxHealth() * consumeable.getResourceGain()) / getTickCount());
+            } else {
+                this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
+            }
+        } else if (consumeable.getType() == Consume.ConsumeableType.RESOURCE) {
+            if (consumeable.isPercentage()) {
+                this.resourceGain = (int) ((consumeable.getResource().getMax() * consumeable.getResourceGain()) / getTickCount());
+            } else {
+                this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
+            }
+        }
         info("Du regenerierst nun langsam " +
                 (consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
         );
