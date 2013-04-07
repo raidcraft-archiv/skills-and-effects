@@ -75,7 +75,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
             return;
         }
 
-        if (getProfession().getResource(resourceName) == null) {
+        if (getHero().getResource(resourceName) == null) {
             return;
         }
 
@@ -96,7 +96,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                             trigger.getAttack().setCancelled(true);
                             return;
                         }
-                        Resource resource = getProfession().getResource(resourceName);
+                        Resource resource = getHero().getResource(resourceName);
                         // lets check if he has enough stamina to block the damage
                         int resourceCost = (int) (resourceCostPerBlockedDamage * effect.getBlockedDamage());
                         if (resource.getCurrent() < resourceCost) {

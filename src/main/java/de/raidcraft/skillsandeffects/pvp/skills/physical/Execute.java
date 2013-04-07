@@ -48,7 +48,7 @@ public class Execute extends AbstractLevelableSkill implements CommandTriggered 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        final Resource resource = getProfession().getResource(resourceName);
+        final Resource resource = getHero().getResource(resourceName);
         if (resource == null) {
             throw new CombatException("Unbekannte Resource: " + resourceName);
         }

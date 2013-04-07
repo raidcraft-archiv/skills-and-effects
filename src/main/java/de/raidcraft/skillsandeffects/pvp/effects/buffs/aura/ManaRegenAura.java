@@ -46,9 +46,9 @@ public class ManaRegenAura extends AbstractAura {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         Hero hero = getSource().getHero();
-        oldManaRegen = getSource().getProfession().getResource(RESOURCE_NAME).getRegenPercent();
+        oldManaRegen = getSource().getHero().getResource(RESOURCE_NAME).getRegenValue();
         double newManaRegen = oldManaRegen + oldManaRegen * getManaIncrease();
-        getSource().getProfession().getResource(RESOURCE_NAME).setRegenPercent(newManaRegen);
+        getSource().getHero().getResource(RESOURCE_NAME).setRegenValue(newManaRegen);
         super.apply(target);
         hero.combatLog(this, "Mana Regeneration auf " + (int) (newManaRegen * 100) + "% erhöht.");
         hero.debug("increased mana regain " + oldManaRegen + "->" + newManaRegen + " - " + getName());
@@ -58,7 +58,7 @@ public class ManaRegenAura extends AbstractAura {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         Hero hero = getSource().getHero();
-        getSource().getProfession().getResource(RESOURCE_NAME).setRegenPercent(oldManaRegen);
+        getSource().getHero().getResource(RESOURCE_NAME).setRegenValue(oldManaRegen);
         super.remove(target);
         hero.combatLog(this, "Mana Regeneration auf " + (int) (oldManaRegen * 100) + "% verringert.");
         hero.debug("resetted mana regain to default: " + oldManaRegen + " - " + getName());
