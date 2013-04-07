@@ -21,7 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * @author Philip
  */
 @EffectInformation(
-        name = "SpeedBlockBreak",
+        name = "Speed Block Break",
         description = "Blitzschnelles abbauen von Blöcken"
 )
 public class SpeedBlockBreakEffect extends ExpirableEffect<SpeedBlockBreak> implements Triggered {

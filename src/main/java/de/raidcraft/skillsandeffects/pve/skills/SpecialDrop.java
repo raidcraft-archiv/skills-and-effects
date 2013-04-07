@@ -13,7 +13,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.config.CustomConfig;
 import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.requirement.SkillRequirementResolver;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -45,10 +44,10 @@ import java.util.Set;
 )
 public class SpecialDrop extends AbstractSkill implements Triggered {
 
-    private static final Map<Integer, List<Drop>> specialBlockDrops = new HashMap<>();
-    private static final Map<Integer, List<Drop>> specialFishingDrops = new HashMap<>();
-    private static final Map<Integer, List<Drop>> specialCraftingDrops = new HashMap<>();
-    private static final Map<Integer, ToolType> requiredTools = new HashMap<>();
+    private final Map<Integer, List<Drop>> specialBlockDrops = new HashMap<>();
+    private final Map<Integer, List<Drop>> specialFishingDrops = new HashMap<>();
+    private final Map<Integer, List<Drop>> specialCraftingDrops = new HashMap<>();
+    private final Map<Integer, ToolType> requiredTools = new HashMap<>();
 
     public SpecialDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -58,10 +57,9 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        CustomConfig config = CustomConfig.getConfig("special-drops");
-        if (specialBlockDrops.isEmpty()) specialBlockDrops.putAll(parseConfig(config.getConfigurationSection("blocks")));
-        if (specialFishingDrops.isEmpty()) specialFishingDrops.putAll(parseConfig(config.getConfigurationSection("fishing")));
-        if (specialCraftingDrops.isEmpty()) specialCraftingDrops.putAll(parseConfig(config.getConfigurationSection("crafting")));
+        if (data.getConfigurationSection("blocks") != null) specialBlockDrops.putAll(parseConfig(data.getConfigurationSection("blocks")));
+        if (data.getConfigurationSection("fishing") != null) specialFishingDrops.putAll(parseConfig(data.getConfigurationSection("fishing")));
+        if (data.getConfigurationSection("crafting") != null) specialCraftingDrops.putAll(parseConfig(data.getConfigurationSection("crafting")));
     }
 
     private Map<Integer, List<Drop>> parseConfig(ConfigurationSection config) {
@@ -77,9 +75,9 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                 // also add the required tool to trigger drops
                 String toolName = config.getString(key + ".tool", "none");
                 if (!toolName.equalsIgnoreCase("none")) {
-                    Material material = ItemUtils.getItem(toolName);
-                    if (material != null) {
-                        requiredTools.put(item.getId(), ToolType.fromItemId(material.getId()));
+                    ToolType toolType = ToolType.fromName(toolName);
+                    if (toolType != null) {
+                        requiredTools.put(item.getId(), toolType);
                     } else {
                         RaidCraft.LOGGER.warning("Wrong tool configured in custom config " + config.getName() + " section - " + key);
                     }
@@ -92,9 +90,10 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                         Drop drop = new Drop(getHero(), droppedConfigItem.getId());
                         drop.setData((byte) ItemUtils.getItemData(dropKey));
                         drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
-                        drop.setMinAmount(section.getInt("min-amount", 1));
-                        drop.setMinAmount(section.getInt("max-amount", 1));
+                        drop.setMinAmount(section.getConfigurationSection("min-amount"));
+                        drop.setMinAmount(section.getConfigurationSection("max-amount"));
                         drop.setChance(section.getConfigurationSection("chance"));
+                        drop.setExp(section.getInt("exp", 0));
                         if (!map.containsKey(item.getId())) {
                             map.put(item.getId(), new ArrayList<Drop>());
                         }
@@ -156,19 +155,19 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                 droppedItems.add(stack);
             }
         }
-        // TODO: maybe only drop a maximum of possible drops
         for (ItemStack itemStack : droppedItems) {
             location.getWorld().dropItemNaturally(location, itemStack);
         }
     }
 
-    public static class Drop implements SkillRequirementResolver {
+    public class Drop implements SkillRequirementResolver {
 
         private final Hero hero;
         private final int itemId;
         private byte data;
-        private int minAmount;
-        private int maxAmount;
+        private int exp;
+        private ConfigurationSection minAmount;
+        private ConfigurationSection maxAmount;
         private List<Requirement> requirements = new ArrayList<>();
         private ConfigurationSection chance;
 
@@ -185,27 +184,39 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         public int getMinAmount() {
 
-            return minAmount;
+            return (int) ConfigUtil.getTotalValue(SpecialDrop.this, minAmount);
         }
 
-        public void setMinAmount(int minAmount) {
+        public void setMinAmount(ConfigurationSection minAmount) {
 
             this.minAmount = minAmount;
         }
 
         public int getMaxAmount() {
 
-            return maxAmount;
+            return (int) ConfigUtil.getTotalValue(SpecialDrop.this, maxAmount);
         }
 
-        public void setMaxAmount(int maxAmount) {
+        public void setMaxAmount(ConfigurationSection maxAmount) {
 
             this.maxAmount = maxAmount;
         }
 
+        public int getExp() {
+
+            return exp;
+        }
+
+        public void setExp(int exp) {
+
+            this.exp = exp;
+        }
+
         public int getAmount() {
 
-            return MathUtil.RANDOM.nextInt(maxAmount - minAmount + 1) + minAmount;
+            int max = getMaxAmount();
+            int min = getMinAmount();
+            return MathUtil.RANDOM.nextInt(max - min + 1) + min;
         }
 
         public byte getData() {

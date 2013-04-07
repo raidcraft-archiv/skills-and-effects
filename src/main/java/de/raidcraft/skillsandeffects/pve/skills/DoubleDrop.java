@@ -10,6 +10,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -34,6 +35,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
 
     private final Set<Integer> blockIds = new HashSet<>();
     private ConfigurationSection chanceConfig;
+    private ToolType toolType;
     private double dropChance;
 
     public DoubleDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -44,6 +46,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        toolType = ToolType.fromName(data.getString("tool"));
         chanceConfig = data.getConfigurationSection("chance");
         for (String key : data.getStringList("blocks")) {
             Material item = ItemUtils.getItem(key);
@@ -66,6 +69,9 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onBlockBreak(BlockBreakTrigger trigger) {
 
+        if (toolType != null && ToolType.fromItemId(getHero().getItemTypeInHand().getId()) != toolType) {
+            return;
+        }
         Block block = trigger.getEvent().getBlock();
         boolean doubleDrop = false;
         if (blockIds.contains(block.getTypeId())) {
