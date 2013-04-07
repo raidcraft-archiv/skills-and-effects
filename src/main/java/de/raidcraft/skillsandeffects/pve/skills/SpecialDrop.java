@@ -118,7 +118,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         if (requiredTools.containsKey(blockId) && !requiredTools.get(blockId).isOfType(getHero().getItemTypeInHand())) {
             return;
         }
-        if (!specialBlockDrops.containsKey(blockId)) {
+        if (!specialBlockDrops.containsKey(blockId) || RaidCraft.isPlayerPlacedBlock(block)) {
             return;
         }
         dropItems(specialBlockDrops.get(blockId), block.getLocation());
