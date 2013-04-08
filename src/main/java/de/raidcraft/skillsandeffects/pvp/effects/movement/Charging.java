@@ -10,6 +10,8 @@ import de.raidcraft.skills.api.effect.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.Bukkit;
@@ -49,11 +51,13 @@ public class Charging extends ExpirableEffect<Skill> implements Triggered {
         this.callback = callback;
     }
 
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (trigger.getCause() == EntityDamageEvent.DamageCause.FALL) {
             // lets cancel the damage
             trigger.getAttack().setCancelled(true);
+            trigger.setCancelled(true);
             // call the callback if exists
             if (callback != null) {
                 callback.run(trigger);
