@@ -80,7 +80,7 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         info("Du bist nun unsichtbar.");
-        EffectUtil.playEffect(target.getEntity().getLocation(), Effect.SMOKE, 5);
+        EffectUtil.playEffect(target.getEntity().getLocation(), Effect.SMOKE);
         renew(target);
     }
 
