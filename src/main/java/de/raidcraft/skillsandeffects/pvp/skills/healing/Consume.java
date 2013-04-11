@@ -99,6 +99,9 @@ public class Consume extends AbstractSkill implements Triggered {
             if (this.itemId != itemId) {
                 return;
             }
+            if (getResource() == null) {
+                throw new CombatException("Dir bringt der Verzehr dieses Essens keine Regeneration.");
+            }
             Consume.this.addEffect(getHero(), ConsumeEffect.class).setConsumeable(this);
         }
 
