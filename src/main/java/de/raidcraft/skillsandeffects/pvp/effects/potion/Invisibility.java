@@ -34,20 +34,21 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
     private boolean removeOnDamage = true;
     private boolean removeOnAttack = true;
     private final PotionEffect invisibility;
-    private final PotionEffect slowEffect;
+    private PotionEffect slowEffect;
 
     public Invisibility(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         invisibility = new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1);
         // slows by 15% for each strength point
-        slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 3);
+
     }
 
     @Override
     public void load(ConfigurationSection data) {
 
         slow = data.getBoolean("slow", false);
+        slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), data.getInt("slow-modifier", 2));
         removeOnDamage = data.getBoolean("remove-on-damage", true);
         removeOnAttack = data.getBoolean("remove-on-attack", true);
     }
