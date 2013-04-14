@@ -9,7 +9,6 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
-import de.raidcraft.skills.api.resource.VisualResourceType;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
@@ -53,9 +52,7 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
         target.heal(target.getMaxHealth());
         addEffect(this, target, LayhandsEffect.class);
         for (Resource resource : getHero().getResources()) {
-            if (resource.getType() != VisualResourceType.HEALTH) {
-                resource.setCurrent(resource.getDefault());
-            }
+            resource.setCurrent(resource.getDefault());
         }
     }
 }
