@@ -67,13 +67,12 @@ public class Consume extends AbstractSkill implements Triggered {
     public void onItemConsume(PlayerConsumeTrigger trigger) throws CombatException {
 
         if (getHero().isInCombat()) {
-            trigger.setCancelled(true);
-            trigger.getEvent().setCancelled(true);
+            trigger.getEvent().setItem(null);
             throw new CombatException("Du kannst im Kampf kein Essen zu dir nehmen.");
         }
         ItemStack item = trigger.getEvent().getItem();
         if (item != null && consumeables.containsKey(item.getTypeId())) {
-            consumeables.get(item.getTypeId()).consume(item.getTypeId());
+            consumeables.get(item.getTypeId()).consume(item);
         }
     }
 
@@ -94,15 +93,20 @@ public class Consume extends AbstractSkill implements Triggered {
             this.percentage = config.getBoolean("percentage", true);
         }
 
-        public void consume(int itemId) throws CombatException {
+        public void consume(ItemStack itemStack) throws CombatException {
 
-            if (this.itemId != itemId) {
+            if (this.itemId != itemStack.getTypeId()) {
                 return;
             }
             if (type != ConsumeableType.HEALTH && getResource() == null) {
                 throw new CombatException("Dir bringt der Verzehr dieses Essens keine Regeneration.");
             }
             Consume.this.addEffect(getHero(), ConsumeEffect.class).setConsumeable(this);
+            if (itemStack.getAmount() > 1) {
+                itemStack.setAmount(itemStack.getAmount() - 1);
+            } else {
+                getHero().getPlayer().getInventory().remove(itemStack);
+            }
         }
 
         public Resource getResource() {
