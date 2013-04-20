@@ -12,10 +12,8 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.CombatTrigger;
-import de.raidcraft.skills.trigger.RegainHealthTrigger;
 import de.raidcraft.skillsandeffects.pvp.skills.healing.Consume;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -52,15 +50,6 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
 
         if (breakCombat && trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
             remove();
-        }
-    }
-
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
-    public void onHealthGain(RegainHealthTrigger trigger) {
-
-        if (trigger.getEvent().getRegainReason() == EntityRegainHealthEvent.RegainReason.MAGIC_REGEN) {
-            trigger.getEvent().setCancelled(true);
-            trigger.setCancelled(true);
         }
     }
 
