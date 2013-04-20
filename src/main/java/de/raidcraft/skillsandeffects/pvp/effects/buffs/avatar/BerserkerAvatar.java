@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author Silthus
  */
 @EffectInformation(
-        name = "Berserker",
+        name = "Berserker Avatar",
         description = "Verwandelt dich in einen Berserker mit erhöhtem Schadensoutput.",
         types = {EffectType.AVATAR, EffectType.BUFF, EffectType.HELPFUL}
 )
