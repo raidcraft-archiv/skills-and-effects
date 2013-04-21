@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.movement;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -19,7 +20,8 @@ import org.bukkit.entity.Creature;
         name = "Taunted",
         description = "Du kannst nur dein Ziel angreifen.",
         types = {EffectType.DEBUFF, EffectType.HARMFUL, EffectType.MAGICAL},
-        priority = 1.0
+        priority = 1.0,
+        diminishingReturn = DiminishingReturnType.TAUNT
 )
 public class Taunted extends ExpirableEffect<CharacterTemplate> implements Triggered {
 

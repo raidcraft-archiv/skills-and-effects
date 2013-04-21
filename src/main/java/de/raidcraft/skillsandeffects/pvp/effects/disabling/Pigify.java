@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.disabling;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -22,7 +23,8 @@ import org.bukkit.entity.Pig;
 @EffectInformation(
         name = "Pigify",
         description = "Lässt das Ziel auf einem Schwein reiten und verhindert alle Angriffe.",
-        types = {EffectType.DISABLEING, EffectType.DEBUFF}
+        types = {EffectType.DISABLEING, EffectType.DEBUFF},
+        diminishingReturn = DiminishingReturnType.DISORIENT
 )
 public class Pigify extends PeriodicEffect<Skill> implements Triggered {
 
