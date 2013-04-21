@@ -5,7 +5,7 @@ import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.PeriodicExpirableEffect;
+import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;

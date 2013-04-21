@@ -2,7 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.resources;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.PeriodicEffect;
+import de.raidcraft.skills.api.effect.types.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.persistance.EffectData;

@@ -7,7 +7,7 @@ import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.ExpirableEffect;
+import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.pvp.skills.magical.LivingBomb;
