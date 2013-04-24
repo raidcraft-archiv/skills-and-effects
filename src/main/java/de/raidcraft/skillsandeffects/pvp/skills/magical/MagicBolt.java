@@ -52,6 +52,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     private boolean poison = false;
     private boolean isLifeLeech = false;
     private ConfigurationSection lifeLeech;
+    private MagicalAttackType attackType;
 
     public MagicBolt(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -62,6 +63,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     public void load(ConfigurationSection data) {
 
         addElements(EffectElement.fromString(data.getString("element")));
+        attackType = MagicalAttackType.valueOf(data.getString("visual-type", "SMOKE"));
         if (data.getBoolean("default-attack", false)) {
             addTypes(EffectType.DEFAULT_ATTACK);
         }
@@ -91,7 +93,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        magicalAttack(MagicalAttackType.SMOKE, new EntityAttackCallback() {
+        magicalAttack(attackType, new EntityAttackCallback() {
             @Override
             public void run(EntityAttack attack) throws CombatException {
 
