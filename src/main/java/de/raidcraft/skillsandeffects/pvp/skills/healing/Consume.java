@@ -67,7 +67,7 @@ public class Consume extends AbstractSkill implements Triggered {
     public void onItemConsume(PlayerConsumeTrigger trigger) throws CombatException {
 
         if (getHero().isInCombat()) {
-            trigger.getEvent().setItem(null);
+            trigger.getEvent().setCancelled(true);
             throw new CombatException("Du kannst im Kampf kein Essen zu dir nehmen.");
         }
         ItemStack item = trigger.getEvent().getItem();
