@@ -237,7 +237,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
 
         @Override
-        public Hero getHero() {
+        public Hero getObject() {
 
             return skill.getHero();
         }

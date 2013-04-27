@@ -113,7 +113,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
-        public Hero getHero() {
+        public Hero getObject() {
 
             return hero;
         }
