@@ -35,6 +35,7 @@ import java.util.Map;
 public class Consume extends AbstractSkill implements Triggered {
 
     private final Map<Integer, Consumeable> consumeables = new HashMap<>();
+    private int requiredFoodLevel = 19;
 
     public Consume(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -44,6 +45,7 @@ public class Consume extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        requiredFoodLevel = data.getInt("food-level", 19);
         loadConsumables(data.getConfigurationSection("food"));
         loadConsumables(data.getConfigurationSection("drinks"));
     }
@@ -66,6 +68,10 @@ public class Consume extends AbstractSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onItemConsume(PlayerConsumeTrigger trigger) throws CombatException {
 
+        if (getHero().getPlayer().getFoodLevel() < requiredFoodLevel) {
+            // the player has to have full food level for the regen to kick in
+            return;
+        }
         if (getHero().isInCombat()) {
             trigger.getEvent().setCancelled(true);
             throw new CombatException("Du kannst im Kampf kein Essen zu dir nehmen.");
