@@ -22,7 +22,7 @@
     <artifactId>skills-and-effects</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>Skill and Effect Implementations</name>
+    <name>SkillsAndEffects</name>
 
     <parent>
         <groupId>de.raidcraft</groupId>
