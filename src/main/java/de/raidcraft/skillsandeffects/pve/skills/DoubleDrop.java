@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
+import de.raidcraft.skills.trigger.CraftTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +36,7 @@ import java.util.Set;
 public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
 
     private final Set<Integer> blockIds = new HashSet<>();
+    private final Set<Integer> craftedItems = new HashSet<>();
     private ConfigurationSection chanceConfig;
     private ToolType toolType;
     private double dropChance;
@@ -48,7 +51,14 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
 
         toolType = ToolType.fromName(data.getString("tool"));
         chanceConfig = data.getConfigurationSection("chance");
-        for (String key : data.getStringList("blocks")) {
+        blockIds.addAll(getItemList(data.getStringList("blocks")));
+        craftedItems.addAll(getItemList(data.getStringList("crafting")));
+    }
+
+    private Set<Integer> getItemList(List<String> strings) {
+
+        HashSet<Integer> set = new HashSet<>();
+        for (String key : strings) {
             Material item = ItemUtils.getItem(key);
             if (item != null) {
                 blockIds.add(item.getId());
@@ -56,6 +66,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
                 RaidCraft.LOGGER.warning("Unknown item in skill config of: " + getName() + ".yml");
             }
         }
+        return set;
     }
 
     private double getChance() {
@@ -86,6 +97,19 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
             // lets also get the globally defined exp and add them to the skill
             int exp = RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getBlockExperienceFor(block.getTypeId());
             getAttachedLevel().addExp((doubleDrop ? exp * 2 : exp));
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onItemCraft(CraftTrigger trigger) {
+
+        ItemStack result = trigger.getEvent().getRecipe().getResult();
+        int id = result.getTypeId();
+        if (craftedItems.contains(id) && Math.random() < getChance()) {
+            // clone the item and add the double drop
+            trigger.getEvent().getWhoClicked().getInventory().addItem(new ItemStack(result));
+            int exp = RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getCraftingExperienceFor(result.getTypeId());
+            getAttachedLevel().addExp(result.getAmount() * exp);
         }
     }
 }
