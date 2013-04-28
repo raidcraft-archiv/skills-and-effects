@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.healing;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -46,7 +47,7 @@ public class BloodThirst extends AbstractSkill implements CommandTriggered {
 
         Resource resource = getHero().getResource(resourceName);
         if (resource.getCurrent() >= minCost) {
-            getHero().heal((int) (resource.getCurrent() * healFactor));
+            new HealAction<>(this, getHero(), (int) (resource.getCurrent() * healFactor)).run();
             resource.setCurrent(resource.getDefault());
         } else {
             throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");

@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.buffs.avatar;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
@@ -69,7 +70,7 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
 
         int healAmount = (int) (trigger.getAttack().getDamage() * healPercentage);
         // heal the paladin
-        getSource().getHero().heal(healAmount);
+        new HealAction<>(this, getSource().getHero(), healAmount).run();
         trigger.getAttack().combatLog(this, "<s> wurde um " + healPercentage * 100 + "% (" + healAmount + ") des Schadens geheilt.");
     }
 

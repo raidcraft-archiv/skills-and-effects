@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -108,7 +109,7 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
                     if (disable) ConeCast.this.addEffect(attack.getTarget(), Pigify.class);
                     if (poison) ConeCast.this.addEffect(attack.getTarget(), Poison.class);
                     if (isLifeLeech) {
-                        getHero().heal((int) (attack.getDamage() * getLifeLeechPercentage()));
+                        new HealAction<>(this, getHero(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
                     }
                 }
             }).run();

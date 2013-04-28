@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -49,7 +50,7 @@ public class Heal extends AbstractSkill implements CommandTriggered {
         CharacterTemplate target = getTarget(args, selfHeal);
 
         if (target.isFriendly(getHero())) {
-            target.heal(getTotalDamage());
+            new HealAction<>(this, target, getTotalDamage()).run();
         } else if (target instanceof Hero) {
             if (damageHero) new MagicalAttack(getHero(), target, getTotalDamage()).run();
         } else if (damageMonster) {

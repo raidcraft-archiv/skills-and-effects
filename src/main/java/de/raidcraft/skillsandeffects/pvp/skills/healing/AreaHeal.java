@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.healing;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -43,10 +44,10 @@ public class AreaHeal extends AbstractSkill implements CommandTriggered {
         EffectUtil.playFirework(getHero().getEntity().getWorld(), getHero().getEntity().getLocation().subtract(0, 4, 0), FIREWORK_EFFECT);
         for (CharacterTemplate target : getNearbyTargets()) {
             if (target.isFriendly(getHero())) {
-                target.heal(getTotalDamage());
+                new HealAction<>(this, target, getTotalDamage()).run();
             }
         }
         // also heal ourselves
-        getHero().heal(getTotalDamage());
+        new HealAction<>(this, getHero(), getTotalDamage()).run();
     }
 }

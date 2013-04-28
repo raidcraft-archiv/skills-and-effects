@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.buffs.healing;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.events.RCCombatEvent;
@@ -68,7 +69,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
             return;
         }
         if (consumeable.getType() == Consume.ConsumeableType.HEALTH) {
-            target.heal(resourceGain);
+            new HealAction<>(this, target, resourceGain).run();
         } else if (consumeable.getType() == Consume.ConsumeableType.RESOURCE) {
             Resource resource = consumeable.getResource();
             resource.setCurrent(resource.getCurrent() + resourceGain);

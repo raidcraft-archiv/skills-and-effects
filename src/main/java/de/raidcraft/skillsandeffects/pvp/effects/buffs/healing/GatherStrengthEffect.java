@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.buffs.healing;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -39,14 +40,14 @@ public class GatherStrengthEffect extends PeriodicExpirableEffect<GatherStrength
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        target.heal((int) (target.getMaxHealth() * restorePerTick));
+        new HealAction<>(this, target, (int) (target.getMaxHealth() * restorePerTick)).run();
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         if (initialHeal > 0.0) {
-            target.heal((int) (target.getMaxHealth() * initialHeal));
+            new HealAction<>(this, target, (int) (target.getMaxHealth() * initialHeal)).run();
         }
     }
 

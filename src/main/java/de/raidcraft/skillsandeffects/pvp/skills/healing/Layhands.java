@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -49,7 +50,7 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
         if (target.hasEffect(LayhandsEffect.class)) {
             throw new CombatException(CombatException.Type.IMMUNE);
         }
-        target.heal(target.getMaxHealth());
+        new HealAction<>(this, target, target.getMaxHealth()).run();
         addEffect(this, target, LayhandsEffect.class);
         for (Resource resource : getHero().getResources()) {
             resource.setCurrent(resource.getDefault());

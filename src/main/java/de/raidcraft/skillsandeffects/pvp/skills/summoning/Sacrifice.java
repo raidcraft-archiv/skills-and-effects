@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.summoning;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -65,7 +66,7 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
         }
         // issue the heal
         if (heal > 0) {
-            getHero().heal(heal);
+            new HealAction<>(this, getHero(), heal).run();
         }
     }
 }
