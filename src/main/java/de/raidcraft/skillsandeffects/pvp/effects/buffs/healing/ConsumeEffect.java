@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.CombatTrigger;
+import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skillsandeffects.pvp.skills.healing.Consume;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
@@ -33,6 +34,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     private Consume.Consumeable consumeable;
     private int resourceGain;
     private boolean breakCombat = false;
+    private boolean breakOnDamage = true;
 
     public ConsumeEffect(Consume source, CharacterTemplate target, EffectData data) {
 
@@ -44,12 +46,21 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     public void load(ConfigurationSection data) {
 
         breakCombat = data.getBoolean("break-in-combat", false);
+        breakOnDamage = data.getBoolean("break-on-damage", true);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
         if (breakCombat && trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
+            remove();
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onDamage(DamageTrigger trigger) throws CombatException {
+
+        if (breakOnDamage && trigger.getAttack().getDamage() > 0) {
             remove();
         }
     }
