@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
         name = "Consume",
         description = "Regeneriert Leben durch Essen.",
         types = {EffectType.BUFF, EffectType.HEALING},
-        priority = -1.0
+        priority = 1.0
 )
 public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements Triggered {
 
