@@ -86,7 +86,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     protected void remove(CharacterTemplate target) throws CombatException {
 
         this.resourceGain = 0;
-        target.getEntity().removePotionEffect(PotionEffectType.HEAL);
+        target.getEntity().removePotionEffect(PotionEffectType.REGENERATION);
         info((consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName())
                 + " Regeneration beendet.");
     }
