@@ -34,7 +34,7 @@ public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Trigg
     @TriggerHandler
     public void onBowShoot(BowFireTrigger trigger) throws CombatException {
 
-        if (getSource().getProperties().getInformation().queuedAttack()) {
+        if (getSource().getSkillProperties().getInformation().queuedAttack()) {
             getSource().substractUsageCost(new SkillAction(getSource()));
         }
         // bow force of 1.0 is max
