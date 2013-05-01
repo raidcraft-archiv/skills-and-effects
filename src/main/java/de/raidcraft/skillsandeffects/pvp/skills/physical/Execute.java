@@ -48,11 +48,11 @@ public class Execute extends AbstractLevelableSkill implements CommandTriggered 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        final Resource resource = getHero().getResource(resourceName);
+        final Resource resource = getHolder().getResource(resourceName);
         if (resource == null) {
             throw new CombatException("Unbekannte Resource: " + resourceName);
         }
-        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 

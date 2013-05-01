@@ -53,17 +53,17 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (!getHero().hasEffect(Shielded.class) || ItemUtil.isShield(getHero().getItemTypeInHand())) {
+        if (!getHolder().hasEffect(Shielded.class) || ItemUtil.isShield(getHolder().getItemTypeInHand())) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
 
-        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
                 if (stun) ShieldBash.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
                 if (knockback) ShieldBash.this.addEffect(
-                        getHero().getPlayer().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                        getHolder().getPlayer().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
                 if (purge > 0) {
                     List<Effect> effects = trigger.getAttack().getTarget().getEffects();
                     int i = 0;

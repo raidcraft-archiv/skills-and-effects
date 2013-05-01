@@ -33,7 +33,7 @@ public class Backstab extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 

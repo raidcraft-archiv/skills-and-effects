@@ -33,8 +33,8 @@ public class Taunt extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         for (CharacterTemplate target : getNearbyTargets()) {
-            if (!target.isFriendly(getHero())) {
-                addEffect((CharacterTemplate)getHero(), target, Taunted.class);
+            if (!target.isFriendly(getHolder())) {
+                addEffect((CharacterTemplate) getHolder(), target, Taunted.class);
             }
         }
     }

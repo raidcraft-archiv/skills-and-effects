@@ -73,11 +73,11 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
-                if (knockBack) Strike.this.addEffect(getHero().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                if (knockBack) Strike.this.addEffect(getHolder().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
                 if (bleed) Strike.this.addEffect(trigger.getAttack().getTarget(), Bleed.class);
                 if (stun) Strike.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
                 if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);

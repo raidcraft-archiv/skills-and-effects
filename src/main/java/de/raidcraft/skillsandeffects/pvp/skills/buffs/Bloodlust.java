@@ -31,16 +31,16 @@ public class Bloodlust extends AbstractSkill implements Triggered {
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        if (!getHero().isInCombat()) {
+        if (!getHolder().isInCombat()) {
             return;
         }
         if (isOnCooldown()) {
             return;
         }
-        if (getHero().hasEffect(BloodlustEffect.class)) {
-            getHero().getEffect(BloodlustEffect.class).renew();
+        if (getHolder().hasEffect(BloodlustEffect.class)) {
+            getHolder().getEffect(BloodlustEffect.class).renew();
         } else {
-            addEffect(getHero(), BloodlustEffect.class);
+            addEffect(getHolder(), BloodlustEffect.class);
         }
     }
 }

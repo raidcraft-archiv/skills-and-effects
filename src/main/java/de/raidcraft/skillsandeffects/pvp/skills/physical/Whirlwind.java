@@ -46,7 +46,7 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
         int i = 0;
         for (CharacterTemplate target : getNearbyTargets()) {
 
-            if (target.equals(getHero())) {
+            if (target.equals(getHolder())) {
                 continue;
             }
             if (!(i < maxTargets)) {
@@ -54,7 +54,7 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
             }
             Attack<CharacterTemplate, CharacterTemplate> attack = attack(target);
             if (!attack.isCancelled() && knockBack) {
-                addEffect(getHero().getPlayer().getLocation(), target, KnockBack.class);
+                addEffect(getHolder().getPlayer().getLocation(), target, KnockBack.class);
             }
             i++;
         }

@@ -76,7 +76,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
             // we want to display the message to the player and return
             // from this effect silently to allow the damage to go thru
             trigger.getAttack().setCancelled(true);
-            getSource().getHero().sendMessage(ChatColor.RED + e.getMessage());
+            getSource().getHolder().sendMessage(ChatColor.RED + e.getMessage());
         }
         // if the attack was cancelled that means the callback dont want the damage blocked
         // but the attack needs to be uncancelled for the damage to go thru
@@ -97,12 +97,12 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
                 new EffectDamage(this, getBlockedDamage()).run();
             }
         } catch (CombatException e) {
-            getSource().getHero().sendMessage("Schaden konnte nicht reflektiert werden: " + e.getMessage());
+            getSource().getHolder().sendMessage("Schaden konnte nicht reflektiert werden: " + e.getMessage());
         }
 
         trigger.getAttack().setDamage(newDamage);
-        getSource().getHero().debug("reduced damage " + oldDamage + "->" + newDamage + " - skill: " + getSource());
-        getSource().getHero().combatLog(this, getBlockedDamage() + " Schaden absorbiert.");
+        getSource().getHolder().debug("reduced damage " + oldDamage + "->" + newDamage + " - skill: " + getSource());
+        getSource().getHolder().combatLog(this, getBlockedDamage() + " Schaden absorbiert.");
         absorbed += getBlockedDamage();
 
         // remove the effect when the limit is reached

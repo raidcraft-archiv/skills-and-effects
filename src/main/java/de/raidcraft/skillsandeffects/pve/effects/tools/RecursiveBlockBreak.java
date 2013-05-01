@@ -107,7 +107,7 @@ public class RecursiveBlockBreak extends ExpirableEffect<Skill> implements Trigg
 
         // check if correct tool in use
         if (event.getItem() == null || event.getItem().getTypeId() != toolId) {
-            getSource().getHero().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId +
+            getSource().getHolder().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId +
                     ")");
             return;
         }

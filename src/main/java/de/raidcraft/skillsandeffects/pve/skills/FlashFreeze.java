@@ -29,7 +29,7 @@ public class FlashFreeze extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        BlockUtil.replaceNonSolidSurfaceBlocks(getHero().getEntity().getLocation().getBlock(),
+        BlockUtil.replaceNonSolidSurfaceBlocks(getHolder().getEntity().getLocation().getBlock(),
                 Material.SNOW,
                 getTotalRange(),
                 getTotalRange(),

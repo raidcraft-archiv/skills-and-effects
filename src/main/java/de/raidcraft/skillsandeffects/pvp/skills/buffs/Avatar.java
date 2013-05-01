@@ -88,11 +88,11 @@ public class Avatar extends AbstractSkill implements CommandTriggered {
 
         if (avatarType == null) return;
 
-        if (getHero().hasEffect(avatarType.getEffectClass())) {
-            getHero().getEffect(avatarType.getEffectClass()).renew();
+        if (getHolder().hasEffect(avatarType.getEffectClass())) {
+            getHolder().getEffect(avatarType.getEffectClass()).renew();
         } else {
-            getHero().removeEffectTypes(EffectType.AVATAR);
-            addEffect(this, getHero(), avatarType.getEffectClass());
+            getHolder().removeEffectTypes(EffectType.AVATAR);
+            addEffect(this, getHolder(), avatarType.getEffectClass());
         }
     }
 }

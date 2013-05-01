@@ -94,7 +94,7 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
                 @Override
                 public void run(EntityAttack attack) throws CombatException {
 
-                    if (knockBack) AreaCast.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                    if (knockBack) AreaCast.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
                     if (bleed) AreaCast.this.addEffect(attack.getTarget(), Bleed.class);
                     if (stun) AreaCast.this.addEffect(attack.getTarget(), Stun.class);
                     if (sunderArmor) AreaCast.this.addEffect(attack.getTarget(), SunderingArmor.class);
@@ -106,7 +106,7 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
                     if (disable) AreaCast.this.addEffect(attack.getTarget(), Pigify.class);
                     if (poison) AreaCast.this.addEffect(attack.getTarget(), Poison.class);
                     if (isLifeLeech) {
-                        new HealAction<>(this, getHero(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                        new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
                     }
                 }
             }).run();

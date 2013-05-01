@@ -34,16 +34,16 @@ public class BloodStrike extends AbstractLevelableSkill implements CommandTrigge
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        final BloodlustEffect effect = getHero().getEffect(BloodlustEffect.class);
-        if (!getHero().hasEffect(BloodlustEffect.class)) {
+        final BloodlustEffect effect = getHolder().getEffect(BloodlustEffect.class);
+        if (!getHolder().hasEffect(BloodlustEffect.class)) {
             throw new CombatException("Du benötigst mindestens einen Stack " + effect.getFriendlyName());
         }
-        addEffect(getHero(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
                 trigger.getAttack().setDamage(getTotalDamage() * effect.getStacks());
-                getHero().removeEffect(BloodlustEffect.class);
+                getHolder().removeEffect(BloodlustEffect.class);
             }
         });
     }

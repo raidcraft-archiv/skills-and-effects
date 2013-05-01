@@ -101,19 +101,19 @@ public class ArmorSkill extends AbstractSkill implements Triggered {
         checkArmor();
         // now we need to set the armor of the player
         EntityEquipment equipment = trigger.getEvent().getPlayer().getEquipment();
-        getHero().clearArmor();
+        getHolder().clearArmor();
         for (ItemStack itemStack : equipment.getArmorContents()) {
             if (itemStack == null || itemStack.getTypeId() == 0) {
                 continue;
             }
             ArmorPiece armor = new ArmorPiece(itemStack);
-            getHero().setArmor(armor);
+            getHolder().setArmor(armor);
         }
     }
 
     private void checkArmor() {
 
-        Hero hero = getHero();
+        Hero hero = getHolder();
         boolean movedItem = false;
         EntityEquipment equipment = hero.getEntity().getEquipment();
         for (ItemStack item : equipment.getArmorContents()) {

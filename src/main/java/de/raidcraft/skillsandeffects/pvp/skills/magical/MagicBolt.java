@@ -98,7 +98,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
             @Override
             public void run(EntityAttack attack) throws CombatException {
 
-                if (knockBack) MagicBolt.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                if (knockBack) MagicBolt.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
                 if (bleed) MagicBolt.this.addEffect(attack.getTarget(), Bleed.class);
                 if (stun) MagicBolt.this.addEffect(attack.getTarget(), Stun.class);
                 if (sunderArmor) MagicBolt.this.addEffect(attack.getTarget(), SunderingArmor.class);
@@ -110,7 +110,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 if (disable) MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
                 if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
                 if (isLifeLeech) {
-                    new HealAction<>(this, getHero(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                    new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
                 }
             }
         });

@@ -43,9 +43,9 @@ public class GatherStrength extends AbstractSkill implements Triggered {
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         int damage = trigger.getAttack().getDamage();
-        if (getHero().getHealth() - damage < getHero().getMaxHealth() * triggerPercent) {
-            if (!getHero().hasEffect(GatherStrengthEffect.class) && canUseSkill()) {
-                addEffect(getHero(), GatherStrengthEffect.class);
+        if (getHolder().getHealth() - damage < getHolder().getMaxHealth() * triggerPercent) {
+            if (!getHolder().hasEffect(GatherStrengthEffect.class) && canUseSkill()) {
+                addEffect(getHolder(), GatherStrengthEffect.class);
                 substractUsageCost(new SkillAction(this));
             }
         }

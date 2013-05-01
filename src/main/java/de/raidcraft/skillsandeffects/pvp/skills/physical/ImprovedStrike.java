@@ -46,7 +46,7 @@ public class ImprovedStrike extends AbstractSkill implements CommandTriggered, T
     public void runCommand(CommandContext args) throws CombatException {
 
         triggered = true;
-        getHero().sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + "Der nächste normale Angriff verursacht mehr Schaden!");
+        getHolder().sendMessage("" + ChatColor.GRAY + ChatColor.ITALIC + "Der nächste normale Angriff verursacht mehr Schaden!");
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)

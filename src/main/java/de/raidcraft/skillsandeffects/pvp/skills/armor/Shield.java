@@ -69,22 +69,22 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler
     public void onItemHeldChange(ItemHeldTrigger trigger) throws CombatException {
 
-        ItemStack item = getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot());
-        if (item == null || item.getTypeId() == 0 || !getHero().isInCombat()) {
-            getHero().removeEffect(Shielded.class);
+        ItemStack item = getHolder().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot());
+        if (item == null || item.getTypeId() == 0 || !getHolder().isInCombat()) {
+            getHolder().removeEffect(Shielded.class);
             return;
         }
 
-        if (getHero().getResource(resourceName) == null) {
+        if (getHolder().getResource(resourceName) == null) {
             return;
         }
 
         final Material type = item.getType();
         if (ItemUtil.isShield(type) && shieldLevels.containsKey(type)) {
             if (shieldLevels.get(type) > getAttachedLevel().getLevel()) {
-                getHero().sendMessage(ChatColor.RED + "Du kannst diesen Schild erst ab Level " + shieldLevels.get(type) + " tragen.");
+                getHolder().sendMessage(ChatColor.RED + "Du kannst diesen Schild erst ab Level " + shieldLevels.get(type) + " tragen.");
             } else {
-                final Shielded effect = addEffect(getHero(), Shielded.class);
+                final Shielded effect = addEffect(getHolder(), Shielded.class);
                 effect.setDamageReduction(shieldReduction.get(type));
                 effect.addCallback(new Callback<DamageTrigger>() {
                     @Override
@@ -96,7 +96,7 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                             trigger.getAttack().setCancelled(true);
                             return;
                         }
-                        Resource resource = getHero().getResource(resourceName);
+                        Resource resource = getHolder().getResource(resourceName);
                         // lets check if he has enough stamina to block the damage
                         int resourceCost = (int) (resourceCostPerBlockedDamage * effect.getBlockedDamage());
                         if (resource.getCurrent() < resourceCost) {
@@ -114,6 +114,6 @@ public class Shield extends AbstractLevelableSkill implements Triggered {
                 return;
             }
         }
-        getHero().removeEffect(Shielded.class);
+        getHolder().removeEffect(Shielded.class);
     }
 }

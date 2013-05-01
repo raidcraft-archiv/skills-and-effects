@@ -47,15 +47,15 @@ public class Charge extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Location playerLoc = getHero().getPlayer().getLocation();
+        Location playerLoc = getHolder().getPlayer().getLocation();
         final CharacterTemplate target = getTarget();
         Location targetLoc = target.getEntity().getLocation();
 
         double xDir = targetLoc.getX() - playerLoc.getX();
         double zDir = targetLoc.getZ() - playerLoc.getZ();
         Vector v = new Vector(xDir / 3.0D, 0.5D, zDir / 3.0D);
-        getHero().getPlayer().setVelocity(v);
-        addEffect(getHero(), Charging.class);
+        getHolder().getPlayer().setVelocity(v);
+        addEffect(getHolder(), Charging.class);
         playerLoc.getWorld().playSound(playerLoc, Sound.WITHER_IDLE, 10F, 100F);
         // lets add a stun effect if configured
         if (stun) {

@@ -45,11 +45,11 @@ public class RagingFire extends AbstractLevelableSkill implements Triggered {
     public void onSkillCast(PlayerCastSkillTrigger trigger) throws CombatException {
 
         if (trigger.getSkill().getClass() == Fireball.class) {
-            addEffect(getHero(), RagingFireEffect.class);
-        } else if (trigger.getSkill().isOfElement(EffectElement.FIRE) && getHero().hasEffect(RagingFireEffect.class)) {
-            int stacks = getHero().getEffect(RagingFireEffect.class).getStacks();
+            addEffect(getHolder(), RagingFireEffect.class);
+        } else if (trigger.getSkill().isOfElement(EffectElement.FIRE) && getHolder().hasEffect(RagingFireEffect.class)) {
+            int stacks = getHolder().getEffect(RagingFireEffect.class).getStacks();
             trigger.getAction().setCastTime((int) (trigger.getAction().getCastTime() - trigger.getAction().getCastTime() * castDecreasePerStack * stacks));
-            getHero().removeEffect(RagingFireEffect.class);
+            getHolder().removeEffect(RagingFireEffect.class);
         }
     }
 }

@@ -80,7 +80,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onBlockBreak(BlockBreakTrigger trigger) {
 
-        if (toolType != null && ToolType.fromItemId(getHero().getItemTypeInHand().getId()) != toolType) {
+        if (toolType != null && ToolType.fromItemId(getHolder().getItemTypeInHand().getId()) != toolType) {
             return;
         }
         Block block = trigger.getEvent().getBlock();

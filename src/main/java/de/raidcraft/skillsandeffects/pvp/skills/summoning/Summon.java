@@ -84,7 +84,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
                 }
             }
             if (match) {
-                getHero().sendMessage(ChatColor.GREEN + "Du kannst eine neue Kreatur beschwören: " + config.getFriendlyName());
+                getHolder().sendMessage(ChatColor.GREEN + "Du kannst eine neue Kreatur beschwören: " + config.getFriendlyName());
             }
         }
     }
@@ -129,7 +129,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         int maxAmount = config.getAmount();
         if (amount > maxAmount) {
             amount = maxAmount;
-            getHero().sendMessage(ChatColor.RED + "Du kannst maximal " + maxAmount + " " + config.getFriendlyName() + " beschwören.");
+            getHolder().sendMessage(ChatColor.RED + "Du kannst maximal " + maxAmount + " " + config.getFriendlyName() + " beschwören.");
         }
 
         summonCreatures(config, amount);
@@ -152,7 +152,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             addEffect(creature, Summoned.class);
             // also add some exp to the skill and display the combatlog message
             getAttachedLevel().addExp(config.expForSummon);
-            getHero().combatLog(this, config.getFriendlyName() + " mit " + creature.getMaxHealth() + " Leben " +
+            getHolder().combatLog(this, config.getFriendlyName() + " mit " + creature.getMaxHealth() + " Leben " +
                     "und " + creature.getDamage() + " Schaden beschworen.");
             summonedCreatures.add(creature);
         }
@@ -239,7 +239,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         @Override
         public Hero getObject() {
 
-            return skill.getHero();
+            return skill.getHolder();
         }
 
         @Override
@@ -279,7 +279,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             setMaxHealth(config.getMaxHealth());
             setHealth(getMaxHealth());
             setDamage(config.getDamage());
-            getEntity().setCustomName(ChatColor.RED + "Kreatur von " + config.skill.getHero().getName());
+            getEntity().setCustomName(ChatColor.RED + "Kreatur von " + config.skill.getHolder().getName());
             getEntity().setCustomNameVisible(true);
         }
     }

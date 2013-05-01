@@ -52,7 +52,7 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
         int heal = 0;
         int healthPerSacrifice = getHealthPerSacrifice();
         int i = 0;
-        for (CharacterTemplate partyMember : getHero().getParty().getMembers()) {
+        for (CharacterTemplate partyMember : getHolder().getParty().getMembers()) {
 
             if (i >= maxSacrifice) {
                 break;
@@ -66,7 +66,7 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
         }
         // issue the heal
         if (heal > 0) {
-            new HealAction<>(this, getHero(), heal).run();
+            new HealAction<>(this, getHolder(), heal).run();
         }
     }
 }

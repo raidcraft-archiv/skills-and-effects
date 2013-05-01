@@ -52,13 +52,13 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
-                || !weapon.isOfType(getHero().getItemTypeInHand())
-                || getHero().hasEffect(ParryEffect.class)) {
+                || !weapon.isOfType(getHolder().getItemTypeInHand())
+                || getHolder().hasEffect(ParryEffect.class)) {
             return;
         }
         if (Math.random() < getParryChance()) {
-            addEffect(getHero(), ParryEffect.class);
-            getHero().combatLog(this, "Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
+            addEffect(getHolder(), ParryEffect.class);
+            getHolder().combatLog(this, "Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
             getAttachedLevel().addExp(exp);
             throw new CombatException(CombatException.Type.PARRIED);
         }

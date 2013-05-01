@@ -64,7 +64,7 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
             // our formula to calculate the height goes as follows
             // height = (takenDamage / maxHealth) / damageModifier + 3
             // the 3 extra block we receive no mc damage for
-            height = (int) Math.round((takenDamage / getHero().getMaxHealth()) / damageModifier) + 3;
+            height = (int) Math.round((takenDamage / getHolder().getMaxHealth()) / damageModifier) + 3;
         } else {
             // we need to calculate the base minecraft damage and then the height
             // height = (takenDamage / damageModifier) + 3
@@ -91,7 +91,7 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
         // calculate roll chance
         if (Math.random() < getRollChance()) {
             trigger.getAttack().setDamage(trigger.getAttack().getDamage() / 2); // half damage
-            getHero().getPlayer().sendMessage(ChatColor.GREEN + "**abgerollt**");
+            getHolder().getPlayer().sendMessage(ChatColor.GREEN + "**abgerollt**");
         }
     }
 }

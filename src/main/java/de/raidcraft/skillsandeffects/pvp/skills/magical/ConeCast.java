@@ -97,7 +97,7 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
                 @Override
                 public void run(EntityAttack attack) throws CombatException {
 
-                    if (knockBack) ConeCast.this.addEffect(getHero().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                    if (knockBack) ConeCast.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
                     if (bleed) ConeCast.this.addEffect(attack.getTarget(), Bleed.class);
                     if (stun) ConeCast.this.addEffect(attack.getTarget(), Stun.class);
                     if (sunderArmor) ConeCast.this.addEffect(attack.getTarget(), SunderingArmor.class);
@@ -109,7 +109,7 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
                     if (disable) ConeCast.this.addEffect(attack.getTarget(), Pigify.class);
                     if (poison) ConeCast.this.addEffect(attack.getTarget(), Poison.class);
                     if (isLifeLeech) {
-                        new HealAction<>(this, getHero(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                        new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
                     }
                 }
             }).run();

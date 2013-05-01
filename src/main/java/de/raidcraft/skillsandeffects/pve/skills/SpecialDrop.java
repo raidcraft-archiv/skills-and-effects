@@ -87,7 +87,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                     Material droppedConfigItem = ItemUtils.getItem(dropKey);
                     if (droppedConfigItem != null) {
                         ConfigurationSection section = config.getConfigurationSection(key + ".drops." + dropKey);
-                        Drop drop = new Drop(getHero(), droppedConfigItem.getId());
+                        Drop drop = new Drop(getHolder(), droppedConfigItem.getId());
                         drop.setData((byte) ItemUtils.getItemData(dropKey));
                         drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
                         drop.setMinAmount(section.getConfigurationSection("min-amount"));
@@ -115,7 +115,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         Block block = trigger.getEvent().getBlock();
         int blockId = block.getTypeId();
-        if (requiredTools.containsKey(blockId) && !requiredTools.get(blockId).isOfType(getHero().getItemTypeInHand())) {
+        if (requiredTools.containsKey(blockId) && !requiredTools.get(blockId).isOfType(getHolder().getItemTypeInHand())) {
             return;
         }
         if (!specialBlockDrops.containsKey(blockId) || RaidCraft.isPlayerPlacedBlock(block)) {

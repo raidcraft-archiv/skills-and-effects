@@ -49,7 +49,7 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
         oldMaxHealth = target.getMaxHealth();
         int newMaxHealth = (int) (oldMaxHealth + oldMaxHealth * healthIncrease);
         target.setMaxHealth(newMaxHealth);
-        getSource().getHero().combatLog("Leben um " + healthIncrease * 100 + "% (" + (newMaxHealth - oldMaxHealth) + ") erhöht.");
+        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (newMaxHealth - oldMaxHealth) + ") erhöht.");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
 
         int newMaxHealth = target.getMaxHealth();
         target.setMaxHealth(oldMaxHealth);
-        getSource().getHero().combatLog("Leben um " + healthIncrease * 100 + "% (" + (newMaxHealth - oldMaxHealth) + ") verringert.");
+        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (newMaxHealth - oldMaxHealth) + ") verringert.");
         oldMaxHealth = 20;
     }
 
@@ -70,7 +70,7 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
 
         int healAmount = (int) (trigger.getAttack().getDamage() * healPercentage);
         // heal the paladin
-        new HealAction<>(this, getSource().getHero(), healAmount).run();
+        new HealAction<>(this, getSource().getHolder(), healAmount).run();
         trigger.getAttack().combatLog(this, "<s> wurde um " + healPercentage * 100 + "% (" + healAmount + ") des Schadens geheilt.");
     }
 

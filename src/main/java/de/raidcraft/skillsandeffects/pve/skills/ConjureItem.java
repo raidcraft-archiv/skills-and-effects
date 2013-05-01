@@ -67,7 +67,7 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
             }
             if (Math.random() < item.getChance(this)) {
                 ItemStack itemStack = new ItemStack(item.getItemId(), item.getAmount(), item.getItemData());
-                Location location = getHero().getEntity().getLocation();
+                Location location = getHolder().getEntity().getLocation();
                 location.getWorld().dropItemNaturally(location, itemStack);
                 getAttachedLevel().addExp(item.getExp());
             }

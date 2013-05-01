@@ -36,11 +36,11 @@ public class Blink extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         Location loc = getBlockTarget().add(0, 1, 0);
-        Location oldLoc = getHero().getEntity().getLocation();
-        List<Block> lineOfSight = getHero().getEntity().getLineOfSight(null, getTotalRange());
+        Location oldLoc = getHolder().getEntity().getLocation();
+        List<Block> lineOfSight = getHolder().getEntity().getLineOfSight(null, getTotalRange());
 
-        getHero().removeEffectTypes(EffectType.DISABLEING);
-        getHero().getEntity().teleport(loc);
+        getHolder().removeEffectTypes(EffectType.DISABLEING);
+        getHolder().getEntity().teleport(loc);
 
         EffectUtil.playEffect(oldLoc, Effect.ENDER_SIGNAL, 1);
         EffectUtil.playEffect(loc, Effect.ENDER_SIGNAL, 2);

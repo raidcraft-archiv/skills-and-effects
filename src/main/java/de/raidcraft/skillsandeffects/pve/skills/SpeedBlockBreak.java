@@ -63,7 +63,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
             return;
         }
 
-        addEffect(getHero(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
+        addEffect(getHolder(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
             @Override
             public void run(PlayerInteractTrigger trigger) throws CombatException {
 
@@ -71,7 +71,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
                     return;
                 }
 
-                addEffect(getHero(), SpeedBlockBreakEffect.class);
+                addEffect(getHolder(), SpeedBlockBreakEffect.class);
             }
         }, Action.LEFT_CLICK_BLOCK);
     }
@@ -79,6 +79,6 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
     public boolean isValid(PlayerInteractTrigger trigger) {
 
         return blockIds.contains(trigger.getEvent().getClickedBlock().getTypeId())
-                && !(toolType == null || !toolType.isOfType(getHero().getItemTypeInHand()));
+                && !(toolType == null || !toolType.isOfType(getHolder().getItemTypeInHand()));
     }
 }

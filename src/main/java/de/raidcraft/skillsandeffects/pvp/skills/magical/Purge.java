@@ -48,15 +48,15 @@ public class Purge extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         CharacterTemplate target;
-        if (selfCast || getHero().getPlayer().isSneaking()) {
-            target = getHero();
+        if (selfCast || getHolder().getPlayer().isSneaking()) {
+            target = getHolder();
         } else         if (args.argsLength() > 0) {
             try {
                 Hero hero = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
-                if (!LocationUtil.isWithinRadius(getHero().getPlayer().getLocation(), hero.getPlayer().getLocation(), getTotalRange())) {
+                if (!LocationUtil.isWithinRadius(getHolder().getPlayer().getLocation(), hero.getPlayer().getLocation(), getTotalRange())) {
                     throw new CombatException(CombatException.Type.OUT_OF_RANGE);
                 }
-                if (!hero.isFriendly(getHero())) {
+                if (!hero.isFriendly(getHolder())) {
                     throw new CombatException(CombatException.Type.NO_GROUP);
                 }
                 target = hero;
@@ -68,7 +68,7 @@ public class Purge extends AbstractSkill implements CommandTriggered {
         }
 
         List<Effect> effects;
-        if (target.isFriendly(getHero())) {
+        if (target.isFriendly(getHolder())) {
             effects = target.getEffects(EffectType.PURGEABLE, EffectType.DEBUFF);
         } else {
             effects = target.getEffects(EffectType.PURGEABLE, EffectType.BUFF);

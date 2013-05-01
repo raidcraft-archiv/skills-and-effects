@@ -107,7 +107,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         for (Map.Entry<Integer, Integer> entry : allowedWeapons.entrySet()) {
 
             if (entry.getValue() == getAttachedLevel().getLevel()) {
-                getHero().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
+                getHolder().sendMessage(ChatColor.GREEN + "Neue Waffe freigeschaltet: " +
                         ItemUtils.getFriendlyName(entry.getKey(), ItemUtils.Language.GERMAN));
             }
         }
@@ -120,7 +120,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             }
             if (isMet) {
                 allowDualWielding = true;
-                getHero().sendMessage(ChatColor.GREEN + "Du hast Beidhändigkeit erlernt und kannst nun mit zwei Waffen gleichzeitig angreifen.");
+                getHolder().sendMessage(ChatColor.GREEN + "Du hast Beidhändigkeit erlernt und kannst nun mit zwei Waffen gleichzeitig angreifen.");
             }
         }
     }
@@ -137,7 +137,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             }
             if (!isMet) {
                 allowDualWielding = false;
-                getHero().sendMessage(ChatColor.RED + "Du hast Beidhändigkeit verlernt.");
+                getHolder().sendMessage(ChatColor.RED + "Du hast Beidhändigkeit verlernt.");
             }
         }
     }
@@ -184,18 +184,18 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private void checkTaskbar() {
 
-        checkTaskbar(getHero().getPlayer().getInventory().getHeldItemSlot(), Weapon.Slot.MAIN_HAND);
+        checkTaskbar(getHolder().getPlayer().getInventory().getHeldItemSlot(), Weapon.Slot.MAIN_HAND);
     }
 
     private void checkTaskbar(int slot, Weapon.Slot weaponSlot) {
 
         // only check the slot he is currently holding
-        PlayerInventory inventory = getHero().getPlayer().getInventory();
+        PlayerInventory inventory = getHolder().getPlayer().getInventory();
         ItemStack item = inventory.getItem(slot);
         if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
             // lets also remove the current weapon from the hero
-            getHero().removeWeapon(Weapon.Slot.MAIN_HAND);
-            getHero().removeWeapon(Weapon.Slot.OFF_HAND);
+            getHolder().removeWeapon(Weapon.Slot.MAIN_HAND);
+            getHolder().removeWeapon(Weapon.Slot.OFF_HAND);
             return;
         }
         // dont handle weapons that are ignored and may be handled by other skills
@@ -205,7 +205,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         // required level < skill level
         if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) <= getAttachedLevel().getLevel()) {
             // lets first add the main weapon
-            getHero().setWeapon(new Weapon(slot, item, weaponSlot));
+            getHolder().setWeapon(new Weapon(slot, item, weaponSlot));
             // and then check for offhand weapons
             if (allowDualWielding && weaponSlot != Weapon.Slot.OFF_HAND && slot < 9) {
                 checkTaskbar(slot + 1, Weapon.Slot.OFF_HAND);
@@ -213,10 +213,10 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
             return;
         }
         // all checks failed so we have to move the item
-        getHero().removeWeapon(Weapon.Slot.MAIN_HAND);
-        getHero().removeWeapon(Weapon.Slot.OFF_HAND);
-        ItemUtil.moveItem(getHero(), slot, item);
-        getHero().sendMessage(ChatColor.RED + "Du kannst diese " + ItemUtils.getFriendlyName(item.getTypeId()) + " nicht tragen. " +
+        getHolder().removeWeapon(Weapon.Slot.MAIN_HAND);
+        getHolder().removeWeapon(Weapon.Slot.OFF_HAND);
+        ItemUtil.moveItem(getHolder(), slot, item);
+        getHolder().sendMessage(ChatColor.RED + "Du kannst diese " + ItemUtils.getFriendlyName(item.getTypeId()) + " nicht tragen. " +
                 "Sie wurde in dein Inventar gelegt.");
     }
 }

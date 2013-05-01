@@ -37,6 +37,6 @@ public class FireTrap extends AbstractBowTrap {
     protected void runTrap(Location target) throws CombatException {
 
         Set<Block> blocks = BlockUtil.replaceNonSolidSurfaceBlocks(target.getBlock(), Material.FIRE, width, length, height);
-        addEffect(getHero(), TrapEffect.class).setChangedBlocks(blocks);
+        addEffect(getHolder(), TrapEffect.class).setChangedBlocks(blocks);
     }
 }

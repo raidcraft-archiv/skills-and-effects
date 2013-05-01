@@ -49,7 +49,7 @@ public class WitherEffect extends PeriodicExpirableEffect<Skill> {
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        new MagicalAttack(getSource().getHero(), target, getDamage(), new EntityAttackCallback() {
+        new MagicalAttack(getSource().getHolder(), target, getDamage(), new EntityAttackCallback() {
 
             @Override
             public void run(EntityAttack attack) throws CombatException {

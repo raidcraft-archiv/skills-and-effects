@@ -65,12 +65,12 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
     @SuppressWarnings("unchecked")
     public void runCommand(CommandContext args) throws CombatException {
 
-        QueuedRangedAttack<RangedCallback> attack = addEffect(getHero(), QueuedRangedAttack.class);
+        QueuedRangedAttack<RangedCallback> attack = addEffect(getHolder(), QueuedRangedAttack.class);
         attack.addCallback(new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                if (knockBack) Shot.this.addEffect(getHero().getEntity().getLocation(), target, KnockBack.class);
+                if (knockBack) Shot.this.addEffect(getHolder().getEntity().getLocation(), target, KnockBack.class);
                 if (bleed) Shot.this.addEffect(target, Bleed.class);
                 if (stun) Shot.this.addEffect(target, Stun.class);
                 if (sunderArmor) Shot.this.addEffect(target, SunderingArmor.class);

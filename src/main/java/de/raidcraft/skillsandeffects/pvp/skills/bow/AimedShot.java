@@ -29,6 +29,6 @@ public class AimedShot extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), AimedShotEffect.class);
+        addEffect(getHolder(), AimedShotEffect.class);
     }
 }

@@ -53,7 +53,7 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
                     @Override
                     public void run(CharacterTemplate target) throws CombatException {
 
-                        Resource souls = getHero().getResource(resourceName);
+                        Resource souls = getHolder().getResource(resourceName);
                         souls.setCurrent(souls.getCurrent() + 1);
                     }
                 });

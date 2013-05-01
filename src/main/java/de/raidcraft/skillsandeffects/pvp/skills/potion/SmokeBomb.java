@@ -60,7 +60,7 @@ public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggere
         meta.setLore(lore);
         item.setItemMeta(meta);
 
-        getHero().getPlayer().getInventory().addItem(item);
+        getHolder().getPlayer().getInventory().addItem(item);
     }
 
     @TriggerHandler(ignoreCancelled = true)

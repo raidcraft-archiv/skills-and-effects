@@ -27,7 +27,7 @@ public class Summoned extends ExpirableEffect<Summon> {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         // this will make the creature friendly to the party of the summoner
-        getSource().getHero().getParty().addMember(target);
+        getSource().getHolder().getParty().addMember(target);
     }
 
     @Override

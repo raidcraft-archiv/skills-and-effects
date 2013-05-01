@@ -68,11 +68,11 @@ public class Consume extends AbstractSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onItemConsume(PlayerConsumeTrigger trigger) throws CombatException {
 
-        if (getHero().getPlayer().getFoodLevel() < requiredFoodLevel) {
+        if (getHolder().getPlayer().getFoodLevel() < requiredFoodLevel) {
             // the player has to have full food level for the regen to kick in
             return;
         }
-        if (getHero().isInCombat()) {
+        if (getHolder().isInCombat()) {
             trigger.getEvent().setCancelled(true);
             throw new CombatException("Du kannst im Kampf kein Essen zu dir nehmen.");
         }
@@ -107,17 +107,17 @@ public class Consume extends AbstractSkill implements Triggered {
             if (type != ConsumeableType.HEALTH && getResource() == null) {
                 throw new CombatException("Dir bringt der Verzehr dieses Essens keine Regeneration.");
             }
-            Consume.this.addEffect(getHero(), ConsumeEffect.class).setConsumeable(this);
+            Consume.this.addEffect(getHolder(), ConsumeEffect.class).setConsumeable(this);
             if (itemStack.getAmount() > 1) {
                 itemStack.setAmount(itemStack.getAmount() - 1);
             } else {
-                getHero().getPlayer().getInventory().remove(itemStack);
+                getHolder().getPlayer().getInventory().remove(itemStack);
             }
         }
 
         public Resource getResource() {
 
-            return getHero().getResource(resourceName);
+            return getHolder().getResource(resourceName);
         }
 
         public ConsumeableType getType() {

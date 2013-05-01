@@ -52,6 +52,6 @@ public class Multishot extends AbstractLevelableSkill implements CommandTriggere
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), MultishotEffect.class);
+        addEffect(getHolder(), MultishotEffect.class);
     }
 }

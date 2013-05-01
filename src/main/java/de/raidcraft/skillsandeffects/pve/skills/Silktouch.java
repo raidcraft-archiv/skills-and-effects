@@ -28,6 +28,6 @@ public class Silktouch extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHero(), SilktouchEffect.class);
+        addEffect(getHolder(), SilktouchEffect.class);
     }
 }

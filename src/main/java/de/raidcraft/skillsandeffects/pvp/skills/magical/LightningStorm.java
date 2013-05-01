@@ -53,9 +53,9 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
 
         cancel();
 
-        final Location center = getHero().getBlockTarget();
+        final Location center = getHolder().getBlockTarget();
         final List<Location> circle = EffectUtil.circle(center, getTotalRange(), 1, true, false, 10);
-        final World world = getHero().getPlayer().getWorld();
+        final World world = getHolder().getPlayer().getWorld();
         final FireworkEffect effect = FireworkEffect.builder().with(FireworkEffect.Type.BALL).withColor(Color.BLUE).build();
 
         task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
@@ -72,14 +72,14 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                         if (entity instanceof LivingEntity) {
                             CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class)
                                     .getCharacterManager().getCharacter((LivingEntity) entity);
-                            if (character.isFriendly(getHero())) {
+                            if (character.isFriendly(getHolder())) {
                                 continue;
                             }
                             try {
-                                new MagicalAttack(getHero(), character, getTotalDamage()).run();
+                                new MagicalAttack(getHolder(), character, getTotalDamage()).run();
                                 world.strikeLightningEffect(entity.getLocation());
                             } catch (CombatException e) {
-                                getHero().sendMessage(ChatColor.RED + e.getMessage());
+                                getHolder().sendMessage(ChatColor.RED + e.getMessage());
                             }
                         }
                     }

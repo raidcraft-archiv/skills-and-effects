@@ -34,7 +34,7 @@ public class ShieldWall extends AbstractSkill implements CommandTriggered, Trigg
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (ArmorType.fromMaterial(getHero().getItemTypeInHand()) != ArmorType.SHIELD) {
+        if (ArmorType.fromMaterial(getHolder().getItemTypeInHand()) != ArmorType.SHIELD) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
     }
@@ -42,11 +42,11 @@ public class ShieldWall extends AbstractSkill implements CommandTriggered, Trigg
     @TriggerHandler(ignoreCancelled = true)
     public void onItemHeldChange(ItemHeldTrigger trigger) throws CombatException {
 
-        if (!getHero().hasEffect(ShieldWallEffect.class)) {
+        if (!getHolder().hasEffect(ShieldWallEffect.class)) {
             return;
         }
-        if (ArmorType.fromMaterial(getHero().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()).getType()) != ArmorType.SHIELD) {
-            getHero().removeEffect(ShieldWallEffect.class);
+        if (ArmorType.fromMaterial(getHolder().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()).getType()) != ArmorType.SHIELD) {
+            getHolder().removeEffect(ShieldWallEffect.class);
         }
     }
 }

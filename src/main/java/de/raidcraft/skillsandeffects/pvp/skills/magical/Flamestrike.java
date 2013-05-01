@@ -35,7 +35,7 @@ public class Flamestrike extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        new MagicalAttack(getHero(), getTarget(), getTotalDamage(), new EntityAttackCallback() {
+        new MagicalAttack(getHolder(), getTarget(), getTotalDamage(), new EntityAttackCallback() {
             @Override
             public void run(EntityAttack attack) throws CombatException {
 

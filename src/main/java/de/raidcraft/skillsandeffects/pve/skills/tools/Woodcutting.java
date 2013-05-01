@@ -93,7 +93,7 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
         // check if correct tool
         if (event.getPlayer().getItemInHand() == null
                 || event.getPlayer().getItemInHand().getTypeId() != toolId) {
-            getHero().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId + ")");
+            getHolder().debug("Incorrect tool: " + event.getPlayer().getItemInHand().getType().name() + " (required: " + toolId + ")");
             return;
         }
 
@@ -140,19 +140,19 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             // check usage costs and cooldown
             checkUsage(new SkillAction(this));
-            if (getHero().hasEffect(RecursiveBlockBreak.class)
-                    && getHero().getEffect(RecursiveBlockBreak.class).getSource().equals(this)) {
-                getHero().debug("Treefeller already enabled!");
+            if (getHolder().hasEffect(RecursiveBlockBreak.class)
+                    && getHolder().getEffect(RecursiveBlockBreak.class).getSource().equals(this)) {
+                getHolder().debug("Treefeller already enabled!");
                 return;
             }
 
-            getHero().sendMessage(ChatColor.YELLOW + "Du hebst deine "
+            getHolder().sendMessage(ChatColor.YELLOW + "Du hebst deine "
                     + ItemUtils.getFriendlyName(Material.getMaterial(toolId), ItemUtils.Language.GERMAN));
-            addEffect(getHero(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
+            addEffect(getHolder(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
                 @Override
                 public void run(PlayerInteractTrigger trigger) throws CombatException {
 
-                    addEffect(getHero(), RecursiveBlockBreak.class);
+                    addEffect(getHolder(), RecursiveBlockBreak.class);
                 }
             }, Action.LEFT_CLICK_BLOCK);
         }

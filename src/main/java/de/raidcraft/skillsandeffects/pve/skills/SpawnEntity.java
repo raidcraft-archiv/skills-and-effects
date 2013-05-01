@@ -50,7 +50,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
                 EntityType type = EntityType.fromName(section.getString("entity"));
                 if (type != null) {
                     int amount = section.getInt("amount", 1);
-                    EntitySpawner spawner = new EntitySpawner(type, amount, section.getConfigurationSection("chance"), getHero());
+                    EntitySpawner spawner = new EntitySpawner(type, amount, section.getConfigurationSection("chance"), getHolder());
                     spawner.setRequirements(RequirementManager.createRequirements(spawner, section.getConfigurationSection("requirements")));
                     spawnChance.put(priority, spawner);
                 } else {
@@ -65,7 +65,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Location location = getHero().getEntity().getLocation();
+        Location location = getHolder().getEntity().getLocation();
         for (EntitySpawner spawner : spawnChance.descendingMap().values()) {
 
             if (!spawner.isMeetingAllRequirements()) {

@@ -30,7 +30,7 @@ public class InstantGrowth extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         int radius = getTotalRange();
-        Block sourceBlock = getHero().getEntity().getLocation().getBlock();
+        Block sourceBlock = getHolder().getEntity().getLocation().getBlock();
         Block block;
         for (int x = 0; x < radius; x++) {
             for (int z = 0; z < radius; z++) {

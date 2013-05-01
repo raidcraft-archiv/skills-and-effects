@@ -74,7 +74,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
 
     private void strikeChainLightning(CharacterTemplate target, final int damage) throws CombatException {
 
-        MagicalAttack magicalAttack = new MagicalAttack(getHero(), target, damage, new EntityAttackCallback() {
+        MagicalAttack magicalAttack = new MagicalAttack(getHolder(), target, damage, new EntityAttackCallback() {
             @Override
             public void run(EntityAttack attack) throws CombatException {
 
@@ -82,7 +82,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                 ChainLightning.this.addEffect(attack.getTarget(), ChainLightningEffect.class);
                 if (jumpCount < getJumpCount()) {
                     for (final CharacterTemplate target : attack.getTarget().getNearbyTargets(jumpRange)) {
-                        if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHero())) {
+                        if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHolder())) {
                             continue;
                         }
                         final int newDamage = (int) (damage - (initialDamage * getReductionPerJump()));
@@ -94,7 +94,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                                     try {
                                         strikeChainLightning(target, newDamage);
                                     } catch (CombatException e) {
-                                        getHero().sendMessage(ChatColor.RED + e.getMessage());
+                                        getHolder().sendMessage(ChatColor.RED + e.getMessage());
                                     }
                                 }
                             }, 4L);

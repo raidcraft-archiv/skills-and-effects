@@ -43,10 +43,10 @@ public class ShadowStep extends AbstractLevelableSkill implements CommandTrigger
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        shadowStep(getHero(), getTarget());
+        shadowStep(getHolder(), getTarget());
 
         if (damageBonus) {
-            addEffect(getHero(), DamageBuff.class);
+            addEffect(getHolder(), DamageBuff.class);
         }
     }
 

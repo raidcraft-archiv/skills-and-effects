@@ -32,14 +32,14 @@ public class Rage extends AbstractSkill implements Triggered {
     @TriggerHandler
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
-        if (getHero().getResource(RESOURCE_NAME) == null) {
+        if (getHolder().getResource(RESOURCE_NAME) == null) {
             return;
         }
 
         if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
-            addEffect(getHero(), RageEffect.class);
+            addEffect(getHolder(), RageEffect.class);
         } else {
-            getHero().removeEffect(RageEffect.class);
+            getHolder().removeEffect(RageEffect.class);
         }
     }
 }

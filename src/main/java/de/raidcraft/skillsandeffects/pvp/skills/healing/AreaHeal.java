@@ -41,13 +41,13 @@ public class AreaHeal extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        EffectUtil.playFirework(getHero().getEntity().getWorld(), getHero().getEntity().getLocation().subtract(0, 4, 0), FIREWORK_EFFECT);
+        EffectUtil.playFirework(getHolder().getEntity().getWorld(), getHolder().getEntity().getLocation().subtract(0, 4, 0), FIREWORK_EFFECT);
         for (CharacterTemplate target : getNearbyTargets()) {
-            if (target.isFriendly(getHero())) {
+            if (target.isFriendly(getHolder())) {
                 new HealAction<>(this, target, getTotalDamage()).run();
             }
         }
         // also heal ourselves
-        new HealAction<>(this, getHero(), getTotalDamage()).run();
+        new HealAction<>(this, getHolder(), getTotalDamage()).run();
     }
 }

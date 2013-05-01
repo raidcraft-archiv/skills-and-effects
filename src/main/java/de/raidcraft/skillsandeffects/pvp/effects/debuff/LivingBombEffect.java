@@ -52,8 +52,8 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
 
         for (final CharacterTemplate victim : target.getNearbyTargets(blastRadius)) {
 
-            if (!victim.isFriendly(getSource().getHero())) {
-                target.damage(new MagicalAttack(getSource().getHero(), target, getDamage(), new EntityAttackCallback() {
+            if (!victim.isFriendly(getSource().getHolder())) {
+                target.damage(new MagicalAttack(getSource().getHolder(), target, getDamage(), new EntityAttackCallback() {
                     @Override
                     public void run(EntityAttack attack) throws CombatException {
 

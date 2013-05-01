@@ -30,10 +30,10 @@ public class TransformSplashPotion extends AbstractSkill implements CommandTrigg
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (getHero().getItemTypeInHand() != Material.POTION) {
+        if (getHolder().getItemTypeInHand() != Material.POTION) {
             throw new CombatException("Du musst für diesen Skill den Trank den du anritzen willst in der Hand haben.");
         }
-        ItemStack itemInHand = getHero().getEntity().getEquipment().getItemInHand();
+        ItemStack itemInHand = getHolder().getEntity().getEquipment().getItemInHand();
         if (itemInHand == null) {
             throw new CombatException("Bitte nehme den Trank den du anritzten willst in die Hand.");
         }

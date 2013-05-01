@@ -45,9 +45,9 @@ public class BloodThirst extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Resource resource = getHero().getResource(resourceName);
+        Resource resource = getHolder().getResource(resourceName);
         if (resource.getCurrent() >= minCost) {
-            new HealAction<>(this, getHero(), (int) (resource.getCurrent() * healFactor)).run();
+            new HealAction<>(this, getHolder(), (int) (resource.getCurrent() * healFactor)).run();
             resource.setCurrent(resource.getDefault());
         } else {
             throw new CombatException("Nicht genug " + resource.getFriendlyName() + ".");

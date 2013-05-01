@@ -51,7 +51,7 @@ public class FlamestrikeEffect extends PeriodicExpirableEffect<Flamestrike> impl
             return;
         }
         stacks--;
-        new MagicalAttack(getSource().getHero(), target, getDamage()).run();
+        new MagicalAttack(getSource().getHolder(), target, getDamage()).run();
     }
 
     @Override

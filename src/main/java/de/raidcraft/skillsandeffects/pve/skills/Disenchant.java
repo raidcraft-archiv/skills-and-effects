@@ -48,7 +48,7 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        ItemStack item = getHero().getEntity().getEquipment().getItemInHand();
+        ItemStack item = getHolder().getEntity().getEquipment().getItemInHand();
         if (item == null) {
             throw new CombatException("Bitte nehme das Item das zu entzaubern willst in die Hand.");
         }
@@ -61,7 +61,7 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
             if (Math.random() < getSalvageChance()) {
                 ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
                 book.addEnchantment(enchantment, enchantments.get(enchantment));
-                getHero().getPlayer().getInventory().addItem(book);
+                getHolder().getPlayer().getInventory().addItem(book);
                 // to balance it out we reduce the durability of the item
                 item.setDurability((short) (item.getDurability() / 2));
             }
