@@ -21,12 +21,12 @@ import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.api.effect.common.SunderingArmor;
-import de.raidcraft.skillsandeffects.pvp.effects.damaging.Bleed;
-import de.raidcraft.skillsandeffects.pvp.effects.damaging.Burn;
-import de.raidcraft.skillsandeffects.pvp.effects.damaging.Poison;
+import de.raidcraft.skills.effects.Bleed;
+import de.raidcraft.skills.effects.Burn;
+import de.raidcraft.skills.effects.Poison;
 import de.raidcraft.skillsandeffects.pvp.effects.disabling.Pigify;
-import de.raidcraft.skillsandeffects.pvp.effects.potion.Slow;
-import de.raidcraft.skillsandeffects.pvp.effects.potion.Weakness;
+import de.raidcraft.skills.effects.Slow;
+import de.raidcraft.skills.effects.Weakness;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**

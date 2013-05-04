@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
-import de.raidcraft.skillsandeffects.pvp.effects.damaging.Bleed;
+import de.raidcraft.skills.effects.Bleed;
 import de.raidcraft.skillsandeffects.pvp.effects.resources.RageEffect;
 import de.raidcraft.skillsandeffects.pvp.skills.buffs.Avatar;
 import org.bukkit.configuration.ConfigurationSection;

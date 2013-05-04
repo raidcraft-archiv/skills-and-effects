@@ -14,7 +14,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skillsandeffects.pvp.effects.damaging.Burn;
+import de.raidcraft.skills.effects.Burn;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**

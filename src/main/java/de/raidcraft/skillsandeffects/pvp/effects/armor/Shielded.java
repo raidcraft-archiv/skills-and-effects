@@ -11,7 +11,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skillsandeffects.pvp.effects.potion.Slow;
+import de.raidcraft.skills.effects.Slow;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.ChatColor;
