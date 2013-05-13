@@ -1,5 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.armor;
 
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -9,7 +10,6 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -52,7 +52,6 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
-                || !weapon.isOfType(getHolder().getItemTypeInHand())
                 || getHolder().hasEffect(ParryEffect.class)) {
             return;
         }

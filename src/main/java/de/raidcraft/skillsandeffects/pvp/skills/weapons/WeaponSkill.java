@@ -1,6 +1,8 @@
 package de.raidcraft.skillsandeffects.pvp.skills.weapons;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomWeapon;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -13,8 +15,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.items.Weapon;
-import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.CombatTrigger;
@@ -66,7 +66,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (weapons == null) return;
         for (String key : weapons.getKeys(false)) {
             Material item = ItemUtils.getItem(key);
-            if (item != null && ItemUtil.isWeapon(item)) {
+            if (item != null) {
                 allowedWeapons.put(item.getId(), weapons.getInt(key));
             } else {
                 RaidCraft.LOGGER.warning("The item " + key + " in the skill config " + getName() + " is not an item.");
@@ -148,9 +148,10 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
             return;
         }
-        Weapon weapon = trigger.getSource().getWeapon(Weapon.Slot.MAIN_HAND);
-        if (weapon == null || !allowedWeapons.containsKey(weapon.getItemId())) {
-            return;
+        for (CustomWeapon weapon : trigger.getSource().getWeapons()) {
+            if (!allowedWeapons.containsKey(weapon.getMinecraftId())) {
+                return;
+            }
         }
         getAttachedLevel().addExp((int) (expPerDamage * trigger.getAttack().getDamage()));
     }
@@ -158,7 +159,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onItemHeld(ItemHeldTrigger trigger) {
 
-        checkTaskbar(trigger.getEvent().getNewSlot(), Weapon.Slot.MAIN_HAND);
+        checkTaskbar(trigger.getEvent().getNewSlot());
     }
 
     @TriggerHandler(ignoreCancelled = true)
@@ -184,37 +185,39 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private void checkTaskbar() {
 
-        checkTaskbar(getHolder().getPlayer().getInventory().getHeldItemSlot(), Weapon.Slot.MAIN_HAND);
+        checkTaskbar(getHolder().getPlayer().getInventory().getHeldItemSlot());
     }
 
-    private void checkTaskbar(int slot, Weapon.Slot weaponSlot) {
+    private void checkTaskbar(int slot) {
 
+        if (slot > 8) {
+            return;
+        }
         // only check the slot he is currently holding
         PlayerInventory inventory = getHolder().getPlayer().getInventory();
         ItemStack item = inventory.getItem(slot);
-        if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item.getType())) {
+        if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item)) {
             // lets also remove the current weapon from the hero
-            getHolder().removeWeapon(Weapon.Slot.MAIN_HAND);
-            getHolder().removeWeapon(Weapon.Slot.OFF_HAND);
+            getHolder().clearWeapons();
             return;
         }
+        CustomWeapon weapon = ItemUtil.getWeapon(item);
         // dont handle weapons that are ignored and may be handled by other skills
-        if (ignoredWeapons.contains(WeaponType.fromItemId(item.getTypeId()))) {
+        if (ignoredWeapons.contains(weapon.getWeaponType())) {
             return;
         }
         // required level < skill level
         if (allowedWeapons.containsKey(item.getTypeId()) && allowedWeapons.get(item.getTypeId()) <= getAttachedLevel().getLevel()) {
             // lets first add the main weapon
-            getHolder().setWeapon(new Weapon(slot, item, weaponSlot));
+            getHolder().setWeapon(weapon);
             // and then check for offhand weapons
-            if (allowDualWielding && weaponSlot != Weapon.Slot.OFF_HAND && slot < 9) {
-                checkTaskbar(slot + 1, Weapon.Slot.OFF_HAND);
+            if (allowDualWielding) {
+                checkTaskbar(slot + 1);
             }
             return;
         }
         // all checks failed so we have to move the item
-        getHolder().removeWeapon(Weapon.Slot.MAIN_HAND);
-        getHolder().removeWeapon(Weapon.Slot.OFF_HAND);
+        getHolder().clearWeapons();
         ItemUtil.moveItem(getHolder(), slot, item);
         getHolder().sendMessage(ChatColor.RED + "Du kannst diese " + ItemUtils.getFriendlyName(item.getTypeId()) + " nicht tragen. " +
                 "Sie wurde in dein Inventar gelegt.");

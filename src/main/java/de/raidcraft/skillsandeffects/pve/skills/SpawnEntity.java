@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,7 +13,6 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.requirement.SkillRequirementResolver;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Location;
@@ -81,7 +81,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
     }
 
-    public static class EntitySpawner implements SkillRequirementResolver {
+    public static class EntitySpawner implements RequirementResolver {
 
         private final Hero hero;
         private final EntityType type;
@@ -110,12 +110,6 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         public double getChance(Skill skill) {
 
             return ConfigUtil.getTotalValue(skill, chance);
-        }
-
-        @Override
-        public Hero getObject() {
-
-            return hero;
         }
 
         @Override

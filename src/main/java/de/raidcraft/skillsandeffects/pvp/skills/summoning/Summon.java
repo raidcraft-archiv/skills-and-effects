@@ -5,6 +5,7 @@ import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
+import de.raidcraft.api.requirement.RequirementResolver;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -17,7 +18,6 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.creature.Creature;
-import de.raidcraft.skills.requirement.SkillRequirementResolver;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
@@ -159,7 +159,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         return summonedCreatures;
     }
 
-    public static class SummonedCreatureConfig implements SkillRequirementResolver {
+    public static class SummonedCreatureConfig implements RequirementResolver {
 
         private final String name;
         private final Summon skill;
@@ -234,12 +234,6 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             int minHealth = (int) ConfigUtil.getTotalValue(skill, this.minHealth);
             int maxHealth = (int) ConfigUtil.getTotalValue(skill, this.maxHealth);
             return MathUtil.RANDOM.nextInt(maxHealth - minHealth + 1) + minHealth;
-        }
-
-        @Override
-        public Hero getObject() {
-
-            return skill.getHolder();
         }
 
         @Override

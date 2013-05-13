@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.weapons;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.WeaponAttack;
 import de.raidcraft.skills.api.hero.Hero;
@@ -11,7 +12,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.items.WeaponType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -64,7 +64,7 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GRAY).append("Erhöht den Schaden mit folgenden Waffen: ");
         for (WeaponType weaponType : bonusDamage.keySet()) {
-            sb.append(ChatColor.YELLOW).append("\n\t- ").append(ChatColor.AQUA).append(weaponType.getFriendlyName()).append(ChatColor.RED);
+            sb.append(ChatColor.YELLOW).append("\n\t- ").append(ChatColor.AQUA).append(weaponType.getGermanName()).append(ChatColor.RED);
             sb.append((int) getBonusDamage(weaponType) * 100).append("%");
         }
         return sb.toString();
