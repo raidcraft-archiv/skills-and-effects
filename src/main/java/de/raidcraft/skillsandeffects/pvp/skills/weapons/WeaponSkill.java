@@ -47,7 +47,7 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
     private final Map<Integer, Integer> allowedWeapons = new HashMap<>();
     private final Set<WeaponType> ignoredWeapons = new HashSet<>();
-    private List<Requirement> dualWieldingRequirements;
+    private List<Requirement<Hero>> dualWieldingRequirements;
     private boolean allowDualWielding = false;
     private double expPerDamage;
 
@@ -113,8 +113,8 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         }
         if (!allowDualWielding && dualWieldingRequirements.size() > 1) {
             boolean isMet = true;
-            for (Requirement requirement : dualWieldingRequirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : dualWieldingRequirements) {
+                if (!requirement.isMet(holder)) {
                     isMet = false;
                 }
             }
@@ -130,8 +130,8 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
 
         if (allowDualWielding) {
             boolean isMet = true;
-            for (Requirement requirement : dualWieldingRequirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : dualWieldingRequirements) {
+                if (!requirement.isMet(holder)) {
                     isMet = false;
                 }
             }

@@ -68,7 +68,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         Location location = getHolder().getEntity().getLocation();
         for (EntitySpawner spawner : spawnChance.descendingMap().values()) {
 
-            if (!spawner.isMeetingAllRequirements()) {
+            if (!spawner.isMeetingAllRequirements(getHolder())) {
                 continue;
             }
 
@@ -81,13 +81,13 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
     }
 
-    public static class EntitySpawner implements RequirementResolver {
+    public static class EntitySpawner implements RequirementResolver<Hero> {
 
         private final Hero hero;
         private final EntityType type;
         private final int amount;
         private final ConfigurationSection chance;
-        private List<Requirement> requirements;
+        private List<Requirement<Hero>> requirements;
 
         public EntitySpawner(EntityType type, int amount, ConfigurationSection chance, Hero hero) {
 
@@ -113,10 +113,10 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
-        public boolean isMeetingAllRequirements() {
+        public boolean isMeetingAllRequirements(Hero object) {
 
-            for (Requirement requirement : requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : requirements) {
+                if (!requirement.isMet(object)) {
                     return false;
                 }
             }
@@ -124,10 +124,10 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
-        public String getResolveReason() {
+        public String getResolveReason(Hero object) {
 
-            for (Requirement requirement : requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : requirements) {
+                if (!requirement.isMet(object)) {
                     return requirement.getLongReason();
                 }
             }
@@ -135,12 +135,12 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
-        public List<Requirement> getRequirements() {
+        public List<Requirement<Hero>> getRequirements() {
 
             return requirements;
         }
 
-        public void setRequirements(List<Requirement> requirements) {
+        public void setRequirements(List<Requirement<Hero>> requirements) {
 
             this.requirements = requirements;
         }

@@ -77,8 +77,8 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
         boolean match = true;
         for (SummonedCreatureConfig config : creatureConfigs.values()) {
-            for (Requirement requirement : config.requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : config.requirements) {
+                if (!requirement.isMet(holder)) {
                     match = false;
                     break;
                 }
@@ -121,8 +121,8 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
         SummonedCreatureConfig config = findMatchingCreature(args.getString(0));
 
-        if (!config.isMeetingAllRequirements()) {
-            throw new CombatException(config.getResolveReason());
+        if (!config.isMeetingAllRequirements(holder)) {
+            throw new CombatException(config.getResolveReason(holder));
         }
 
         int amount = args.getInteger(1, 1);
@@ -159,14 +159,14 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         return summonedCreatures;
     }
 
-    public static class SummonedCreatureConfig implements RequirementResolver {
+    public static class SummonedCreatureConfig implements RequirementResolver<Hero> {
 
         private final String name;
         private final Summon skill;
         private String friendlyName;
         private EntityType entityType;
         private int expForSummon;
-        private List<Requirement> requirements = new ArrayList<>();
+        private List<Requirement<Hero>> requirements = new ArrayList<>();
         private ConfigurationSection amount;
         private ConfigurationSection minDamage;
         private ConfigurationSection maxDamage;
@@ -237,16 +237,16 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
 
         @Override
-        public List<Requirement> getRequirements() {
+        public List<Requirement<Hero>> getRequirements() {
 
             return requirements;
         }
 
         @Override
-        public boolean isMeetingAllRequirements() {
+        public boolean isMeetingAllRequirements(Hero object) {
 
-            for (Requirement requirement : requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : requirements) {
+                if (!requirement.isMet(object)) {
                     return false;
                 }
             }
@@ -254,10 +254,10 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
 
         @Override
-        public String getResolveReason() {
+        public String getResolveReason(Hero object) {
 
-            for (Requirement requirement : requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : requirements) {
+                if (!requirement.isMet(object)) {
                     return requirement.getLongReason();
                 }
             }

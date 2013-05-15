@@ -160,7 +160,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         }
     }
 
-    public class Drop implements RequirementResolver {
+    public class Drop implements RequirementResolver<Hero> {
 
         private final Hero hero;
         private final int itemId;
@@ -168,7 +168,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         private int exp;
         private ConfigurationSection minAmount;
         private ConfigurationSection maxAmount;
-        private List<Requirement> requirements = new ArrayList<>();
+        private List<Requirement<Hero>> requirements = new ArrayList<>();
         private ConfigurationSection chance;
 
         public Drop(Hero hero, int itemId) {
@@ -229,7 +229,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
             this.data = data;
         }
 
-        public void setRequirements(List<Requirement> requirements) {
+        public void setRequirements(List<Requirement<Hero>> requirements) {
 
             this.requirements.clear();
             this.requirements.addAll(requirements);
@@ -247,8 +247,8 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         public ItemStack getDrops(Skill skill) {
 
-            for (Requirement requirement : getRequirements()) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : getRequirements()) {
+                if (!requirement.isMet(skill.getHolder())) {
                     return null;
                 }
             }
@@ -260,16 +260,16 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         }
 
         @Override
-        public List<Requirement> getRequirements() {
+        public List<Requirement<Hero>> getRequirements() {
 
             return requirements;
         }
 
         @Override
-        public boolean isMeetingAllRequirements() {
+        public boolean isMeetingAllRequirements(Hero object) {
 
-            for (Requirement requirement : requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : requirements) {
+                if (!requirement.isMet(object)) {
                     return false;
                 }
             }
@@ -277,10 +277,10 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         }
 
         @Override
-        public String getResolveReason() {
+        public String getResolveReason(Hero object) {
 
-            for (Requirement requirement : requirements) {
-                if (!requirement.isMet()) {
+            for (Requirement<Hero> requirement : requirements) {
+                if (!requirement.isMet(hero)) {
                     return requirement.getLongReason();
                 }
             }
