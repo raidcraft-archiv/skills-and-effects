@@ -113,6 +113,12 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
+        public Hero getObject() {
+
+            return hero;
+        }
+
+        @Override
         public boolean isMeetingAllRequirements(Hero object) {
 
             for (Requirement<Hero> requirement : requirements) {

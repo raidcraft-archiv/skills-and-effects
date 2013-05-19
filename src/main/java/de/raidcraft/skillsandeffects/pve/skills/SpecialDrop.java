@@ -260,6 +260,12 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         }
 
         @Override
+        public Hero getObject() {
+
+            return hero;
+        }
+
+        @Override
         public List<Requirement<Hero>> getRequirements() {
 
             return requirements;
