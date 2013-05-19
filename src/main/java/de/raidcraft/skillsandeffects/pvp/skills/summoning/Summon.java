@@ -159,7 +159,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         return summonedCreatures;
     }
 
-    public static class SummonedCreatureConfig implements RequirementResolver<Hero> {
+    public class SummonedCreatureConfig implements RequirementResolver<Hero> {
 
         private final String name;
         private final Summon skill;
@@ -240,6 +240,12 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         public List<Requirement<Hero>> getRequirements() {
 
             return requirements;
+        }
+
+        @Override
+        public Hero getObject() {
+
+            return getHolder();
         }
 
         @Override
