@@ -21,7 +21,7 @@ import de.raidcraft.skills.creature.Creature;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
-import de.raidcraft.skillsandeffects.pvp.effects.misc.Summoned;
+import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

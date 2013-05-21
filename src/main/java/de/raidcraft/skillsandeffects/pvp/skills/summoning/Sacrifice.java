@@ -13,7 +13,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.pvp.effects.misc.Summoned;
+import de.raidcraft.skills.effects.Summoned;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
