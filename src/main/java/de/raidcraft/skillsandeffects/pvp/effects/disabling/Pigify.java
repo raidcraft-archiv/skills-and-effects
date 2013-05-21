@@ -1,5 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.effects.disabling;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.DiminishingReturnType;
@@ -11,6 +13,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -72,6 +75,7 @@ public class Pigify extends PeriodicEffect<Skill> implements Triggered {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         pig = target.getEntity().getWorld().spawn(target.getEntity().getLocation(), Pig.class);
+        RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(pig).addEffect(getSource(), Summoned.class);
         pig.setPassenger(target.getEntity());
     }
 
