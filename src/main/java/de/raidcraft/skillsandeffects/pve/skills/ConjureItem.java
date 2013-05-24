@@ -31,6 +31,8 @@ import java.util.List;
 public class ConjureItem extends AbstractLevelableSkill implements CommandTriggered {
 
     private final List<ConjuredItem> conjuredItems = new ArrayList<>();
+    private int minItems = 0;
+    private int maxItems = 1;
 
     public ConjureItem(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -40,6 +42,8 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
     @Override
     public void load(ConfigurationSection data) {
 
+        minItems = data.getInt("min-items", 0);
+        maxItems = data.getInt("max-items", 1);
         ConfigurationSection items = data.getConfigurationSection("items");
         if (items == null) return;
         for (String key : items.getKeys(false)) {
@@ -61,17 +65,25 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (ConjuredItem item : conjuredItems) {
-            if (item.getRequiredLevel() > getAttachedLevel().getLevel()) {
-                continue;
+        int conjuredItemsCount = 0;
+        do {
+            for (ConjuredItem item : conjuredItems) {
+                if (item.getRequiredLevel() > getAttachedLevel().getLevel()) {
+                    continue;
+                }
+                if (Math.random() < item.getChance(this)) {
+                    ItemStack itemStack = new ItemStack(item.getItemId(), item.getAmount(), item.getItemData());
+                    Location location = getHolder().getEntity().getLocation();
+                    location.getWorld().dropItemNaturally(location, itemStack);
+                    getAttachedLevel().addExp(item.getExp());
+                    conjuredItemsCount++;
+                }
+                if (conjuredItemsCount >= maxItems) {
+                    break;
+                }
             }
-            if (Math.random() < item.getChance(this)) {
-                ItemStack itemStack = new ItemStack(item.getItemId(), item.getAmount(), item.getItemData());
-                Location location = getHolder().getEntity().getLocation();
-                location.getWorld().dropItemNaturally(location, itemStack);
-                getAttachedLevel().addExp(item.getExp());
-            }
-        }
+        } while (conjuredItemsCount < minItems);
+
     }
 
     public static class ConjuredItem {
