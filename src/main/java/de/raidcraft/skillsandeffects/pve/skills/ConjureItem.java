@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,6 +61,8 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
             conjuredItem.setRequiredLevel(section.getInt("level", 1));
             conjuredItems.add(conjuredItem);
         }
+        // randomize it even more
+        Collections.shuffle(conjuredItems);
     }
 
     @Override
