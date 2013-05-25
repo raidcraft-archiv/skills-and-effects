@@ -3,10 +3,10 @@ package de.raidcraft.skillsandeffects.pvp.skills.magical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
+import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -15,19 +15,18 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.effects.Bleed;
+import de.raidcraft.skills.effects.Burn;
+import de.raidcraft.skills.effects.Poison;
+import de.raidcraft.skills.effects.Slow;
+import de.raidcraft.skills.effects.Weakness;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Interrupt;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skills.api.effect.common.SunderingArmor;
-import de.raidcraft.skills.effects.Bleed;
-import de.raidcraft.skills.effects.Burn;
-import de.raidcraft.skills.effects.Poison;
 import de.raidcraft.skillsandeffects.pvp.effects.disabling.Pigify;
-import de.raidcraft.skills.effects.Slow;
-import de.raidcraft.skills.effects.Weakness;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -53,7 +52,6 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     private boolean poison = false;
     private boolean isLifeLeech = false;
     private ConfigurationSection lifeLeech;
-    private MagicalAttackType attackType;
 
     public MagicBolt(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -64,7 +62,6 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     public void load(ConfigurationSection data) {
 
         addElements(EffectElement.fromString(data.getString("element")));
-        attackType = MagicalAttackType.valueOf(data.getString("visual-type", "SMOKE"));
         if (data.getBoolean("default-attack", false)) {
             addTypes(EffectType.DEFAULT_ATTACK);
         }
@@ -94,7 +91,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        magicalAttack(attackType, new EntityAttackCallback() {
+        magicalAttack(new EntityAttackCallback() {
             @Override
             public void run(EntityAttack attack) throws CombatException {
 
