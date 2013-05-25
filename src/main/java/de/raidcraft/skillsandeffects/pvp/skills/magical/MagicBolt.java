@@ -51,6 +51,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     private boolean disable = false;
     private boolean poison = false;
     private boolean isLifeLeech = false;
+    private ConfigurationSection entityDamageBonus;
     private ConfigurationSection lifeLeech;
 
     public MagicBolt(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -78,6 +79,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
         poison = data.getBoolean("poison", false);
         lifeLeech = data.getConfigurationSection("life-leech");
         isLifeLeech = lifeLeech != null;
+        entityDamageBonus = data.getConfigurationSection("entity-damage-bonus");
     }
 
     private double getLifeLeechPercentage() {
@@ -108,6 +110,9 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
                 if (isLifeLeech) {
                     new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                }
+                if (!(attack.getTarget() instanceof Hero)) {
+                    attack.setDamage((int) (attack.getDamage() + ConfigUtil.getTotalValue(MagicBolt.this, entityDamageBonus)));
                 }
             }
         });
