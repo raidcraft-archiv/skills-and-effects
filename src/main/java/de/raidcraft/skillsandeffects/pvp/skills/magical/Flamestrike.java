@@ -4,7 +4,6 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -35,12 +34,12 @@ public class Flamestrike extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        new MagicalAttack(getHolder(), getTarget(), getTotalDamage(), new EntityAttackCallback() {
+        magicalAttack(getTarget(), getTotalDamage(), new EntityAttackCallback() {
             @Override
             public void run(EntityAttack attack) throws CombatException {
 
                 addEffect(attack.getTarget(), FlamestrikeEffect.class);
             }
-        }).run();
+        });
     }
 }

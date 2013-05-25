@@ -5,7 +5,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.HealAction;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -52,9 +51,9 @@ public class Heal extends AbstractSkill implements CommandTriggered {
         if (target.isFriendly(getHolder())) {
             new HealAction<>(this, target, getTotalDamage()).run();
         } else if (target instanceof Hero) {
-            if (damageHero) new MagicalAttack(getHolder(), target, getTotalDamage()).run();
+            if (damageHero) magicalAttack(target, getTotalDamage());
         } else if (damageMonster) {
-            new MagicalAttack(getHolder(), target, getTotalDamage()).run();
+            magicalAttack(target, getTotalDamage());
         }
     }
 }

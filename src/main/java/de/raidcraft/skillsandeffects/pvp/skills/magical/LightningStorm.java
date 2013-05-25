@@ -6,7 +6,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -76,7 +75,7 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                                 continue;
                             }
                             try {
-                                new MagicalAttack(getHolder(), character, getTotalDamage()).run();
+                                magicalAttack(character, getTotalDamage());
                                 world.strikeLightningEffect(entity.getLocation());
                             } catch (CombatException e) {
                                 getHolder().sendMessage(ChatColor.RED + e.getMessage());

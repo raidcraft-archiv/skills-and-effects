@@ -3,7 +3,6 @@ package de.raidcraft.skillsandeffects.pvp.skills.magical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.MagicalAttackType;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -35,7 +34,7 @@ public class LivingBomb extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        magicalAttack(MagicalAttackType.FIRE, new EntityAttackCallback() {
+        magicalAttack(new EntityAttackCallback() {
             @Override
             public void run(EntityAttack attack) throws CombatException {
 
