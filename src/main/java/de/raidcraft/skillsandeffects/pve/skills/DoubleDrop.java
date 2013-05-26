@@ -14,8 +14,10 @@ import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.CraftTrigger;
+import de.raidcraft.skills.trigger.FurnaceExtractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,6 +42,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
     private ConfigurationSection chanceConfig;
     private ToolType toolType;
     private double dropChance;
+    private boolean furnace;
 
     public DoubleDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -51,6 +54,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
 
         toolType = ToolType.fromName(data.getString("tool"));
         chanceConfig = data.getConfigurationSection("chance");
+        furnace = data.getBoolean("furnace", false);
         blockIds.addAll(getItemList(data.getStringList("blocks")));
         craftedItems.addAll(getItemList(data.getStringList("crafting")));
     }
@@ -97,6 +101,19 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
             // lets also get the globally defined exp and add them to the skill
             int exp = RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getBlockExperienceFor(block.getTypeId());
             getAttachedLevel().addExp((doubleDrop ? exp * 2 : exp));
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onItemMelt(FurnaceExtractTrigger trigger) {
+
+        if (furnace) {
+            if (Math.random() < getChance()) {
+                int amount = trigger.getEvent().getItemAmount() * 2;
+                Location location = getHolder().getEntity().getLocation();
+                location.getWorld().dropItemNaturally(location, new ItemStack(trigger.getEvent().getItemType(), amount));
+                getAttachedLevel().addExp(getUseExp());
+            }
         }
     }
 
