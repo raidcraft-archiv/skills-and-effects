@@ -27,7 +27,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 )
 public class Fireprotection extends AbstractSkill implements Triggered {
 
-    public FireProtection(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public Fireprotection(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
