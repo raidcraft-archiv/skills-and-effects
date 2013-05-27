@@ -108,12 +108,13 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
     public void onItemMelt(FurnaceExtractTrigger trigger) {
 
         if (furnace) {
+            int amount = trigger.getEvent().getItemAmount();
             if (Math.random() < getChance()) {
-                int amount = trigger.getEvent().getItemAmount() * 2;
                 Location location = getHolder().getEntity().getLocation();
                 location.getWorld().dropItemNaturally(location, new ItemStack(trigger.getEvent().getItemType(), amount));
-                getAttachedLevel().addExp(getUseExp());
+                getAttachedLevel().addExp(getUseExp() * amount);
             }
+            getAttachedLevel().addExp(getUseExp() * amount);
         }
     }
 
