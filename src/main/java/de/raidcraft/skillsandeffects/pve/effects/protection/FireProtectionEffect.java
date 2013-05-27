@@ -8,7 +8,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.effects.Burn;
-import de.raidcraft.skillsandeffects.pve.skills.FireProtection;
+import de.raidcraft.skillsandeffects.pve.skills.Fireprotection;
 import org.bukkit.Location;
 import org.bukkit.inventory.EntityEquipment;
 
@@ -20,11 +20,11 @@ import org.bukkit.inventory.EntityEquipment;
         description = "Wirft alle 2s ein Rüstungsteil ab.",
         types = {EffectType.PROTECTION}
 )
-public class FireProtectionEffect extends PeriodicExpirableEffect<FireProtection> {
+public class FireProtectionEffect extends PeriodicExpirableEffect<Fireprotection> {
 
     private int tossedItems = 0;
 
-    public FireProtectionEffect(FireProtection source, CharacterTemplate target, EffectData data) {
+    public FireProtectionEffect(Fireprotection source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
