@@ -25,7 +25,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
         description = "Wirft alle 2 Sekunden ein Rüstungsteil ab und erlischt somit Flammen.",
         types = {EffectType.PROTECTION}
 )
-public class FireProtection extends AbstractSkill implements Triggered {
+public class Fireprotection extends AbstractSkill implements Triggered {
 
     public FireProtection(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
