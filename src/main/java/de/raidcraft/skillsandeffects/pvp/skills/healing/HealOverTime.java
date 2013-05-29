@@ -42,7 +42,7 @@ public class HealOverTime extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        CharacterTemplate target = getTarget(args, selfHeal);
+        CharacterTemplate target = getTarget(args, true, selfHeal);
         if (!target.isFriendly(getHolder())) {
             throw new CombatException("Ziel kann nicht geheilt werden da es nicht in deiner Gruppe ist.");
         }

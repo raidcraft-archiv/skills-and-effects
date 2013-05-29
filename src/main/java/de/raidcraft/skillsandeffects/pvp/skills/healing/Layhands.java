@@ -45,7 +45,7 @@ public class Layhands extends AbstractLevelableSkill implements CommandTriggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        CharacterTemplate target = getTarget(args, selfHeal);
+        CharacterTemplate target = getTarget(args, true, selfHeal);
 
         if (target.hasEffect(LayhandsEffect.class)) {
             throw new CombatException(CombatException.Type.IMMUNE);

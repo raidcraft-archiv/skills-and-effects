@@ -46,7 +46,7 @@ public class Heal extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        CharacterTemplate target = getTarget(args, selfHeal);
+        CharacterTemplate target = getTarget(args, true, selfHeal);
 
         if (target.isFriendly(getHolder())) {
             new HealAction<>(this, target, getTotalDamage()).run();
