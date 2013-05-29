@@ -48,8 +48,7 @@ public class Evade extends AbstractSkill implements Triggered {
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
-                || trigger.getAttack().getAttackSource() == AttackSource.ENVIRONMENT
-                || trigger.getAttack().getAttackSource() == AttackSource.EFFECT) {
+                || trigger.getAttack().getAttackSource() == AttackSource.ENVIRONMENT) {
             return;
         }
 
