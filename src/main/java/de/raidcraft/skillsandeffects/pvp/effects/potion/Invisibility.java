@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
@@ -12,9 +13,13 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.EntityTargetTrigger;
+import de.raidcraft.skills.trigger.PlayerLoginTrigger;
+import de.raidcraft.skills.trigger.PlayerQuitTrigger;
 import de.raidcraft.util.EffectUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -51,6 +56,22 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
         slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), data.getInt("slow-modifier", 2));
         removeOnDamage = data.getBoolean("remove-on-damage", true);
         removeOnAttack = data.getBoolean("remove-on-attack", true);
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void playerLogin(PlayerLoginTrigger trigger) {
+
+        if (getTarget() instanceof Hero) {
+            trigger.getEvent().getPlayer().hidePlayer(((Hero) getTarget()).getPlayer());
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void playerQuit(PlayerQuitTrigger trigger) {
+
+        if (getTarget() instanceof Hero) {
+            trigger.getEvent().getPlayer().showPlayer(((Hero) getTarget()).getPlayer());
+        }
     }
 
     @TriggerHandler(ignoreCancelled = true)
@@ -91,6 +112,11 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
         info("Unsichtbarkeit wurde aufgehoben.");
         target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
         target.getEntity().removePotionEffect(PotionEffectType.SLOW);
+        if (target instanceof Hero) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.showPlayer((Player) target.getEntity());
+            }
+        }
     }
 
     @Override
@@ -98,5 +124,10 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
 
         target.getEntity().addPotionEffect(invisibility);
         if (slow) target.getEntity().addPotionEffect(slowEffect);
+        if (target instanceof Hero) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.hidePlayer((Player) target.getEntity());
+            }
+        }
     }
 }
