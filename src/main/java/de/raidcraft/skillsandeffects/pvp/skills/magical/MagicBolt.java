@@ -28,6 +28,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.disabling.Pigify;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.Vector;
 
 /**
  * @author Silthus
@@ -50,7 +51,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     private boolean interrupt = false;
     private boolean disable = false;
     private boolean poison = false;
-    private boolean isLifeLeech = false;
+    private ConfigurationSection throwUp;
     private ConfigurationSection entityDamageBonus;
     private ConfigurationSection lifeLeech;
 
@@ -77,17 +78,19 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
         interrupt = data.getBoolean("interrupt", false);
         disable = data.getBoolean("disable", false);
         poison = data.getBoolean("poison", false);
+        throwUp = data.getConfigurationSection("throw-up");
         lifeLeech = data.getConfigurationSection("life-leech");
-        isLifeLeech = lifeLeech != null;
         entityDamageBonus = data.getConfigurationSection("entity-damage-bonus");
     }
 
     private double getLifeLeechPercentage() {
 
-        if (!isLifeLeech) {
-            return 0.0;
-        }
         return ConfigUtil.getTotalValue(this, lifeLeech);
+    }
+
+    private double getThrowUpVelocity() {
+
+        return ConfigUtil.getTotalValue(this, throwUp);
     }
 
     @Override
@@ -108,7 +111,10 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 if (interrupt) MagicBolt.this.addEffect(attack.getTarget(), Interrupt.class);
                 if (disable) MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
                 if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
-                if (isLifeLeech) {
+                if (throwUp != null) {
+                    attack.getTarget().getEntity().setVelocity(new Vector(0, getThrowUpVelocity(), 0));
+                }
+                if (lifeLeech != null) {
                     new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
                 }
                 if (!(attack.getTarget() instanceof Hero)) {
