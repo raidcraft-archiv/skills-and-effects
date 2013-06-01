@@ -29,7 +29,7 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Pyroblast extends AbstractSkill implements CommandTriggered {
 
-    private double damagePerStack;
+    private ConfigurationSection damagePerStack;
 
     public Pyroblast(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -39,7 +39,12 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        damagePerStack = ConfigUtil.getTotalValue(this, data.getConfigurationSection("stack-damage"));
+        damagePerStack = data.getConfigurationSection("stack-damage");
+    }
+
+    public double getStackDamage() {
+
+        return ConfigUtil.getTotalValue(this, damagePerStack);
     }
 
     @Override
@@ -51,7 +56,7 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
 
                 if (target.hasEffect(FlamestrikeEffect.class)) {
                     int stacks = target.getEffect(FlamestrikeEffect.class).getStacks();
-                    magicalAttack(target, (int) (stacks * damagePerStack));
+                    magicalAttack(target, (int) (stacks * getStackDamage()));
                     target.removeEffect(FlamestrikeEffect.class);
                 }
             }
