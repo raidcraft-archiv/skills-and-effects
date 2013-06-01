@@ -22,6 +22,7 @@ import de.raidcraft.skills.trigger.InventoryCloseTrigger;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
 import de.raidcraft.skills.trigger.ItemPickupTrigger;
 import de.raidcraft.skills.util.ItemUtil;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -196,12 +197,12 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
         // only check the slot he is currently holding
         PlayerInventory inventory = getHolder().getPlayer().getInventory();
         ItemStack item = inventory.getItem(slot);
-        if (item == null || item.getTypeId() == 0 || !ItemUtil.isWeapon(item)) {
+        if (item == null || item.getTypeId() == 0 || !CustomItemUtil.isWeapon(item)) {
             // lets also remove the current weapon from the hero
             getHolder().clearWeapons();
             return;
         }
-        CustomWeapon weapon = ItemUtil.getWeapon(item);
+        CustomWeapon weapon = CustomItemUtil.getWeapon(item);
         // dont handle weapons that are ignored and may be handled by other skills
         if (ignoredWeapons.contains(weapon.getWeaponType())) {
             return;

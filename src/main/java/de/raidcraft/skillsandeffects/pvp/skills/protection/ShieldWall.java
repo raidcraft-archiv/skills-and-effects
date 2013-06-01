@@ -13,8 +13,8 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.ItemHeldTrigger;
-import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.protection.ShieldWallEffect;
+import de.raidcraft.util.CustomItemUtil;
 
 /**
  * @author Silthus
@@ -34,7 +34,7 @@ public class ShieldWall extends AbstractSkill implements CommandTriggered, Trigg
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (ItemUtil.isShield(getHolder().getEntity().getEquipment().getItemInHand())) {
+        if (CustomItemUtil.isShield(getHolder().getEntity().getEquipment().getItemInHand())) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
     }
@@ -45,7 +45,7 @@ public class ShieldWall extends AbstractSkill implements CommandTriggered, Trigg
         if (!getHolder().hasEffect(ShieldWallEffect.class)) {
             return;
         }
-        if (!ItemUtil.isShield(getHolder().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()))) {
+        if (!CustomItemUtil.isShield(getHolder().getPlayer().getInventory().getItem(trigger.getEvent().getNewSlot()))) {
             getHolder().removeEffect(ShieldWallEffect.class);
         }
     }

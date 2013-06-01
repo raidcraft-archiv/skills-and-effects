@@ -16,8 +16,8 @@ import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
-import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.armor.Shielded;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (!getHolder().hasEffect(Shielded.class) || ItemUtil.isShield(getHolder().getEntity().getEquipment().getItemInHand())) {
+        if (!getHolder().hasEffect(Shielded.class) || CustomItemUtil.isShield(getHolder().getEntity().getEquipment().getItemInHand())) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
 
