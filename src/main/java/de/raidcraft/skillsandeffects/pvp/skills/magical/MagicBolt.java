@@ -51,7 +51,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     private boolean interrupt = false;
     private boolean disable = false;
     private boolean poison = false;
-    private ConfigurationSection throwUp;
+    private double throwUp;
     private ConfigurationSection entityDamageBonus;
     private ConfigurationSection lifeLeech;
 
@@ -78,7 +78,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
         interrupt = data.getBoolean("interrupt", false);
         disable = data.getBoolean("disable", false);
         poison = data.getBoolean("poison", false);
-        throwUp = data.getConfigurationSection("throw-up");
+        throwUp = data.getDouble("throw-up", 0.0);
         lifeLeech = data.getConfigurationSection("life-leech");
         entityDamageBonus = data.getConfigurationSection("entity-damage-bonus");
     }
@@ -86,11 +86,6 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
     private double getLifeLeechPercentage() {
 
         return ConfigUtil.getTotalValue(this, lifeLeech);
-    }
-
-    private double getThrowUpVelocity() {
-
-        return ConfigUtil.getTotalValue(this, throwUp);
     }
 
     @Override
@@ -111,8 +106,8 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 if (interrupt) MagicBolt.this.addEffect(attack.getTarget(), Interrupt.class);
                 if (disable) MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
                 if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
-                if (throwUp != null) {
-                    attack.getTarget().getEntity().setVelocity(new Vector(0, getThrowUpVelocity(), 0));
+                if (throwUp > 0.0) {
+                    attack.getTarget().getEntity().setVelocity(new Vector(0, throwUp, 0));
                 }
                 if (lifeLeech != null) {
                     new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
