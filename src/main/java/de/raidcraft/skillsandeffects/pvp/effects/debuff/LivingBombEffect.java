@@ -4,7 +4,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
-import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
@@ -53,7 +52,7 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
         for (final CharacterTemplate victim : target.getNearbyTargets(blastRadius)) {
 
             if (!victim.isFriendly(getSource().getHolder())) {
-                target.damage(new MagicalAttack(getSource().getHolder(), target, getDamage(), new EntityAttackCallback() {
+                getSource().magicalAttack(target, getDamage(), new EntityAttackCallback() {
                     @Override
                     public void run(EntityAttack attack) throws CombatException {
 
@@ -64,7 +63,7 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
                         attack.getTarget().getEntity().setVelocity(new Vector(0, 1, 0));
                         hit++;
                     }
-                }));
+                });
             }
         }
         if (hit > 0) {

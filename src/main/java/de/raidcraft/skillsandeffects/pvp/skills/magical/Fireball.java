@@ -5,7 +5,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
-import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -36,7 +35,7 @@ public class Fireball extends AbstractLevelableSkill implements CommandTriggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        new RangedAttack<RangedCallback>(getHolder(), ProjectileType.FIREBALL, getTotalDamage(), new RangedCallback() {
+        rangedAttack(ProjectileType.FIREBALL, new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
