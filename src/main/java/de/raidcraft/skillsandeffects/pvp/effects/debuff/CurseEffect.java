@@ -9,6 +9,7 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 import de.raidcraft.skills.util.TimeUtil;
 import de.raidcraft.skillsandeffects.pvp.skills.debuff.Curse;
@@ -60,6 +61,20 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
         combatLog("Zauberzeit um " + TimeUtil.ticksToSeconds(newCastTime - castTime)
                 + "s (" + MathUtil.toPercent(modifier) + "%) erhöht.");
         trigger.getAction().setCastTime(newCastTime);
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onDamage(DamageTrigger trigger) {
+
+        if (getSource().getType() != Curse.Type.MAGIC_DAMAGE
+                || !trigger.getAttack().isOfAttackType(EffectType.MAGICAL)) {
+            return;
+        }
+        int oldDamage = trigger.getAttack().getDamage();
+        double modifier = getSource().getMagicDamage();
+        int newDamage = (int) (oldDamage + oldDamage * modifier);
+        combatLog("Erlittener Magieschaden um " + (newDamage - oldDamage) + "(" + MathUtil.toPercent(modifier) + ") erhöht.");
+        trigger.getAttack().setDamage(newDamage);
     }
 
     @Override

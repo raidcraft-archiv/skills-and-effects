@@ -32,7 +32,8 @@ public class Curse extends AbstractSkill implements CommandTriggered {
 
         WEAKNESS,
         BLINDNESS,
-        CASTTIME;
+        CASTTIME,
+        MAGIC_DAMAGE;
 
         public static Type fromString(String str) {
 
@@ -43,6 +44,7 @@ public class Curse extends AbstractSkill implements CommandTriggered {
     private Type type;
     private ConfigurationSection weakness;
     private ConfigurationSection castTime;
+    private ConfigurationSection magicDamage;
     private boolean singleTarget = false;
 
     public Curse(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -57,6 +59,7 @@ public class Curse extends AbstractSkill implements CommandTriggered {
         singleTarget = data.getBoolean("single-target", false);
         this.weakness = data.getConfigurationSection("damage-reduction");
         this.castTime = data.getConfigurationSection("cast-time");
+        this.magicDamage = data.getConfigurationSection("magic-damage");
     }
 
     public Type getType() {
@@ -72,6 +75,11 @@ public class Curse extends AbstractSkill implements CommandTriggered {
     public double getCastTime() {
 
         return ConfigUtil.getTotalValue(this, castTime);
+    }
+
+    public double getMagicDamage() {
+
+        return ConfigUtil.getTotalValue(this, magicDamage);
     }
 
     @Override
