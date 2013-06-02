@@ -14,14 +14,15 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.creature.Creature;
+import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skills.util.StringUtils;
-import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,18 +49,17 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     private static CharacterManager CHARACTER_MANAGER;
 
     private final Map<String, SummonedCreatureConfig> creatureConfigs = new HashMap<>();
-    private String resource;
+    private Resource resource;
 
     public Summon(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
 
-
     @Override
     public void load(ConfigurationSection data) {
 
-        resource = data.getString("resource", "souls");
+        resource = getHolder().getResource(data.getString("resource", "souls"));
         ConfigurationSection creatures = data.getConfigurationSection("creatures");
         if (creatures == null) return;
         for (String key : creatures.getKeys(false)) {
@@ -140,6 +140,17 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         if (CHARACTER_MANAGER == null) {
             CHARACTER_MANAGER = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
         }
+        // lets check resources first
+        if (resource != null) {
+            int value = (int) ConfigUtil.getTotalValue(this, config.resourceCost);
+            int newValue = resource.getCurrent() - value;
+            if (newValue < resource.getDefault()) {
+                throw new CombatException("Nicht genügend " + resource.getFriendlyName()
+                        + ". Es werden " + value + " " + resource.getFriendlyName() + " benötigt.");
+            }
+            resource.setCurrent(newValue);
+        }
+
         List<CharacterTemplate> summonedCreatures = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             SummonedCreature creature = CHARACTER_MANAGER.spawnCharacter(
@@ -152,9 +163,9 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             addEffect(creature, Summoned.class);
             // also add some exp to the skill and display the combatlog message
             getAttachedLevel().addExp(config.expForSummon);
+            summonedCreatures.add(creature);
             getHolder().combatLog(this, config.getFriendlyName() + " mit " + creature.getMaxHealth() + " Leben " +
                     "und " + creature.getDamage() + " Schaden beschworen.");
-            summonedCreatures.add(creature);
         }
         return summonedCreatures;
     }
@@ -167,6 +178,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         private EntityType entityType;
         private int expForSummon;
         private List<Requirement<Hero>> requirements = new ArrayList<>();
+        private ConfigurationSection resourceCost;
         private ConfigurationSection amount;
         private ConfigurationSection minDamage;
         private ConfigurationSection maxDamage;
@@ -183,6 +195,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         private void load(final ConfigurationSection config) throws InvalidConfigurationException {
 
             this.friendlyName = config.getString("name", name);
+            this.resourceCost = config.getConfigurationSection("resource-cost");
 
             this.entityType = EntityType.fromName(config.getString("type"));
             if (entityType == null)

@@ -8,20 +8,20 @@ import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.effect.Stackable;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
-import de.raidcraft.skillsandeffects.pvp.skills.passive.RagingFire;
+import de.raidcraft.skillsandeffects.pvp.skills.passive.FlamingRage;
 
 /**
  * @author Silthus
  */
 @EffectInformation(
-        name = "Raging Fire",
+        name = "Flaming Rage",
         description = "Verringert die Zauberzeit des nächsten Feuerzaubers.",
         types = {EffectType.PURGEABLE, EffectType.MAGICAL, EffectType.HELPFUL},
         elements = {EffectElement.FIRE}
 )
-public class RagingFireEffect extends ExpirableEffect<RagingFire> implements Stackable {
+public class FlamingRageEffect extends ExpirableEffect<FlamingRage> implements Stackable {
 
-    public RagingFireEffect(RagingFire source, CharacterTemplate target, EffectData data) {
+    public FlamingRageEffect(FlamingRage source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
     }
