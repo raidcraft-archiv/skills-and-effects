@@ -58,7 +58,7 @@ public class HolyBlood extends AbstractSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onResourceChange(ResourceChangeTrigger trigger) throws CombatException {
 
-        if (!resourceDamage) {
+        if (!resourceDamage || trigger.getAction() != ResourceChangeTrigger.Action.LOSS) {
             return;
         }
         if (trigger.getResource() instanceof HealthResource) {
