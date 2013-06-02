@@ -142,7 +142,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
         // lets check resources first
         if (resource != null) {
-            int value = (int) ConfigUtil.getTotalValue(this, config.resourceCost);
+            int value = (int) ConfigUtil.getTotalValue(this, config.resourceCost) * amount;
             int newValue = resource.getCurrent() - value;
             if (newValue < resource.getDefault()) {
                 throw new CombatException("Nicht genügend " + resource.getFriendlyName()
