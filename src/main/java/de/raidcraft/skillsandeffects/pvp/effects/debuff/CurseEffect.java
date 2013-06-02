@@ -36,7 +36,7 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onAttack(AttackTrigger trigger) {
 
-        if (getSource().getType() != Curse.Type.WEAK) {
+        if (getSource().getType() != Curse.Type.WEAKNESS) {
             return;
         }
         int damage = trigger.getAttack().getDamage();
@@ -63,7 +63,7 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
 
         switch (getSource().getType()) {
 
-            case BLIND:
+            case BLINDNESS:
                 target.getEntity().addPotionEffect(blind);
                 break;
         }

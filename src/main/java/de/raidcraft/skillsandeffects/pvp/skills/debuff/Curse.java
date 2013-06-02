@@ -30,8 +30,8 @@ public class Curse extends AbstractSkill implements CommandTriggered {
 
     public enum Type {
 
-        WEAK,
-        BLIND;
+        WEAKNESS,
+        BLINDNESS;
 
         public static Type fromString(String str) {
 
