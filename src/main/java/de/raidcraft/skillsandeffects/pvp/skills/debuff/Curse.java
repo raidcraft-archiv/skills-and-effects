@@ -31,7 +31,8 @@ public class Curse extends AbstractSkill implements CommandTriggered {
     public enum Type {
 
         WEAKNESS,
-        BLINDNESS;
+        BLINDNESS,
+        CASTTIME;
 
         public static Type fromString(String str) {
 
@@ -41,6 +42,8 @@ public class Curse extends AbstractSkill implements CommandTriggered {
 
     private Type type;
     private ConfigurationSection weakness;
+    private ConfigurationSection castTime;
+    private boolean singleTarget = false;
 
     public Curse(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -51,7 +54,9 @@ public class Curse extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         type = Type.fromString(data.getString("type"));
+        singleTarget = data.getBoolean("single-target", false);
         this.weakness = data.getConfigurationSection("damage-reduction");
+        this.castTime = data.getConfigurationSection("cast-time");
     }
 
     public Type getType() {
@@ -64,6 +69,11 @@ public class Curse extends AbstractSkill implements CommandTriggered {
         return ConfigUtil.getTotalValue(this, weakness);
     }
 
+    public double getCastTime() {
+
+        return ConfigUtil.getTotalValue(this, castTime);
+    }
+
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -71,9 +81,13 @@ public class Curse extends AbstractSkill implements CommandTriggered {
             throw new CombatException("Unknown curse type defined! Please check your config...");
         }
 
-        List<CharacterTemplate> targets = getNearbyTargets(false);
-        for (CharacterTemplate target : targets) {
-            addEffect(target, CurseEffect.class);
+        if (!singleTarget) {
+            List<CharacterTemplate> targets = getNearbyTargets(false);
+            for (CharacterTemplate target : targets) {
+                addEffect(target, CurseEffect.class);
+            }
+        } else {
+            addEffect(getTarget(), CurseEffect.class);
         }
     }
 }

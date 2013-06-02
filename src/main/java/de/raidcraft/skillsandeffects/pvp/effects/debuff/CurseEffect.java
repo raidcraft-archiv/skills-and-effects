@@ -9,6 +9,8 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
+import de.raidcraft.skills.util.TimeUtil;
 import de.raidcraft.skillsandeffects.pvp.skills.debuff.Curse;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.potion.PotionEffect;
@@ -20,7 +22,7 @@ import org.bukkit.potion.PotionEffectType;
 @EffectInformation(
         name = "Curse",
         description = "Verflucht das Ziel und verursacht einen Debuff",
-        types = {EffectType.DEBUFF, EffectType.MAGICAL, EffectType.HARMFUL}
+        types = {EffectType.DEBUFF, EffectType.MAGICAL, EffectType.HARMFUL, EffectType.PURGEABLE}
 )
 public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
 
@@ -44,6 +46,20 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
         int reducedDamage = (int) (damage * reduction);
         combatLog("Angriffs Schaden um " + reducedDamage + "(" + MathUtil.toPercent(reduction) + "%) verringert.");
         trigger.getAttack().setDamage(damage - reducedDamage);
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onSpellCast(PlayerCastSkillTrigger trigger) {
+
+        if (getSource().getType() != Curse.Type.CASTTIME) {
+            return;
+        }
+        int castTime = trigger.getAction().getCastTime();
+        double modifier = getSource().getCastTime();
+        int newCastTime = (int) (castTime * modifier);
+        combatLog("Zauberzeit um " + TimeUtil.ticksToSeconds(newCastTime - castTime)
+                + "s (" + MathUtil.toPercent(modifier) + "%) erhöht.");
+        trigger.getAction().setCastTime(newCastTime);
     }
 
     @Override
