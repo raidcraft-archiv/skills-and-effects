@@ -3,7 +3,7 @@ package de.raidcraft.skillsandeffects.pvp.effects.armor;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
+import de.raidcraft.skills.api.effect.types.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.resource.Resource;
@@ -21,7 +21,7 @@ import de.raidcraft.util.MathUtil;
         description = "Schütz den Zaubernden vor Effekten und gibt Boni.",
         types = {EffectType.MAGICAL, EffectType.BUFF, EffectType.HELPFUL}
 )
-public class BuffingArmorEffect extends PeriodicExpirableEffect<BuffingArmor> implements Triggered {
+public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements Triggered {
 
     public BuffingArmorEffect(BuffingArmor source, CharacterTemplate target, EffectData data) {
 
