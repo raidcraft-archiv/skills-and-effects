@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.passive;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -52,8 +53,12 @@ public class BonusStrike extends AbstractSkill implements Triggered {
         if (!(trigger.getAttack().getSource() instanceof CharacterTemplate)) {
             return;
         }
+        if (!canUseSkill()) {
+            return;
+        }
         if (Math.random() < getChance()) {
             attack((CharacterTemplate) trigger.getAttack().getSource());
+            substractUsageCost(new SkillAction(this));
         }
     }
 }
