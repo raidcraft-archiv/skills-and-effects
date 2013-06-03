@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.bow;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.effect.common.QueuedRangedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -42,6 +43,7 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
     private boolean slow = false;
     private boolean weaken = false;
     private boolean burn = false;
+    private boolean heal = false;
 
     public Shot(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -59,14 +61,13 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
         slow = data.getBoolean("slow", false);
         weaken = data.getBoolean("weaken", false);
         burn = data.getBoolean("burn", false);
+        heal = data.getBoolean("heal", false);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void runCommand(CommandContext args) throws CombatException {
 
-        QueuedRangedAttack<RangedCallback> attack = addEffect(getHolder(), QueuedRangedAttack.class);
-        attack.addCallback(new RangedCallback() {
+        addEffect(getHolder(), QueuedRangedAttack.class).addCallback(new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
@@ -78,6 +79,9 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
                 if (slow) Shot.this.addEffect(target, Slow.class);
                 if (weaken) Shot.this.addEffect(target, Weakness.class);
                 if (burn) Shot.this.addEffect(target, Burn.class);
+                if (heal && target.isFriendly(getHolder())) {
+                    new HealAction<>(Shot.this, target, getTotalDamage()).run();
+                }
             }
         });
     }
