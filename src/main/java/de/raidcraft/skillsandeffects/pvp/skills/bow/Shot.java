@@ -17,6 +17,7 @@ import de.raidcraft.skills.effects.Bleed;
 import de.raidcraft.skills.effects.Burn;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.KnockBack;
+import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.effects.Slow;
 import de.raidcraft.skills.effects.Weakness;
@@ -44,6 +45,7 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
     private boolean weaken = false;
     private boolean burn = false;
     private boolean heal = false;
+    private boolean silence = false;
 
     public Shot(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -62,6 +64,8 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
         weaken = data.getBoolean("weaken", false);
         burn = data.getBoolean("burn", false);
         heal = data.getBoolean("heal", false);
+        silence = data.getBoolean("silence", false);
+
     }
 
     @Override
@@ -79,6 +83,7 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
                 if (slow) Shot.this.addEffect(target, Slow.class);
                 if (weaken) Shot.this.addEffect(target, Weakness.class);
                 if (burn) Shot.this.addEffect(target, Burn.class);
+                if (silence) Shot.this.addEffect(target, Silence.class);
                 if (heal && target.isFriendly(getHolder())) {
                     new HealAction<>(Shot.this, target, getTotalDamage()).run();
                 }
