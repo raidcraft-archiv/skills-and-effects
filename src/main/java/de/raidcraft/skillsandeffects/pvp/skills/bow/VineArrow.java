@@ -13,9 +13,11 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -27,9 +29,22 @@ import org.bukkit.block.BlockFace;
 )
 public class VineArrow extends AbstractSkill implements CommandTriggered {
 
+    private ConfigurationSection maxBlocks;
+
     public VineArrow(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        maxBlocks = data.getConfigurationSection("max-blocks");
+    }
+
+    public int getMaxBlocks() {
+
+        return (int) ConfigUtil.getTotalValue(this, maxBlocks);
     }
 
     @Override
@@ -41,11 +56,13 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(Location location) throws CombatException {
 
+                int changedBlocks = 0;
+                int maxBlocks = getMaxBlocks();
                 Block block = location.getBlock();
                 do {
                     block.setTypeId(BlockID.VINE, false);
                     block = block.getRelative(BlockFace.DOWN);
-                } while (block.getTypeId() == 0);
+                } while ((maxBlocks < 1 || ++changedBlocks < maxBlocks) && block.getTypeId() == 0);
             }
         });
     }
