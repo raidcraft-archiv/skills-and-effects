@@ -76,25 +76,29 @@ public class ChainHeal extends AbstractSkill implements CommandTriggered {
         ++jumpCount;
         addEffect(target, ChainHealEffect.class);
         if (jumpCount < getJumpCount()) {
-            for (final CharacterTemplate nextTarget : target.getNearbyTargets(jumpRange)) {
-                if (target.hasEffect(ChainHealEffect.class) || target.equals(getHolder())) {
-                    continue;
-                }
-                final int newHealAmount = (int) (heal - (intialHeal * getReductionPerJump()));
-                if (newHealAmount > 0) {
-                    Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-                        @Override
-                        public void run() {
+            try {
+                for (final CharacterTemplate nextTarget : target.getNearbyTargets(jumpRange)) {
+                    if (target.hasEffect(ChainHealEffect.class) || target.equals(getHolder())) {
+                        continue;
+                    }
+                    final int newHealAmount = (int) (heal - (intialHeal * getReductionPerJump()));
+                    if (newHealAmount > 0) {
+                        Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                            @Override
+                            public void run() {
 
-                            try {
-                                castChainHeal(nextTarget, newHealAmount);
-                            } catch (CombatException e) {
-                                getHolder().sendMessage(ChatColor.RED + e.getMessage());
+                                try {
+                                    castChainHeal(nextTarget, newHealAmount);
+                                } catch (CombatException e) {
+                                    getHolder().sendMessage(ChatColor.RED + e.getMessage());
+                                }
                             }
-                        }
-                    }, 4L);
+                        }, 4L);
+                    }
+                    break;
                 }
-                break;
+            } catch (CombatException | IllegalArgumentException e) {
+                getHolder().sendMessage(ChatColor.RED + e.getMessage());
             }
         }
     }

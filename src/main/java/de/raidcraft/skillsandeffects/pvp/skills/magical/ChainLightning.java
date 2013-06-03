@@ -80,25 +80,29 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                 ++jumpCount;
                 ChainLightning.this.addEffect(attack.getTarget(), ChainLightningEffect.class);
                 if (jumpCount < getJumpCount()) {
-                    for (final CharacterTemplate target : attack.getTarget().getNearbyTargets(jumpRange)) {
-                        if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHolder())) {
-                            continue;
-                        }
-                        final int newDamage = (int) (damage - (initialDamage * getReductionPerJump()));
-                        if (newDamage > 0) {
-                            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-                                @Override
-                                public void run() {
+                    try {
+                        for (final CharacterTemplate target : attack.getTarget().getNearbyTargets(jumpRange)) {
+                            if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHolder())) {
+                                continue;
+                            }
+                            final int newDamage = (int) (damage - (initialDamage * getReductionPerJump()));
+                            if (newDamage > 0) {
+                                Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
+                                    @Override
+                                    public void run() {
 
-                                    try {
-                                        strikeChainLightning(target, newDamage);
-                                    } catch (CombatException e) {
-                                        getHolder().sendMessage(ChatColor.RED + e.getMessage());
+                                        try {
+                                            strikeChainLightning(target, newDamage);
+                                        } catch (CombatException e) {
+                                            getHolder().sendMessage(ChatColor.RED + e.getMessage());
+                                        }
                                     }
-                                }
-                            }, 4L);
+                                }, 4L);
+                            }
+                            break;
                         }
-                        break;
+                    } catch (CombatException | IllegalArgumentException e) {
+                        getHolder().sendMessage(ChatColor.RED + e.getMessage());
                     }
                 }
             }
