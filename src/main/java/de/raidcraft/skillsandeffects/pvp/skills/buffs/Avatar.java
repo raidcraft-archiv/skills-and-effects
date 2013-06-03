@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.avatar.AbstractAvatar;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.avatar.BerserkerAvatar;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.avatar.BloodmageAvatar;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.avatar.HunterAvatar;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.avatar.PaladinAvatar;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,7 +31,8 @@ public class Avatar extends AbstractSkill implements CommandTriggered {
 
         BERSERKER(BerserkerAvatar.class, "berserker"),
         PALADIN(PaladinAvatar.class, "paladin"),
-        HUNTER(HunterAvatar.class, "hunter");
+        HUNTER(HunterAvatar.class, "hunter"),
+        BLOODMAGE(BloodmageAvatar.class, "bloodmage");
 
         private final Class<? extends AbstractAvatar> effectClass;
 
