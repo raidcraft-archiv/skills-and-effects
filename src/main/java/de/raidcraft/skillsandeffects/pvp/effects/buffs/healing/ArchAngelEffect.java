@@ -27,6 +27,8 @@ import de.raidcraft.util.MathUtil;
 )
 public class ArchAngelEffect extends ExpirableEffect<ArchAngel> implements Triggered {
 
+    private boolean died = false;
+
     public ArchAngelEffect(ArchAngel source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
@@ -39,6 +41,7 @@ public class ArchAngelEffect extends ExpirableEffect<ArchAngel> implements Trigg
         if (target.getHealth() - trigger.getAttack().getDamage() > 0) {
             return;
         }
+        died = true;
         // cancel the attack and save the target
         remove();
         new HealAction<>(this, target, (int) (getSource().getDeathHealAmount() * target.getMaxHealth())).run();
@@ -70,7 +73,10 @@ public class ArchAngelEffect extends ExpirableEffect<ArchAngel> implements Trigg
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-
+        if (!died) {
+            // reduce the cooldown of the archangel spell to the defined amount
+            getSource().setRemainingCooldown(getSource().getCooldownReduction());
+        }
     }
 
     @Override
