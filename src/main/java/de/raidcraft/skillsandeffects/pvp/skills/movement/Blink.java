@@ -39,6 +39,8 @@ public class Blink extends AbstractSkill implements CommandTriggered {
         Location oldLoc = getHolder().getEntity().getLocation();
         List<Block> lineOfSight = getHolder().getEntity().getLineOfSight(null, getTotalRange());
 
+        loc.setPitch(oldLoc.getPitch());
+        loc.setYaw(oldLoc.getYaw());
         getHolder().removeEffectTypes(EffectType.DISABLEING);
         getHolder().getEntity().teleport(loc);
 
