@@ -9,11 +9,12 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.pvp.effects.buffs.damage.FlamingRageEffect;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.damage.GraceEffect;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -41,13 +42,20 @@ public class Grace extends AbstractSkill implements Triggered {
         castDecreasePerStack = ConfigUtil.getTotalValue(this, data.getConfigurationSection("casttime-bonus-per-stack"));
     }
 
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        if (trigger.getAttack().isOfAttackElement(EffectElement.HOLY)
+                && trigger.getAttack().isOfAttackType(EffectType.DAMAGING)) {
+            addEffect(getHolder(), GraceEffect.class);
+        }
+    }
+
     @TriggerHandler(ignoreCancelled = true)
     public void onSkillCast(PlayerCastSkillTrigger trigger) throws CombatException {
 
-        if (trigger.getSkill().isOfElement(EffectElement.HOLY) && trigger.getSkill().isOfType(EffectType.DAMAGING)) {
-            addEffect(getHolder(), GraceEffect.class);
-        } else if (trigger.getSkill().isOfElement(EffectElement.HOLY)
-                && getHolder().hasEffect(FlamingRageEffect.class)
+        if (trigger.getSkill().isOfElement(EffectElement.HOLY)
+                && getHolder().hasEffect(GraceEffect.class)
                 && trigger.getSkill().isOfType(EffectType.HEALING)) {
             int stacks = getHolder().getEffect(GraceEffect.class).getStacks();
             trigger.getAction().setCastTime((int) (trigger.getAction().getCastTime() - castDecreasePerStack * stacks));
