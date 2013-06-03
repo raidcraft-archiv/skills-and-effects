@@ -3,8 +3,9 @@ package de.raidcraft.skillsandeffects.pvp.skills.bow;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.worldedit.blocks.BlockID;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.callback.LocationCallback;
-import de.raidcraft.skills.api.effect.common.QueuedRangedAttack;
+import de.raidcraft.skills.api.effect.common.QueuedProjectile;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -48,11 +49,9 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void runCommand(CommandContext args) throws CombatException {
 
-        QueuedRangedAttack<LocationCallback> attack = addEffect(getHolder(), QueuedRangedAttack.class);
-        attack.addCallback(new LocationCallback() {
+        addEffect(getHolder(), QueuedProjectile.class).addCallback(new LocationCallback() {
             @Override
             public void run(Location location) throws CombatException {
 
@@ -64,6 +63,6 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
                     block = block.getRelative(BlockFace.DOWN);
                 } while ((maxBlocks < 1 || ++changedBlocks < maxBlocks) && block.getTypeId() == 0);
             }
-        });
+        }, ProjectileType.ARROW);
     }
 }
