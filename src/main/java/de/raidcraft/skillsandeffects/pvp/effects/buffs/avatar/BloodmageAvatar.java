@@ -36,7 +36,7 @@ public class BloodmageAvatar extends AbstractAvatar implements Triggered {
     public void load(ConfigurationSection data) {
 
         healthIncreasePercent = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-increase"));
-        healPercentage = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-percentage"));
+        healPercentage = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-increase"));
     }
 
     @Override
