@@ -49,8 +49,12 @@ public class DamageTransfer extends AbstractSkill implements CommandTriggered {
 
         if (affectedTarget != null) {
             affectedTarget.removeEffect(DamageTransferEffect.class);
+            affectedTarget = null;
+            getHolder().combatLog(this, "Verbindung mit " + affectedTarget.getName() + " aufgehoben.");
+            return;
         }
         CharacterTemplate target = getTarget(args, true, false);
         addEffect(target, DamageTransferEffect.class);
+        affectedTarget = target;
     }
 }
