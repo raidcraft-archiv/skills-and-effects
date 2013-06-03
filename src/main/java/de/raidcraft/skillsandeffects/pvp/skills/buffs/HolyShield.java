@@ -14,9 +14,6 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.pvp.effects.armor.Shielded;
 import de.raidcraft.skillsandeffects.pvp.effects.misc.WeakenSoul;
-import de.raidcraft.util.EffectUtil;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -29,12 +26,6 @@ import org.bukkit.configuration.ConfigurationSection;
         elements = {EffectElement.LIGHT}
 )
 public class HolyShield extends AbstractSkill implements CommandTriggered {
-
-    private static final FireworkEffect FIREWORK_EFFECT = FireworkEffect.builder()
-            .with(FireworkEffect.Type.BALL)
-            .withColor(Color.YELLOW)
-            .withFade(Color.WHITE)
-            .withFlicker().build();
 
     private boolean selfCast = false;
 
@@ -59,6 +50,5 @@ public class HolyShield extends AbstractSkill implements CommandTriggered {
         }
         addEffect(target, Shielded.class);
         addEffect(target, WeakenSoul.class);
-        EffectUtil.playFirework(target.getEntity().getWorld(), target.getEntity().getLocation(), FIREWORK_EFFECT);
     }
 }
