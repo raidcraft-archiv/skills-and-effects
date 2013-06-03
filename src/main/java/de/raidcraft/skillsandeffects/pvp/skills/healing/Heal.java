@@ -22,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Heal",
         description = "Heilt dein Ziel oder dich selbst",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HELPFUL, EffectType.HEALING},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class Heal extends AbstractSkill implements CommandTriggered {
 

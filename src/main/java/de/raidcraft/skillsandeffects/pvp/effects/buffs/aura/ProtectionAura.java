@@ -19,7 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Protection Aura",
         description = "Schützt dich und deine Gruppe vor Schaden.",
         types = {EffectType.MAGICAL, EffectType.BUFF, EffectType.REDUCING, EffectType.AURA},
-        elements = {EffectElement.LIGHT},
+        elements = {EffectElement.HOLY},
         priority = 1.0
 )
 public class ProtectionAura extends AbstractAura implements Triggered {

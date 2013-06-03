@@ -21,7 +21,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Purification",
         description = "Heilt die Quelle des Effects um einen Prozentsatz des erlittenen Schadens.",
         types = {EffectType.MAGICAL, EffectType.HARMFUL, EffectType.DEBUFF},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class PurificationEffect extends ExpirableEffect<Purification> implements Triggered {
 

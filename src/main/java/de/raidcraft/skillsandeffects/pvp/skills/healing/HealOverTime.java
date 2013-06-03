@@ -22,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Heal over Time",
         description = "Heilt das Ziel über eine bestimmte Zeit.",
         types = {EffectType.HEALING, EffectType.HELPFUL, EffectType.MAGICAL, EffectType.SILENCABLE},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class HealOverTime extends AbstractSkill implements CommandTriggered {
 

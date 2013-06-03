@@ -24,7 +24,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Layhands",
         description = "Heilt dich oder das Ziel um 100%, kostet allerdings 100% deiner Resourcen.",
         types = {EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class Layhands extends AbstractLevelableSkill implements CommandTriggered {
 

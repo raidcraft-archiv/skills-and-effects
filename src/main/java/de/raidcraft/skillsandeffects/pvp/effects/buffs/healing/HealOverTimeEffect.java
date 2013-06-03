@@ -17,7 +17,7 @@ import de.raidcraft.skillsandeffects.pvp.skills.healing.HealOverTime;
         name = "Heal over Time",
         description = "Heilt das Ziel über die Zeit verteilt.",
         types = {EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE, EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class HealOverTimeEffect extends PeriodicExpirableEffect<HealOverTime> {
 

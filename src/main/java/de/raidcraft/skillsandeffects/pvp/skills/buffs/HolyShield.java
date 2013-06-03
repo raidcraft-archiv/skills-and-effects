@@ -23,7 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Holy Shield",
         description = "Beschützt das Ziel durch einen heiligen Schild der Schaden absorbiert.",
         types = {EffectType.MAGICAL, EffectType.SILENCABLE, EffectType.HELPFUL, EffectType.ABSORBING},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class HolyShield extends AbstractSkill implements CommandTriggered {
 

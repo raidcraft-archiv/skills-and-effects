@@ -35,7 +35,7 @@ import java.util.List;
         name = "SpeedBlockBreak",
         description = "Blitzschnelles abbauen von Blöcken",
         types = {EffectType.BUFF},
-        elements = {EffectElement.LIGHT}
+        elements = {EffectElement.HOLY}
 )
 public class RecursiveBlockBreak extends ExpirableEffect<Skill> implements Triggered {
 
