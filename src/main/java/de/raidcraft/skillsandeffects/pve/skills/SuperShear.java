@@ -11,9 +11,13 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.PlayerEggThrowTrigger;
+import de.raidcraft.skills.trigger.PlayerShearTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Sheep;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.SortedMap;
@@ -23,16 +27,16 @@ import java.util.TreeMap;
  * @author Silthus
  */
 @SkillInformation(
-        name = "Chicken Farm",
-        description = "Es besteht die Möglichkeit beim schlüpfen von Hühnern extra Babies zu spawnen.",
+        name = "Super Shear",
+        description = "Das scheeren von Schafen gibt dem Spieler mehr Wolle.",
         types = {EffectType.HELPFUL}
 )
-public class ChickenFarm extends AbstractLevelableSkill implements Triggered {
+public class SuperShear extends AbstractLevelableSkill implements Triggered {
 
-    // maps the amount of chickens to spawn the their respective chance
+    // maps the amount of wool to drop the their respective chance
     private SortedMap<Integer, ConfigurationSection> chances = new TreeMap<>();
 
-    public ChickenFarm(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public SuperShear(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
@@ -52,20 +56,24 @@ public class ChickenFarm extends AbstractLevelableSkill implements Triggered {
     }
 
     @TriggerHandler(ignoreCancelled = true)
-    public void onInteract(PlayerEggThrowTrigger trigger) {
+    public void onInteract(PlayerShearTrigger trigger) {
 
         if (!canUseSkill()) {
             return;
         }
-        int amount = trigger.getEvent().getNumHatches();
+        Entity entity = trigger.getEvent().getEntity();
+        if (!(entity instanceof Sheep)) {
+            return;
+        }
+        int amount = 0;
         for (SortedMap.Entry<Integer, ConfigurationSection> entry : chances.entrySet()) {
             if (Math.random() < ConfigUtil.getTotalValue(this, entry.getValue()) && amount < entry.getKey()) {
                 amount = entry.getKey();
             }
         }
         if (amount > 0) {
-            trigger.getEvent().setHatching(true);
-            trigger.getEvent().setNumHatches((byte) amount);
+            entity.getLocation().getWorld().dropItemNaturally(
+                    entity.getLocation(), new ItemStack(Material.WOOL, amount, ((Sheep) entity).getColor().getWoolData()));
             getAttachedLevel().addExp(getUseExp() * amount);
             substractUsageCost(new SkillAction(this));
         }
