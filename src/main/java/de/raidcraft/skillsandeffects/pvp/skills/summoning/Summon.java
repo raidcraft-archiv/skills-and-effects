@@ -289,6 +289,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         public SummonedCreature(LivingEntity entity, SummonedCreatureConfig config) {
 
             super(entity);
+            usingHealthBar = false;
             setMaxHealth(config.getMaxHealth());
             setHealth(getMaxHealth());
             setDamage(config.getDamage());
