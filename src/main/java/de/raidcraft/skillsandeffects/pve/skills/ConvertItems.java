@@ -43,20 +43,20 @@ public class ConvertItems extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         amount = data.getConfigurationSection("amount");
-        ConfigurationSection ores = data.getConfigurationSection("ores");
+        ConfigurationSection ores = data.getConfigurationSection("items");
         if (ores == null) {
-            RaidCraft.LOGGER.warning("No ores defined in the config of " + getName());
+            RaidCraft.LOGGER.warning("No items defined in the config of " + getName());
             return;
         }
         for (String key : ores.getKeys(false)) {
             Material item = ItemUtils.getItem(key);
             if (item == null) {
-                RaidCraft.LOGGER.warning("Ore key " + key + " is not a valid item in " + getName());
+                RaidCraft.LOGGER.warning("Item key " + key + " is not a valid item in " + getName());
                 continue;
             }
             int result = ores.getInt(key, 0);
             if (result == 0) {
-                RaidCraft.LOGGER.warning("No result item defined for the ore " + key + " in " + getName());
+                RaidCraft.LOGGER.warning("No result item defined for the item " + key + " in " + getName());
                 continue;
             }
             itemConversionMap.put(item.getId(), result);
