@@ -25,16 +25,16 @@ import java.util.Map;
  * @author Silthus
  */
 @SkillInformation(
-        name = "Smelt Ore",
+        name = "Convert Items",
         description = "Schmilzt Erze in der Hand direkt zu deren Barren Form",
         types = {EffectType.HELPFUL}
 )
-public class SmeltOre extends AbstractSkill implements CommandTriggered {
+public class ConvertItems extends AbstractSkill implements CommandTriggered {
 
     private ConfigurationSection amount;
     private Map<Integer, Integer> itemConversionMap = new HashMap<>();
 
-    public SmeltOre(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
+    public ConvertItems(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
