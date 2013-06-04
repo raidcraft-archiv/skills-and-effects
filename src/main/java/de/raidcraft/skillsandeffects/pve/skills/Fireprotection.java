@@ -35,7 +35,7 @@ public class Fireprotection extends AbstractSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        if (isOnCooldown()) {
+        if (!canUseSkill()) {
             return;
         }
         if (getHolder().hasEffect(FireProtectionEffect.class)) {
