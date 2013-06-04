@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -62,11 +63,11 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
         }
         if (Math.random() < getBlockChance()) {
             int oldDamage = trigger.getAttack().getDamage();
-            double blockValue = ((int)(getBlockValue() * 100)) / 100.0;
+            double blockValue = getBlockValue();
             int newDamage = (int) (oldDamage - oldDamage * blockValue);
             trigger.getAttack().setDamage(newDamage);
             getAttachedLevel().addExp(getUseExp());
-            getHolder().combatLog(this, "Schaden um " + (oldDamage - newDamage) + "(" + blockValue + "%) verringert.");
+            getHolder().combatLog(this, "Schaden um " + (oldDamage - newDamage) + "(" + MathUtil.toPercent(blockValue) + "%) verringert.");
         }
     }
 }
