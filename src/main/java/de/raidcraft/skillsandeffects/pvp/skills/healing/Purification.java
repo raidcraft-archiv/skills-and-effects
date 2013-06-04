@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.healing;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
@@ -41,10 +40,7 @@ public class Purification extends AbstractLevelableSkill implements CommandTrigg
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
-                Object source = trigger.getAttack().getSource();
-                if (source instanceof CharacterTemplate) {
-                    Purification.this.addEffect((CharacterTemplate)source, PurificationEffect.class);
-                }
+                addEffect(trigger.getAttack().getTarget(), PurificationEffect.class);
             }
         });
     }
