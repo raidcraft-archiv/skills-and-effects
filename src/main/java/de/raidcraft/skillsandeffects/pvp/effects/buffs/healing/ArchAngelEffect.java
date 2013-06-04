@@ -75,7 +75,7 @@ public class ArchAngelEffect extends ExpirableEffect<ArchAngel> implements Trigg
 
         if (!died) {
             // reduce the cooldown of the archangel spell to the defined amount
-            getSource().setRemainingCooldown(getSource().getCooldownReduction());
+            getSource().setCooldown(getSource().getCooldownReduction());
         }
     }
 
