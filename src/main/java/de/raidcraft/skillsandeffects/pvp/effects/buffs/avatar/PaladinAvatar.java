@@ -28,7 +28,7 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
     private double healthIncrease = 0.25;
     private double damageReduction = 0.10;
     private double healPercentage = 0.10;
-    private int oldMaxHealth = 20;
+    private int healthIncreaseAmount = 20;
 
     public PaladinAvatar(Avatar source, CharacterTemplate target, EffectData data) {
 
@@ -46,19 +46,17 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        oldMaxHealth = target.getMaxHealth();
-        int newMaxHealth = (int) (oldMaxHealth + oldMaxHealth * healthIncrease);
-        target.setMaxHealth(newMaxHealth);
-        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (newMaxHealth - oldMaxHealth) + ") erhöht.");
+        healthIncreaseAmount = (int) (target.getMaxHealth() * healthIncrease);
+        target.increaseMaxHealth(healthIncreaseAmount);
+        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (healthIncreaseAmount) + ") erhöht.");
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        int newMaxHealth = target.getMaxHealth();
-        target.setMaxHealth(oldMaxHealth);
-        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (newMaxHealth - oldMaxHealth) + ") verringert.");
-        oldMaxHealth = 20;
+        target.decreaseMaxHealth(healthIncreaseAmount);
+        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (healthIncreaseAmount) + ") verringert.");
+        healthIncreaseAmount = 20;
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)

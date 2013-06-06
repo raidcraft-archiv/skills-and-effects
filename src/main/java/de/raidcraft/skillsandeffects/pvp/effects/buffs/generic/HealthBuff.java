@@ -20,7 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class HealthBuff extends ExpirableEffect<Skill> {
 
-    private int oldMaxHealth;
+    private int increasedHealth;
     private double modifier;
 
     public HealthBuff(Skill source, CharacterTemplate target, EffectData data) {
@@ -37,14 +37,14 @@ public class HealthBuff extends ExpirableEffect<Skill> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        oldMaxHealth = target.getMaxHealth();
-        target.setMaxHealth((int) (oldMaxHealth + oldMaxHealth * modifier));
+        increasedHealth = (int) (target.getMaxHealth() * modifier);
+        target.increaseMaxHealth(increasedHealth);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        target.setMaxHealth(oldMaxHealth);
+        target.decreaseMaxHealth(increasedHealth);
     }
 
     @Override
