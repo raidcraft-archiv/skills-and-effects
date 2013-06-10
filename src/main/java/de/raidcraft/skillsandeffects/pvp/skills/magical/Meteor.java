@@ -71,7 +71,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             attack.setProjectile(projectile);
 
             Vector direction = new Vector(location.getX() - origin.getX(), location.getY() - origin.getY(), location.getZ() - origin.getZ());
-            direction = direction.normalize().multiply(MathUtil.RANDOM.nextInt(i));
+            direction = direction.normalize().multiply(Math.abs(MathUtil.RANDOM.nextInt(i)));
             attack.setVelocity(direction);
             attack.run();
         }
