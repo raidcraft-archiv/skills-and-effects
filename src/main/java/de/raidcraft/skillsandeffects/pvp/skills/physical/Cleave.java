@@ -61,7 +61,7 @@ public class Cleave extends AbstractSkill implements CommandTriggered {
                         i++;
                     }
                 } catch (CombatException e) {
-                    if (e.getType() != CombatException.Type.OUT_OF_RANGE) {
+                    if (e.getType() != CombatException.Type.OUT_OF_RANGE && e.getType() != CombatException.Type.INVALID_TARGET) {
                         throw e;
                     }
                 }
