@@ -35,18 +35,18 @@ public class HealOverTimeEffect extends PeriodicExpirableEffect<HealOverTime> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        info(getFriendlyName() + " erhalten.");
+        combatLog(getFriendlyName() + " erhalten.");
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        info(getFriendlyName() + " wurde entfernt.");
+        combatLog(getFriendlyName() + " wurde entfernt.");
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
-        info(getFriendlyName() + " wurde erneuert.");
+        combatLog(getFriendlyName() + " wurde erneuert.");
     }
 }
