@@ -10,7 +10,7 @@ import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.resource.Resource;
-import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
+import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
@@ -26,7 +26,7 @@ import org.bukkit.configuration.ConfigurationSection;
         types = {EffectType.MAGICAL, EffectType.HEALING, EffectType.HELPFUL},
         elements = {EffectElement.HOLY}
 )
-public class Layhands extends AbstractLevelableSkill implements CommandTriggered {
+public class Layhands extends AbstractSkill implements CommandTriggered {
 
     private boolean selfHeal = false;
 
