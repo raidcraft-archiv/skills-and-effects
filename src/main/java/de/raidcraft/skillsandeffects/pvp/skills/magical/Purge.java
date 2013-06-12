@@ -73,7 +73,9 @@ public class Purge extends AbstractSkill implements CommandTriggered {
         } else {
             effects = target.getEffects(EffectType.PURGEABLE, EffectType.BUFF);
         }
-        Effect effect = effects.get(MathUtil.RANDOM.nextInt(effects.size()));
-        target.removeEffect(effect);
+        if (!effects.isEmpty()) {
+            Effect effect = effects.get(MathUtil.RANDOM.nextInt(effects.size()));
+            target.removeEffect(effect);
+        }
     }
 }
