@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skills.util.TimeUtil;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
