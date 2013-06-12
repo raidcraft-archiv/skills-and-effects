@@ -1,7 +1,13 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.api.items.CustomItemException;
+import de.raidcraft.api.items.attachments.AttachableCustomItem;
+import de.raidcraft.api.items.attachments.ItemAttachmentException;
+import de.raidcraft.api.items.attachments.UseableCustomItem;
+import de.raidcraft.api.items.attachments.UseableItemAttachment;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.effect.common.CastTime;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -16,8 +22,10 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 /**
  * @author Silthus
@@ -27,7 +35,7 @@ import org.bukkit.configuration.ConfigurationSection;
         description = "Teleportiert den Benutzer zu den angegbenen Koordinaten",
         types = {EffectType.MOVEMENT}
 )
-public class Warp extends AbstractSkill implements Triggered, CommandTriggered {
+public class Warp extends AbstractSkill implements Triggered, CommandTriggered, UseableItemAttachment {
 
     private boolean cancelOnDamage;
     private boolean cancelOnAttack;
@@ -46,7 +54,29 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered {
         int z = data.getInt("z");
         float yaw = (float) data.getDouble("yaw");
         float pitch = (float) data.getDouble("pitch");
-        destination = new Location(getHolder().getEntity().getWorld(), x, y, z, yaw, pitch);
+        destination = new Location(Bukkit.getWorld(data.getString("world")), x, y, z, yaw, pitch);
+    }
+
+    @Override
+    public void use(UseableCustomItem item, Player player, ConfigurationSection args) throws ItemAttachmentException {
+
+        try {
+            new SkillAction(this).run();
+        } catch (CombatException e) {
+            throw new ItemAttachmentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void applyAttachment(AttachableCustomItem item, Player player, ConfigurationSection args) throws CustomItemException {
+
+
+    }
+
+    @Override
+    public void removeAttachment(AttachableCustomItem item, Player player, ConfigurationSection args) throws CustomItemException {
+
+
     }
 
     @Override
