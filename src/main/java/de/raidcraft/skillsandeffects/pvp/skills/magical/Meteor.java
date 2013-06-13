@@ -41,8 +41,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
     private ConfigurationSection amount;
     private BukkitTask meteorTask;
     private int firedMeteors = 0;
-    private double minSpeed;
-    private double maxSpeed;
+    private double travelTime;
     private long interval;
     private long delay;
 
@@ -55,8 +54,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         amount = data.getConfigurationSection("amount");
-        minSpeed = data.getDouble("min-speed", 0.01);
-        maxSpeed = data.getDouble("max-speed", 0.75);
+        travelTime = data.getDouble("travel-time", 10);
         interval = TimeUtil.secondsToTicks(data.getDouble("interval", 1.0));
         delay = TimeUtil.secondsToTicks(data.getDouble("delay", 1.0));
     }
@@ -77,9 +75,6 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
 
         // lets get a position above the location with a random offset
         final Location origin = location.clone();
-        final Vector direction = new Vector(location.getX() - origin.getX(),
-                location.getY() - origin.getY(),
-                location.getZ() - origin.getZ()).normalize();
         // lets start a repeating task to not spawn all meteors at once
         final int amount = getAmount();
         firedMeteors = 0;
@@ -95,17 +90,24 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 try {
                     origin.add(MathUtil.RANDOM.nextInt(3), MathUtil.RANDOM.nextInt(5) + 3, MathUtil.RANDOM.nextInt(3));
                     RangedAttack<ProjectileCallback> attack = new RangedAttack<>(getHolder(), ProjectileType.LARGE_FIREBALL, getTotalDamage());
-                    LargeFireball projectile = location.getWorld().spawn(origin, LargeFireball.class);
-                    projectile.setShooter(getHolder().getPlayer());
-                    projectile.setIsIncendiary(true);
-                    projectile.setFireTicks(100);
-                    attack.setProjectile(projectile);
-                    if (amount > 1) {
-                        double speedmult = MathUtil.RANDOM.nextDouble() * (maxSpeed - minSpeed) + minSpeed;
-                        // lets randomize the meteor a little if multiple are spawned
-                        direction.multiply(speedmult);
-                    }
-                    attack.setVelocity(direction);
+                    LargeFireball fireball = getHolder().getEntity().launchProjectile(LargeFireball.class);
+                    fireball.teleport(origin);
+                    fireball.setShooter(getHolder().getPlayer());
+                    fireball.setIsIncendiary(true);
+                    fireball.setFireTicks(100);
+                    attack.setProjectile(fireball);
+                    // lets calculate the direction of the meteor
+                    Vector direction = new Vector(location.getX() - origin.getX(),
+                            location.getY() - origin.getY(),
+                            location.getZ() - origin.getZ());
+                    fireball.setDirection(direction);
+                    // lets calculate the speed
+                    //Velocity, to ensure fireball will reach in ~5 seconds
+                    final double vx = (origin.getX() - location.getX()) / travelTime;
+                    final double vy = (origin.getY() - location.getY()) / travelTime;
+                    final double vz = (origin.getZ() - location.getZ()) / travelTime;
+                    Vector velocity = new Vector(vx, vy, vz);
+                    fireball.setVelocity(velocity);
                     firedMeteors++;
                     attack.run();
                 } catch (CombatException e) {
