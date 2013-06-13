@@ -95,10 +95,13 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     public void runCommand(CommandContext args) throws CombatException {
 
         if (bedSpawn) {
-            getHolder().getEntity().teleport(getHolder().getPlayer().getBedSpawnLocation());
-        } else {
-            getHolder().getEntity().teleport(destination);
+            Location spawnLocation = getHolder().getPlayer().getBedSpawnLocation();
+            if (spawnLocation != null) {
+                getHolder().getEntity().teleport(spawnLocation);
+                return;
+            }
         }
+        getHolder().getEntity().teleport(destination);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
