@@ -70,10 +70,10 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        dropMeteor(getBlockTarget());
+        dropMeteors(getBlockTarget());
     }
 
-    public void dropMeteor(final Location location) throws CombatException {
+    public void dropMeteors(final Location location) throws CombatException {
 
         // lets get a position above the location with a random offset
         final Location origin = location.clone();
