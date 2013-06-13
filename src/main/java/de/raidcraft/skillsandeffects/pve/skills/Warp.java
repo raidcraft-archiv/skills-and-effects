@@ -40,6 +40,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
 
     private boolean cancelOnDamage;
     private boolean cancelOnAttack;
+    private boolean bedSpawn;
     private Location destination;
 
     public Warp(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -52,6 +53,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
 
         cancelOnDamage = data.getBoolean("cancel-on-damage", true);
         cancelOnAttack = data.getBoolean("cancel-on-attack", true);
+        bedSpawn = data.getBoolean("bed-spawn", false);
         int x = data.getInt("x");
         int y = data.getInt("y");
         int z = data.getInt("z");
@@ -92,7 +94,11 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        getHolder().getEntity().teleport(destination);
+        if (bedSpawn) {
+            getHolder().getEntity().teleport(getHolder().getPlayer().getBedSpawnLocation());
+        } else {
+            getHolder().getEntity().teleport(destination);
+        }
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
