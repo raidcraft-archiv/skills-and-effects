@@ -22,6 +22,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skillsandeffects.pvp.effects.movement.Immobilize;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,6 +50,8 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     @Override
     public void load(ConfigurationSection data) {
 
+        cancelOnDamage = data.getBoolean("cancel-on-damage", true);
+        cancelOnAttack = data.getBoolean("cancel-on-attack", true);
         int x = data.getInt("x");
         int y = data.getInt("y");
         int z = data.getInt("z");
@@ -61,7 +64,14 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     public void use(UseableCustomItem item, Player player, ConfigurationSection args) throws ItemAttachmentException {
 
         try {
-            new SkillAction(this).run();
+            if (getHolder().hasEffect(CastTime.class)) {
+                getHolder().removeEffect(CastTime.class);
+                getHolder().removeEffect(Immobilize.class);
+            } else {
+                new SkillAction(this).run();
+                // also apply the lock down effect
+                addEffect(getHolder(), Immobilize.class);
+            }
         } catch (CombatException e) {
             throw new ItemAttachmentException(e.getMessage());
         }
@@ -108,7 +118,8 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
             return;
         }
         if (getHolder().getEffect(CastTime.class).getSource().getSkill().equals(this)) {
-            getHolder().getEffect(CastTime.class).remove();
+            getHolder().removeEffect(CastTime.class);
+            getHolder().removeEffect(Immobilize.class);
         }
     }
 }
