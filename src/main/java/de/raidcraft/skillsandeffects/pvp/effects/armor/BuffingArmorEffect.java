@@ -23,6 +23,9 @@ import de.raidcraft.util.MathUtil;
 )
 public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements Triggered {
 
+    private int healthIncrease;
+    private double increasePercent;
+
     public BuffingArmorEffect(BuffingArmor source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
@@ -57,10 +60,10 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
 
         if (getSource().hasType(BuffingArmor.Type.HEALTH_INCREASE)) {
             int maxHealth = target.getMaxHealth();
-            double healthIncrease = getSource().getHealthIncrease();
-            int increase = (int) (maxHealth * healthIncrease);
-            combatLog("Maximale Leben um " + increase + "(" + MathUtil.toPercent(healthIncrease) + ") erhöht.");
-            target.increaseMaxHealth(increase);
+            increasePercent = getSource().getHealthIncrease();
+            healthIncrease = (int) (maxHealth * increasePercent);
+            combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + ") erhöht.");
+            target.increaseMaxHealth(healthIncrease);
         }
     }
 
@@ -68,11 +71,8 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (getSource().hasType(BuffingArmor.Type.HEALTH_INCREASE)) {
-            int maxHealth = target.getMaxHealth();
-            double healthDecrease = getSource().getHealthIncrease();
-            int decrease = (int) (maxHealth * healthDecrease);
-            combatLog("Maximale Leben um " + decrease + "(" + MathUtil.toPercent(healthDecrease) + ") verringert.");
-            target.decreaseMaxHealth(decrease);
+            combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + ") verringert.");
+            target.decreaseMaxHealth(healthIncrease);
         }
     }
 
