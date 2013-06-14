@@ -13,7 +13,7 @@ import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.trigger.EntityDeathTrigger;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -43,13 +43,10 @@ public class WitherEffect extends PeriodicExpirableEffect<Skill> implements Trig
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
-    public void onDamage(DamageTrigger trigger) throws CombatException {
+    public void onDamage(EntityDeathTrigger trigger) throws CombatException {
 
-        if (trigger.getAttack().getTarget().getHealth() - trigger.getAttack().getDamage() <= 0) {
-            // target will die
-            if (deathCallback != null) {
-                deathCallback.run(trigger.getAttack().getTarget());
-            }
+        if (deathCallback != null) {
+            deathCallback.run(trigger.getEvent().getCharacter());
         }
     }
 
