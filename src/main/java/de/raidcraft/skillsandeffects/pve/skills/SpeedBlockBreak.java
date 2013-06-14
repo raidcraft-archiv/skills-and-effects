@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -62,6 +63,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
         if (trigger.getEvent().getAction() != Action.RIGHT_CLICK_BLOCK || !isValid(trigger)) {
             return;
         }
+        checkUsage(new SkillAction(this));
 
         addEffect(getHolder(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
             @Override
@@ -72,6 +74,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
                 }
 
                 addEffect(getHolder(), SpeedBlockBreakEffect.class);
+                substractUsageCost(new SkillAction(SpeedBlockBreak.this));
             }
         }, Action.LEFT_CLICK_BLOCK);
     }
