@@ -82,7 +82,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                 if (jumpCount < getJumpCount()) {
                     try {
                         for (final CharacterTemplate target : attack.getTarget().getNearbyTargets(jumpRange)) {
-                            if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHolder())) {
+                            if (target.hasEffect(ChainLightningEffect.class) || target.equals(getHolder()) || target.isFriendly(getHolder())) {
                                 continue;
                             }
                             final int newDamage = (int) (damage - (initialDamage * getReductionPerJump()));

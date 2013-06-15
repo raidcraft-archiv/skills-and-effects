@@ -78,7 +78,7 @@ public class ChainHeal extends AbstractSkill implements CommandTriggered {
         if (jumpCount < getJumpCount()) {
             try {
                 for (final CharacterTemplate nextTarget : target.getNearbyTargets(jumpRange)) {
-                    if (target.hasEffect(ChainHealEffect.class) || target.equals(getHolder())) {
+                    if (target.hasEffect(ChainHealEffect.class) || target.equals(getHolder()) || !target.isFriendly(getHolder())) {
                         continue;
                     }
                     final int newHealAmount = (int) (heal - (intialHeal * getReductionPerJump()));
