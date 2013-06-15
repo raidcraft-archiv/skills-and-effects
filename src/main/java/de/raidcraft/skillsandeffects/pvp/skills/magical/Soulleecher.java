@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
+import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -15,7 +16,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skillsandeffects.pvp.effects.debuff.WitherEffect;
+import de.raidcraft.skillsandeffects.pvp.effects.debuff.SoulleecherEffect;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -52,7 +53,7 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                addEffect(target, WitherEffect.class).setDeathCallback(new RangedCallback() {
+                addEffect(target, SoulleecherEffect.class).setDeathCallback(new Callback<CharacterTemplate>() {
                     @Override
                     public void run(CharacterTemplate target) throws CombatException {
 
