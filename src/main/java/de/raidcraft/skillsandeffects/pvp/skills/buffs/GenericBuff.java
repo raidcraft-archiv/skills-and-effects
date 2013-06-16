@@ -72,9 +72,13 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
             return;
         }
 
-        for (CharacterTemplate member : getNearbyTargets(true)) {
-            addEffect(member, type.clazz());
+        try {
+            addEffect(getHolder(), type.clazz());
+            for (CharacterTemplate member : getNearbyTargets(true)) {
+                addEffect(member, type.clazz());
+            }
+        } catch (CombatException ignored) {
+            // ignore no friendly targets nearby
         }
-        addEffect(getHolder(), type.clazz());
     }
 }
