@@ -49,6 +49,12 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
         breakOnDamage = data.getBoolean("break-on-damage", true);
     }
 
+    @Override
+    public double getPriority() {
+
+        return super.getPriority() + resourceGain / getInterval();
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
