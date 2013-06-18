@@ -81,6 +81,8 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
     protected void apply(CharacterTemplate target) throws CombatException {
 
         pig = target.getEntity().getWorld().spawn(target.getEntity().getLocation(), Pig.class);
+        pig.setMaxHealth(9999);
+        pig.setHealth(9999);
         RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(pig).addEffect(getSource(), Summoned.class);
         pig.setPassenger(target.getEntity());
     }
