@@ -6,7 +6,7 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.DiminishingReturnType;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.PeriodicEffect;
+import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
@@ -29,11 +29,12 @@ import org.bukkit.entity.Pig;
         types = {EffectType.DISABLEING, EffectType.DEBUFF},
         diminishingReturn = DiminishingReturnType.DISORIENT
 )
-public class Pigify extends PeriodicEffect<Skill> implements Triggered {
+public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered {
 
     private double healthRegain;
     private boolean healthInPercent;
     private double damageTreshhold = 0.05;
+    private int minimumSheepTime = 20;
     private int totalDamage = 0;
     private Pig pig;
 
@@ -49,11 +50,16 @@ public class Pigify extends PeriodicEffect<Skill> implements Triggered {
         healthRegain = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-regain"));
         healthInPercent = data.getBoolean("health-regain.percent", false);
         damageTreshhold = data.getDouble("damage-cap", 0.05);
+        minimumSheepTime = (int) (ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("min-time")) * 20);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
+        if (getRemainingTicks() > getDuration() - minimumSheepTime) {
+            trigger.setCancelled(true);
+            return;
+        }
         if (trigger.getAttack().getTarget().getEntity().equals(pig)) {
             return;
         }
