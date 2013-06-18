@@ -53,6 +53,7 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
     }
 
     private BuffType type;
+    private boolean self;
 
     public GenericBuff(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -63,6 +64,7 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         type = BuffType.fromString(data.getString("type"));
+        self = data.getBoolean("self-only", false);
     }
 
     @Override
@@ -72,13 +74,7 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
             return;
         }
 
-        try {
-            addEffect(getHolder(), type.clazz());
-            for (CharacterTemplate member : getNearbyTargets(true)) {
-                addEffect(member, type.clazz());
-            }
-        } catch (CombatException ignored) {
-            // ignore no friendly targets nearby
-        }
+        CharacterTemplate target = getTarget(args, true, self);
+        addEffect(target, type.clazz());
     }
 }
