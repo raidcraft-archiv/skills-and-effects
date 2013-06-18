@@ -100,6 +100,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
             }
             // lets also get the globally defined exp and add them to the skill
             int exp = RaidCraft.getComponent(SkillsPlugin.class).getExperienceConfig().getBlockExperienceFor(block.getTypeId());
+            exp += getUseExp();
             getAttachedLevel().addExp((doubleDrop ? exp * 2 : exp));
         }
     }
