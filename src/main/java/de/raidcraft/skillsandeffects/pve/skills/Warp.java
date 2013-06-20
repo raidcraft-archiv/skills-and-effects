@@ -2,9 +2,8 @@ package de.raidcraft.skillsandeffects.pve.skills;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.items.attachments.AttachableCustomItem;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
-import de.raidcraft.api.items.attachments.UseableCustomItem;
 import de.raidcraft.api.items.attachments.UseableItemAttachment;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
@@ -63,7 +62,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     }
 
     @Override
-    public void use(UseableCustomItem item, Player player, ConfigurationSection args) throws ItemAttachmentException {
+    public void use(CustomItemStack item, Player player, ConfigurationSection args) throws ItemAttachmentException {
 
         try {
             if (getHolder().hasEffect(CastTime.class)) {
@@ -80,13 +79,13 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     }
 
     @Override
-    public void applyAttachment(AttachableCustomItem item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void applyAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
 
 
     }
 
     @Override
-    public void removeAttachment(AttachableCustomItem item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void removeAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
 
 
     }
