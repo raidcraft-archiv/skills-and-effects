@@ -1,7 +1,5 @@
 package de.raidcraft.skillsandeffects.pvp.effects.disabling;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.DiminishingReturnType;
@@ -11,13 +9,12 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
-import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 
 /**
@@ -36,7 +33,7 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
     private double damageTreshhold = 0.05;
     private int minimumSheepTime = 20;
     private int totalDamage = 0;
-    private Pig pig;
+    private LivingEntity pig;
 
     public Pigify(Skill source, CharacterTemplate target, EffectData data) {
 
@@ -53,13 +50,9 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
         minimumSheepTime = (int) (ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("min-time")) * 20);
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
+    @TriggerHandler(ignoreCancelled = true)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
-        if (getRemainingTicks() > getDuration() - minimumSheepTime) {
-            trigger.setCancelled(true);
-            return;
-        }
         if (trigger.getAttack().getTarget().getEntity().equals(pig)) {
             return;
         }
@@ -68,29 +61,37 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
         throw new CombatException("Du kannst nicht angreifen während du auf einem Schwein reitest.");
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    @TriggerHandler(ignoreCancelled = true, filterTargets = false)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
+        CharacterTemplate target = trigger.getAttack().getTarget();
+        if (!target.equals(getTarget()) || target.getEntity().equals(pig)) {
+            return;
+        }
+        if (getRemainingTicks() > getDuration() - minimumSheepTime) {
+            trigger.setCancelled(true);
+            return;
+        }
         totalDamage += trigger.getAttack().getDamage();
         if (totalDamage > getTarget().getMaxHealth() * damageTreshhold) {
             remove();
+        } else {
+            trigger.getAttack().setCancelled(true);
+            trigger.setCancelled(true);
         }
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        pig = target.getEntity().getWorld().spawn(target.getEntity().getLocation(), Pig.class);
-        pig.setMaxHealth(9999);
-        pig.setHealth(9999);
-        RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getCharacter(pig).addEffect(getSource(), Summoned.class);
-        pig.setPassenger(target.getEntity());
+        pig = target.getEntity().getWorld().spawn(target.getEntity().getLocation().add(0, 1, 0), Pig.class);
+        renew(target);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        pig.setPassenger(null);
+        pig.getPassenger().leaveVehicle();
         pig.remove();
     }
 
@@ -112,6 +113,8 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
+        pig.setMaxHealth(9999);
+        pig.setHealth(pig.getMaxHealth());
         pig.setPassenger(target.getEntity());
     }
 }
