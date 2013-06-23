@@ -61,6 +61,6 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
                     }
                 });
             }
-        }).run();
+        });
     }
 }
