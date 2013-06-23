@@ -13,7 +13,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skills.effects.disabling.Root;
+import de.raidcraft.skills.effects.disabling.Immobilize;
 import de.raidcraft.skills.tables.THeroSkill;
 
 /**
@@ -40,7 +40,7 @@ public class Frostnova extends AbstractSkill implements CommandTriggered {
                 @Override
                 public void run(EntityAttack attack) throws CombatException {
 
-                    Frostnova.this.addEffect(attack.getTarget(), Root.class);
+                    Frostnova.this.addEffect(attack.getTarget(), Immobilize.class);
                 }
             });
         }
