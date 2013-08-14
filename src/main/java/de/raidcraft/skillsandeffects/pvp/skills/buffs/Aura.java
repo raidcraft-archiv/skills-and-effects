@@ -93,13 +93,11 @@ public class Aura extends AbstractSkill implements CommandTriggered {
 
         if (auraType == null) return;
 
-        for (CharacterTemplate member : getHolder().getParty().getMembers()) {
-            if (member.hasEffect(auraType.getEffectClass())) {
-                member.getEffect(auraType.getEffectClass()).renew();
-            } else {
+        for (CharacterTemplate member : getNearbyTargets(true)) {
+            if (!member.hasEffect(auraType.getEffectClass())) {
                 member.removeEffectTypes(EffectType.AURA);
-                addEffect(this, getHolder(), auraType.getEffectClass());
             }
+            addEffect(this, getHolder(), auraType.getEffectClass());
         }
     }
 }
