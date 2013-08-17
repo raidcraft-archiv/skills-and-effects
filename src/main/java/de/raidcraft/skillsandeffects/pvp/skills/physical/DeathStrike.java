@@ -5,7 +5,6 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
-import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -71,7 +70,7 @@ public class DeathStrike extends AbstractSkill implements CommandTriggered, Trig
         if (!getHolder().hasEffect(DeathStrikeEffect.class)) {
             throw new CombatException("Du musst erst ein Ziel töten bevor du diesen Skill nutzen kannst.");
         }
-        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        queueAttack(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
