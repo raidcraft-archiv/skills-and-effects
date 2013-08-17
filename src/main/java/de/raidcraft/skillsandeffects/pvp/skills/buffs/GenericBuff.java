@@ -54,6 +54,7 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
 
     private BuffType type;
     private boolean self;
+    private boolean group;
 
     public GenericBuff(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -65,6 +66,7 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
 
         type = BuffType.fromString(data.getString("type"));
         self = data.getBoolean("self-only", false);
+        group = data.getBoolean("group", false);
     }
 
     @Override
@@ -74,7 +76,13 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
             return;
         }
 
-        CharacterTemplate target = getTarget(args, true, self);
-        addEffect(target, type.clazz());
+        if (group) {
+            for (CharacterTemplate target : getNearbyTargets(true)) {
+                addEffect(target, type.clazz());
+            }
+        } else {
+            CharacterTemplate target = getTarget(args, true, self);
+            addEffect(target, type.clazz());
+        }
     }
 }
