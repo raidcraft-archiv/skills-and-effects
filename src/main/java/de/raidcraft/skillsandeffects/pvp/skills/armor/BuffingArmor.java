@@ -44,7 +44,7 @@ public class BuffingArmor extends AbstractSkill implements CommandTriggered {
     private Set<Type> types = new HashSet<>();
     private ConfigurationSection healthIncrease;
     private ConfigurationSection healIncrease;
-    private Resource resource;
+    private String resource;
     private ConfigurationSection resourceRegain;
 
     public BuffingArmor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -66,7 +66,7 @@ public class BuffingArmor extends AbstractSkill implements CommandTriggered {
         healthIncrease = data.getConfigurationSection("health-increase");
         healIncrease = data.getConfigurationSection("heal-increase");
         // resource regain
-        resource = getHolder().getResource(data.getString("resource"));
+        resource = data.getString("resource");
         resourceRegain = data.getConfigurationSection("resource-regain");
     }
 
@@ -92,7 +92,7 @@ public class BuffingArmor extends AbstractSkill implements CommandTriggered {
 
     public Resource getResource() {
 
-        return resource;
+        return getHolder().getResource(resource);
     }
 
     @Override

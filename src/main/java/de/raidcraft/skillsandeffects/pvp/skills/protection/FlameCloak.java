@@ -27,7 +27,7 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class FlameCloak extends AbstractSkill implements CommandTriggered {
 
-    private Resource resource;
+    private String resource;
     private ConfigurationSection resourceBurnTick;
 
     public FlameCloak(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -38,12 +38,13 @@ public class FlameCloak extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        this.resource = getHolder().getResource(data.getString("resource"));
+        this.resource = data.getString("resource");
         this.resourceBurnTick = data.getConfigurationSection("resource-cost");
     }
 
     public void substractResourceTick() throws CombatException {
 
+        Resource resource = getHolder().getResource(this.resource);
         if (resource == null) {
             return;
         }

@@ -49,7 +49,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     private static CharacterManager CHARACTER_MANAGER;
 
     private final Map<String, SummonedCreatureConfig> creatureConfigs = new HashMap<>();
-    private Resource resource;
+    private String resource;
 
     public Summon(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -59,7 +59,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        resource = getHolder().getResource(data.getString("resource", "souls"));
+        resource = data.getString("resource", "souls");
         ConfigurationSection creatures = data.getConfigurationSection("creatures");
         if (creatures == null) return;
         for (String key : creatures.getKeys(false)) {
@@ -137,6 +137,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
     public List<CharacterTemplate> summonCreatures(SummonedCreatureConfig config, int amount) throws CombatException {
 
+        Resource resource = getHolder().getResource(this.resource);
         if (CHARACTER_MANAGER == null) {
             CHARACTER_MANAGER = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager();
         }

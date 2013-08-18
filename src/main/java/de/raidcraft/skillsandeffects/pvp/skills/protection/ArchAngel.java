@@ -32,7 +32,7 @@ public class ArchAngel extends AbstractSkill implements CommandTriggered {
     private ConfigurationSection bonusHealAmount;
     private ConfigurationSection resourceBonus;
     private ConfigurationSection cooldownReduction;
-    private Resource resource;
+    private String resource;
 
     public ArchAngel(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -46,11 +46,12 @@ public class ArchAngel extends AbstractSkill implements CommandTriggered {
         bonusHealAmount = data.getConfigurationSection("bonus-heal-amount");
         resourceBonus = data.getConfigurationSection("resource-bonus");
         cooldownReduction = data.getConfigurationSection("cooldown-reduction");
-        resource = getHolder().getResource(data.getString("resource"));
+        resource = data.getString("resource");
     }
 
     public void giveResourceBonus(HealAction<?> action) {
 
+        Resource resource = getHolder().getResource(this.resource);
         if (resource == null) {
             return;
         }

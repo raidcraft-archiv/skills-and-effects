@@ -30,7 +30,7 @@ import java.util.List;
 public class BoneShield extends AbstractSkill implements CommandTriggered {
 
     private boolean current;
-    private Resource resource;
+    private String resource;
     private ConfigurationSection absorbtion;
     private ConfigurationSection maxTargets;
 
@@ -45,7 +45,7 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         current = data.getBoolean("current", true);
-        resource = getHolder().getResource(data.getString("resource"));
+        resource = data.getString("resource");
         absorbtion = data.getConfigurationSection("absorbtion");
         maxTargets = data.getConfigurationSection("max-targets");
     }
@@ -58,6 +58,7 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
 
     public double getAbsorbtion() {
 
+        Resource resource = getHolder().getResource(this.resource);
         if (resource == null) {
             return 0.0;
         }

@@ -24,8 +24,8 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class ResourceConversion extends AbstractSkill implements Triggered {
 
-    private Resource resourceToListen;
-    private Resource resourceToRestore;
+    private String resourceToListen;
+    private String resourceToRestore;
     private ConfigurationSection chancePerResource;
     private ConfigurationSection amount;
 
@@ -37,8 +37,8 @@ public class ResourceConversion extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        resourceToListen = getHolder().getResource(data.getString("using-resource"));
-        resourceToRestore = getHolder().getResource(data.getString("gaining-resource"));
+        resourceToListen = data.getString("using-resource");
+        resourceToRestore = data.getString("gaining-resource");
         chancePerResource = data.getConfigurationSection("chance-per-resource");
         amount = data.getConfigurationSection("amount");
     }
@@ -56,6 +56,8 @@ public class ResourceConversion extends AbstractSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onResourceChange(ResourceChangeTrigger trigger) {
 
+        Resource resourceToListen = getHolder().getResource(this.resourceToListen);
+        Resource resourceToRestore = getHolder().getResource(this.resourceToRestore);
         if (trigger.getAction() != ResourceChangeTrigger.Action.LOSS
                 || !trigger.getResource().equals(resourceToListen)) {
             return;

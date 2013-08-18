@@ -25,8 +25,8 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class ResourceTransfer extends AbstractSkill implements CommandTriggered {
 
-    private Resource source;
-    private Resource destination;
+    private String sourceResource;
+    private String destinationResource;
     private ConfigurationSection transferAmount;
     private ConfigurationSection transferRatio;
 
@@ -38,20 +38,20 @@ public class ResourceTransfer extends AbstractSkill implements CommandTriggered 
     @Override
     public void load(ConfigurationSection data) {
 
-        source = getHolder().getResource(data.getString("source-resource"));
-        destination = getHolder().getResource(data.getString("destination-resource"));
+        sourceResource = data.getString("source-resource");
+        destinationResource = data.getString("destination-resource");
         transferAmount = data.getConfigurationSection("transfer-amount");
         transferRatio = data.getConfigurationSection("transfer-ratio");
     }
 
     public Resource getSource() {
 
-        return source;
+        return getHolder().getResource(sourceResource);
     }
 
     public Resource getDestination() {
 
-        return destination;
+        return getHolder().getResource(destinationResource);
     }
 
     public double getTransferAmount() {
@@ -67,7 +67,7 @@ public class ResourceTransfer extends AbstractSkill implements CommandTriggered 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (source == null || destination == null) {
+        if (getSource() == null || getDestination() == null) {
             throw new CombatException("Skill is wrong configured! Could not find defined resources...");
         }
         if (getHolder().hasEffect(ResourceTransferEffect.class)) {

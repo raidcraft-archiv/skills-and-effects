@@ -30,7 +30,7 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Soulleecher extends AbstractSkill implements CommandTriggered {
 
-    private Resource resource;
+    private String resource;
 
     public Soulleecher(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -40,12 +40,13 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        resource = getHolder().getResource(data.getString("resource", "souls"));
+        resource = data.getString("resource", "souls");
     }
 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        final Resource resource = getHolder().getResource(this.resource);
         if (resource == null) {
             throw new CombatException("Unknown Resource defined in the config! Please report this as a bug...");
         }

@@ -5,6 +5,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
@@ -12,6 +13,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.CombatTrigger;
 import de.raidcraft.skillsandeffects.pvp.effects.resources.RageEffect;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
@@ -22,17 +24,24 @@ import de.raidcraft.skillsandeffects.pvp.effects.resources.RageEffect;
 )
 public class Rage extends AbstractSkill implements Triggered {
 
-    public static final String RESOURCE_NAME = "rage";
+    private String resource;
 
     public Rage(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
 
+    @Override
+    public void load(ConfigurationSection data) {
+
+        resource = data.getString("resource", "rage");
+    }
+
     @TriggerHandler
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
-        if (getHolder().getResource(RESOURCE_NAME) == null) {
+        Resource resource = getHolder().getResource(this.resource);
+        if (resource == null) {
             return;
         }
 
