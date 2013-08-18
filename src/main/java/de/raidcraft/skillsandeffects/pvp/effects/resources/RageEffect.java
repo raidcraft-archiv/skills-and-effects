@@ -1,11 +1,11 @@
 package de.raidcraft.skillsandeffects.pvp.effects.resources;
 
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
-import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.persistance.EffectData;
+import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
@@ -21,11 +21,15 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Rage",
         description = "Regeneriert Wut wenn im Kampf"
 )
-public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
+public class RageEffect extends AbstractEffect<Rage> implements Triggered {
 
     private ConfigurationSection rageAmount;
+    private ConfigurationSection rageInterval;
     private double ragePerAttackDamage = 0.1;
     private double ragePerDamage = 0.1;
+
+    private double oldRegainValue;
+    private long oldRegainInterval;
 
     public RageEffect(Rage source, CharacterTemplate target, EffectData data) {
 
@@ -35,6 +39,7 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
+        rageInterval = data.getConfigurationSection("rage-interval");
         rageAmount = data.getConfigurationSection("rage-amount");
         ragePerAttackDamage = data.getDouble("rage-per-attack", 0.1);
         ragePerDamage = data.getDouble("rage-per-damage", 0.1);
@@ -66,6 +71,11 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
         return (int) ConfigUtil.getTotalValue(getSource(), rageAmount);
     }
 
+    private long getRageInterval() {
+
+        return (long) (ConfigUtil.getTotalValue(getSource(), rageInterval) * 20);
+    }
+
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
@@ -81,24 +91,23 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
     }
 
     @Override
-    protected void tick(CharacterTemplate target) throws CombatException {
-
-        Resource resource = getSource().getResource();
-        resource.setCurrent(resource.getCurrent() + getRageAmount());
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
+        Resource resource = getSource().getResource();
+        oldRegainValue = resource.getRegenValue();
+        oldRegainInterval = resource.getRegenInterval();
         // lets disable the normal rage deregeneration
-        getSource().getResource().setEnabled(false);
+        resource.setRegenValue(getRageAmount());
+        resource.setRegenInterval(getRageInterval());
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         // reenable the rage deregeneration
-        getSource().getResource().setEnabled(true);
+        Resource resource = getSource().getResource();
+        resource.setRegenValue(oldRegainValue);
+        resource.setRegenInterval(oldRegainInterval);
     }
 
     @Override
