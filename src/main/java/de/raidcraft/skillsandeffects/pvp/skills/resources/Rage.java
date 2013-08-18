@@ -37,12 +37,16 @@ public class Rage extends AbstractSkill implements Triggered {
         resource = data.getString("resource", "rage");
     }
 
+    public Resource getResource() {
+
+        return getHolder().getResource(this.resource);
+    }
+
     @TriggerHandler
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
-        Resource resource = getHolder().getResource(this.resource);
-        if (resource == null) {
-            return;
+        if (getResource() == null) {
+            throw new CombatException("Unknown resource defined in the config! Please report this as a bug...");
         }
 
         if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {

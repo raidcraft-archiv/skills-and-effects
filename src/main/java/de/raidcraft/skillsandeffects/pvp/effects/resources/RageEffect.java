@@ -69,21 +69,21 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
-        Resource resource = getSource().getHolder().getResource(Rage.RESOURCE_NAME);
+        Resource resource = getSource().getResource();
         resource.setCurrent((int) (resource.getCurrent() + trigger.getAttack().getDamage() * ragePerAttackDamage));
     }
 
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
-        Resource resource = getSource().getHolder().getResource(Rage.RESOURCE_NAME);
+        Resource resource = getSource().getResource();
         resource.setCurrent((int) (resource.getCurrent() + trigger.getAttack().getDamage() * ragePerDamage));
     }
 
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        Resource resource = getSource().getHolder().getResource(Rage.RESOURCE_NAME);
+        Resource resource = getSource().getResource();
         resource.setCurrent(resource.getCurrent() + getRageAmount());
     }
 
@@ -91,14 +91,14 @@ public class RageEffect extends PeriodicEffect<Rage> implements Triggered {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         // lets disable the normal rage deregeneration
-        getSource().getHolder().getResource(Rage.RESOURCE_NAME).setEnabled(false);
+        getSource().getResource().setEnabled(false);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         // reenable the rage deregeneration
-        getSource().getHolder().getResource(Rage.RESOURCE_NAME).setEnabled(true);
+        getSource().getResource().setEnabled(true);
     }
 
     @Override
