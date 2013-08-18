@@ -40,7 +40,7 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Vector direction = getHolder().getEntity().getEyeLocation().toVector();
+        Vector direction = getHolder().getEntity().getEyeLocation().toVector().normalize();
         // flip the direction the player is looking at
         direction.multiply(-1.0);
         // add some height
