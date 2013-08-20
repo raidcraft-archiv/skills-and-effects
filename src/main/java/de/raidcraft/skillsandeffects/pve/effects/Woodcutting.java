@@ -1,18 +1,12 @@
 package de.raidcraft.skillsandeffects.pve.effects;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.block.BlockBreakEvent;
-
 import com.sk89q.worldedit.blocks.BlockID;
-
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
+import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.EffectInformation;
+import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -22,68 +16,90 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 
 /**
  * @author Silthus
  */
-@EffectInformation(name = "Woodcutting", description = "Fällt direkt einen Baum.", types = { EffectType.HELPFUL })
+@EffectInformation(name = "Woodcutting", description = "Fällt direkt einen Baum.", types = {EffectType.HELPFUL})
 public class Woodcutting extends AbstractLevelableSkill implements Triggered {
-	private ConfigurationSection maxBlockAmountConfig;
-	private double maxBlockAmount;
 
-	public Woodcutting(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
-		super(hero, data, profession, database);
-	}
+    private ConfigurationSection maxBlockAmountConfig;
+    private double maxBlockAmount;
 
-	@Override
-	public void load(ConfigurationSection data) {
-		maxBlockAmountConfig = data.getConfigurationSection("maxBlockAmount");
-	}
+    public Woodcutting(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
-	private int getMaxBlockAmount() {
-		if (maxBlockAmount == 0.0) {
-			maxBlockAmount = ConfigUtil.getTotalValue(this, maxBlockAmountConfig);
-		}
-		return (int) maxBlockAmount;
-	}
+        super(hero, data, profession, database);
+    }
 
-	private boolean isTreeMaterial(int mat) {
-		return mat == BlockID.WOOD;
-	}
+    @Override
+    public void load(ConfigurationSection data) {
 
-	private int walkInDirection(PlayerInteractTrigger trigger, BlockFace direction, Block startBlock, int amount) {
-		BlockBreakEvent event;
-		while (amount <= getMaxBlockAmount() && isTreeMaterial(startBlock.getTypeId())) {
-			if (!RaidCraft.isPlayerPlacedBlock(startBlock)) {
+        maxBlockAmountConfig = data.getConfigurationSection("maxBlockAmount");
+    }
 
-			}
-			// check if blocked
-			event = new BlockBreakEvent(startBlock, trigger.getEvent().getPlayer());
-			RaidCraft.callEvent(event);
-			if (event.isCancelled()) {
-				startBlock.breakNaturally(trigger.getEvent().getPlayer().getItemInHand());
-				amount++;
-			}
-			startBlock = startBlock.getRelative(direction);
-		}
-		return amount;
-	}
+    private int getMaxBlockAmount() {
 
-	// TODO: holz in der krone abbauen
-	// TODO: use QueuedInteract
-	@TriggerHandler(ignoreCancelled = true)
-	public void onPlayerInteract(PlayerInteractTrigger trigger) {
-		Block targetBlock = trigger.getEvent().getClickedBlock();
-		if (!isTreeMaterial(targetBlock.getTypeId())) {
-			return;
-		}
-		int amount = 0;
-		// first walk down
-		amount = walkInDirection(trigger, BlockFace.DOWN, targetBlock, amount);
-		// then walk up
-		amount = walkInDirection(trigger, BlockFace.UP, targetBlock, amount);
-		getHolder().sendMessage(
-				ChatColor.YELLOW + "Du hast direkt " + ChatColor.RED + amount + ChatColor.YELLOW + " Holz abgebaut.");
-		substractUsageCost(new SkillAction(this));
-	}
+        if (maxBlockAmount == 0.0) {
+            maxBlockAmount = ConfigUtil.getTotalValue(this, maxBlockAmountConfig);
+        }
+        return (int) maxBlockAmount;
+    }
+
+    private boolean isTreeMaterial(int mat) {
+
+        return mat == BlockID.WOOD;
+    }
+
+    private int walkInDirection(PlayerInteractTrigger trigger, BlockFace direction, Block startBlock, int amount) {
+
+        BlockBreakEvent event;
+        while (amount <= getMaxBlockAmount() && isTreeMaterial(startBlock.getTypeId())) {
+            if (!RaidCraft.isPlayerPlacedBlock(startBlock)) {
+
+            }
+            // check if blocked
+            event = new BlockBreakEvent(startBlock, trigger.getEvent().getPlayer());
+            RaidCraft.callEvent(event);
+            if (event.isCancelled()) {
+                startBlock.breakNaturally(trigger.getEvent().getPlayer().getItemInHand());
+                amount++;
+            }
+            startBlock = startBlock.getRelative(direction);
+        }
+        return amount;
+    }
+
+    // TODO: holz in der krone abbauen
+    // TODO: use QueuedInteract
+    @TriggerHandler(ignoreCancelled = true)
+    public void onPlayerInteract(PlayerInteractTrigger trigger) throws CombatException {
+
+        final Block targetBlock = trigger.getEvent().getClickedBlock();
+        if (trigger.getEvent().getAction() != Action.RIGHT_CLICK_BLOCK || !isTreeMaterial(targetBlock.getTypeId())) {
+            return;
+        }
+
+        queueInteract(new Callback<PlayerInteractTrigger>() {
+            @Override
+            public void run(PlayerInteractTrigger trigger) throws CombatException {
+
+                checkUsage(new SkillAction(Woodcutting.this));
+                int amount = 0;
+                // first walk down
+                amount = walkInDirection(trigger, BlockFace.DOWN, targetBlock, amount);
+                // then walk up
+                amount = walkInDirection(trigger, BlockFace.UP, targetBlock, amount);
+                getHolder().sendMessage(
+                        ChatColor.YELLOW + "Du hast direkt " + ChatColor.RED + amount + ChatColor.YELLOW + " Holz abgebaut.");
+                substractUsageCost(new SkillAction(Woodcutting.this));
+            }
+        }, Action.LEFT_CLICK_BLOCK);
+
+    }
 }
