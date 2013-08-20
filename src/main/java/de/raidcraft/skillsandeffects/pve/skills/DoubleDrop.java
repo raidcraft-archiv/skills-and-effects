@@ -41,7 +41,6 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
     private final Set<Integer> craftedItems = new HashSet<>();
     private ConfigurationSection chanceConfig;
     private ToolType toolType;
-    private double dropChance;
     private boolean furnace;
 
     public DoubleDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -75,10 +74,7 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
 
     private double getChance() {
 
-        if (dropChance == 0.0) {
-            dropChance = ConfigUtil.getTotalValue(this, chanceConfig);
-        }
-        return dropChance;
+        return ConfigUtil.getTotalValue(this, chanceConfig);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
