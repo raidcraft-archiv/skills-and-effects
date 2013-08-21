@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.pve.effects;
+package de.raidcraft.skillsandeffects.pve.skills;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
