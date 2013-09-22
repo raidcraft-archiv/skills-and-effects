@@ -48,8 +48,8 @@ public class DamageAura extends AbstractAura implements Triggered {
         if (physicalOnly && !trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
             return;
         }
-        int oldDamage = trigger.getAttack().getDamage();
-        int newDamage = (int) (oldDamage + oldDamage * getDamageIncrease());
+        double oldDamage = trigger.getAttack().getDamage();
+        double newDamage = oldDamage + oldDamage * getDamageIncrease();
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this,
                 "Schaden um " + (int)(getDamageIncrease() * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
