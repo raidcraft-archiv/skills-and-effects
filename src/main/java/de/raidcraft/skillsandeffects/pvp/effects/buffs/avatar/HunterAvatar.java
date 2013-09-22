@@ -102,8 +102,8 @@ public class HunterAvatar extends AbstractAvatar implements Triggered {
                 || !attack.isOfAttackType(EffectType.RANGE)) {
             return;
         }
-        int oldDamage = attack.getDamage();
-        int newDamage = (int) (oldDamage + oldDamage * attackIncrease);
+        double oldDamage = attack.getDamage();
+        double newDamage = oldDamage + oldDamage * attackIncrease;
         combatLog("Schaden um " + (newDamage - oldDamage) + "(" + MathUtil.toPercent(attackIncrease) + ") erhöht.");
         attack.setDamage(newDamage);
     }

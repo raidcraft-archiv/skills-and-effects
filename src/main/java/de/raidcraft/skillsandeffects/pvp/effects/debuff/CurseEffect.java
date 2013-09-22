@@ -41,9 +41,9 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
         if (getSource().getType() != Curse.Type.WEAKNESS) {
             return;
         }
-        int damage = trigger.getAttack().getDamage();
+        double damage = trigger.getAttack().getDamage();
         double reduction = getSource().getWeakness();
-        int reducedDamage = (int) (damage * reduction);
+        double reducedDamage = damage * reduction;
         combatLog("Angriffs Schaden um " + reducedDamage + "(" + MathUtil.toPercent(reduction) + "%) verringert.");
         trigger.getAttack().setDamage(damage - reducedDamage);
     }
@@ -69,9 +69,9 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
                 || !trigger.getAttack().isOfAttackType(EffectType.MAGICAL)) {
             return;
         }
-        int oldDamage = trigger.getAttack().getDamage();
+        double oldDamage = trigger.getAttack().getDamage();
         double modifier = getSource().getMagicDamage();
-        int newDamage = (int) (oldDamage + oldDamage * modifier);
+        double newDamage = oldDamage + oldDamage * modifier;
         combatLog("Erlittener Magieschaden um " + (newDamage - oldDamage) + "(" + MathUtil.toPercent(modifier) + ") erhöht.");
         trigger.getAttack().setDamage(newDamage);
     }

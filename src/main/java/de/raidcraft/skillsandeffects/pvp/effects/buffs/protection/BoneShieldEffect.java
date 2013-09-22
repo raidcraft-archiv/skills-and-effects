@@ -35,8 +35,8 @@ public class BoneShieldEffect extends ExpirableEffect<BoneShield> implements Tri
             remove();
             return;
         }
-        int damage = trigger.getAttack().getDamage();
-        int newDamage = damage - damageToAbsorb;
+        double damage = trigger.getAttack().getDamage();
+        double newDamage = damage - damageToAbsorb;
         if (newDamage < 0) {
             newDamage = 0;
         }

@@ -45,8 +45,8 @@ public class ProtectionAura extends AbstractAura implements Triggered {
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
-        int oldDamage = trigger.getAttack().getDamage();
-        int newDamage = (int) (oldDamage - oldDamage * getDamageReduction());
+        double oldDamage = trigger.getAttack().getDamage();
+        double newDamage = oldDamage - oldDamage * getDamageReduction();
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this,
                 "Schaden um " + (int) (getDamageReduction() * 100) + "% (" + (oldDamage - newDamage) + ") veringert.");

@@ -66,9 +66,9 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
             return;
         }
         if (Math.random() < getBlockChance()) {
-            int oldDamage = trigger.getAttack().getDamage();
+            double oldDamage = trigger.getAttack().getDamage();
             double blockValue = getBlockValue();
-            int newDamage = (int) (oldDamage - oldDamage * blockValue);
+            double newDamage = oldDamage - oldDamage * blockValue;
             trigger.getAttack().setDamage(newDamage);
             getAttachedLevel().addExp(getUseExp());
             getHolder().combatLog(this, "Schaden um " + (oldDamage - newDamage) + "(" + MathUtil.toPercent(blockValue) + "%) verringert.");

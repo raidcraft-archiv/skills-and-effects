@@ -55,8 +55,8 @@ public class DamageBuff extends ExpirableEffect<Skill> implements Triggered {
             return;
         }
 
-        int oldDamage = attack.getDamage();
-        int newDamage = (int) (oldDamage + oldDamage * increase);
+        double oldDamage = attack.getDamage();
+        double newDamage = oldDamage + oldDamage * increase;
         attack.setDamage(newDamage);
 
         attack.combatLog(getSource(), "Schaden um " + newDamage + "(" + (int) (increase * 100) + "%) erhöht.");

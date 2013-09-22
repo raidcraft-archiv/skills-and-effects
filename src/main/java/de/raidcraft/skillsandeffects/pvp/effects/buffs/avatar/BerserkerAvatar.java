@@ -74,8 +74,8 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
             return;
         }
-        int oldDamage = trigger.getAttack().getDamage();
-        trigger.getAttack().setDamage((int) (oldDamage + oldDamage * attackIncrease));
+        double oldDamage = trigger.getAttack().getDamage();
+        trigger.getAttack().setDamage(oldDamage + oldDamage * attackIncrease);
 
         if (Math.random() < deepWoundChance) {
             trigger.getAttack().getTarget().addEffect(getSource(), (Skill) getSource(), Bleed.class);
@@ -88,7 +88,7 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
             return;
         }
-        int oldDamage = trigger.getAttack().getDamage();
-        trigger.getAttack().setDamage((int) (oldDamage + oldDamage * damageIncrease));
+        double oldDamage = trigger.getAttack().getDamage();
+        trigger.getAttack().setDamage(oldDamage + oldDamage * damageIncrease);
     }
 }

@@ -34,8 +34,8 @@ public class PainSupressionEffect extends ExpirableEffect<PainSupression> implem
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) {
 
-        int oldDamage = trigger.getAttack().getDamage();
-        int newDamage = (int) (oldDamage - oldDamage * reduction);
+        double oldDamage = trigger.getAttack().getDamage();
+        double newDamage = oldDamage - oldDamage * reduction;
         combatLog("Schaden um " + (oldDamage - newDamage) + "(" + MathUtil.toPercent(reduction) + "%) verringert.");
         trigger.getAttack().setDamage(newDamage);
     }

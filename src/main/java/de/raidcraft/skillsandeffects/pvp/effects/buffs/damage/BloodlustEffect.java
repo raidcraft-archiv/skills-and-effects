@@ -45,9 +45,9 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
-        int oldDamage = trigger.getAttack().getDamage();
+        double oldDamage = trigger.getAttack().getDamage();
         double increase = attackIncreasePerStack * getStacks();
-        int newDamage = (int) (oldDamage + oldDamage * increase);
+        double newDamage = oldDamage + oldDamage * increase;
         if (newDamage - oldDamage < 1) {
             return;
         }
@@ -59,9 +59,9 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
-        int oldDamage = trigger.getAttack().getDamage();
+        double oldDamage = trigger.getAttack().getDamage();
         double increase = damageIncreasePerStack * getStacks();
-        int newDamage = (int) (oldDamage + oldDamage * increase);
+        double newDamage = oldDamage + oldDamage * increase;
         if (newDamage - oldDamage < 1) {
             return;
         }

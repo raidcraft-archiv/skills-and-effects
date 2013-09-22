@@ -79,8 +79,8 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
             return;
         }
 
-        int oldDamage = trigger.getAttack().getDamage();
-        int newDamage = (int) (oldDamage - oldDamage * damageReduction);
+        double oldDamage = trigger.getAttack().getDamage();
+        double newDamage = oldDamage - oldDamage * damageReduction;
         trigger.getAttack().setDamage(newDamage);
         trigger.getAttack().combatLog(this, "Schaden von <s> wurde um " + damageReduction * 100 + "% (" + (oldDamage - newDamage) + ") verringert.");
     }

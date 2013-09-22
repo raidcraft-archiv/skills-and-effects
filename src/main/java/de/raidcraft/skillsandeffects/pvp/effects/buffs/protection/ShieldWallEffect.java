@@ -38,8 +38,8 @@ public class ShieldWallEffect extends ExpirableEffect<ShieldWall> implements Tri
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) {
 
-        int oldDamage = trigger.getAttack().getDamage();
-        int newDamage = (int) (oldDamage - oldDamage * damageReduction);
+        double oldDamage = trigger.getAttack().getDamage();
+        double newDamage = oldDamage - oldDamage * damageReduction;
         trigger.getAttack().setDamage(newDamage);
         trigger.getAttack().combatLog(this, damageReduction * 100 + "% (" + (oldDamage - newDamage) + ") Schaden verhindert.");
     }
