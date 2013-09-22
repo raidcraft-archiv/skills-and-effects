@@ -28,7 +28,7 @@ import org.bukkit.configuration.ConfigurationSection;
 public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
     private double damageReduction = 0.0;
-    private int blockedDamage = 0;
+    private double blockedDamage = 0;
     private int maxAbsorption;
     private int absorbed = 0;
     private boolean reflect = false;
@@ -58,8 +58,8 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        int oldDamage = trigger.getAttack().getDamage();
-        int newDamage;
+        double oldDamage = trigger.getAttack().getDamage();
+        double newDamage;
         if (isReductionInPercent()) {
             newDamage = (int) (oldDamage - oldDamage * damageReduction);
         } else {
@@ -110,7 +110,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         }
     }
 
-    public int getBlockedDamage() {
+    public double getBlockedDamage() {
 
         return blockedDamage;
     }

@@ -11,8 +11,8 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import net.minecraft.server.v1_6_R2.Block;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import net.minecraft.server.v1_6_R3.Block;
+import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
 
 /**
  * @author Silthus
