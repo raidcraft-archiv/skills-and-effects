@@ -48,6 +48,12 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     }
 
     @Override
+    public void loadAttachment(ConfigurationSection data) {
+
+        
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         cancelOnDamage = data.getBoolean("cancel-on-damage", true);
@@ -79,13 +85,13 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     }
 
     @Override
-    public void applyAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void applyAttachment(Player player) throws CustomItemException {
 
 
     }
 
     @Override
-    public void removeAttachment(CustomItemStack item, Player player, ConfigurationSection args) throws CustomItemException {
+    public void removeAttachment(Player player) throws CustomItemException {
 
 
     }
