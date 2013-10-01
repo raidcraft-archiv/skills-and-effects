@@ -31,7 +31,7 @@ public class OreFinderEffect extends PeriodicEffect<OreFinder> {
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
-        if (!getSource().canUseSkill()) {
+        if (!getSource().canUseAbility()) {
             return;
         }
         Set<Block> blocks = BlockUtil.getBlocks(target.getEntity().getLocation().getBlock(),

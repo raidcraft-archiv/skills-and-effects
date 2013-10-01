@@ -58,7 +58,7 @@ public class SuperShear extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onInteract(PlayerShearTrigger trigger) {
 
-        if (!canUseSkill()) {
+        if (!canUseAbility()) {
             return;
         }
         Entity entity = trigger.getEvent().getEntity();

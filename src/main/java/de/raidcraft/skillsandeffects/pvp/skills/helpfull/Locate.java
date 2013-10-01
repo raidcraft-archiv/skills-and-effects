@@ -46,7 +46,7 @@ public class Locate extends AbstractSkill implements Triggered {
         }
         // check if he has a compas in his hand
         ItemStack item = event.getPlayer().getItemInHand();
-        if (item == null || item.getTypeId() != ItemID.COMPASS || !canUseSkill()) {
+        if (item == null || item.getTypeId() != ItemID.COMPASS || !canUseAbility()) {
             return;
         }
         int distance = getTotalRange();

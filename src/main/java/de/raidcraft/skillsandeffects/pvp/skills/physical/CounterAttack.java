@@ -35,7 +35,7 @@ public class CounterAttack extends AbstractSkill implements Triggered {
         if (trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)
                 && trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
                 && getHolder().hasEffect(ParryEffect.class)
-                && canUseSkill()) {
+                && canUseAbility()) {
             if (trigger.getAttack().getDamage() < getTotalDamage()) {
                 trigger.getAttack().setDamage(getTotalDamage());
                 substractUsageCost(new SkillAction(this));

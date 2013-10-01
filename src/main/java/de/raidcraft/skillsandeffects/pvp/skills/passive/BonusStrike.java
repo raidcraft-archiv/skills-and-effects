@@ -53,7 +53,7 @@ public class BonusStrike extends AbstractSkill implements Triggered {
         if (!(trigger.getAttack().getSource() instanceof CharacterTemplate)) {
             return;
         }
-        if (!canUseSkill()) {
+        if (!canUseAbility()) {
             return;
         }
         if (Math.random() < getChance()) {

@@ -54,7 +54,7 @@ public class ChickenFarm extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onInteract(PlayerEggThrowTrigger trigger) {
 
-        if (!canUseSkill()) {
+        if (!canUseAbility()) {
             return;
         }
         int amount = trigger.getEvent().getNumHatches();

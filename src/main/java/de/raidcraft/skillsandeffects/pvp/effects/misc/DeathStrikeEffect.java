@@ -34,7 +34,7 @@ public class DeathStrikeEffect extends ExpirableEffect<DeathStrike> implements T
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
             return;
         }
-        if (getSource().canUseSkill()) {
+        if (getSource().canUseAbility()) {
             new HealAction<>(getSource(), getTarget(), getSource().getHealAmount()).run();
             getSource().substractUsageCost(new SkillAction(getSource()));
             remove();
