@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.effects.Poison;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.effects.Bleed;
 import de.raidcraft.skills.effects.Burn;
@@ -48,6 +49,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean burn = false;
     private boolean interrupt = false;
     private boolean silence = false;
+    private boolean poison = false;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -68,6 +70,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         burn = data.getBoolean("burn", false);
         interrupt = data.getBoolean("interrupt", false);
         silence = data.getBoolean("silence", false);
+        poison = data.getBoolean("poison", false);
     }
 
     @Override
@@ -88,6 +91,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (burn) Strike.this.addEffect(trigger.getSource().getTarget(), Burn.class);
                 if (silence || interrupt) Strike.this.addEffect(trigger.getSource().getTarget(), Interrupt.class);
                 if (silence) Strike.this.addEffect(trigger.getSource().getTarget(), Silence.class);
+                if (poison) Strike.this.addEffect(trigger.getSource().getTarget(), Poison.class);
             }
         });
     }
