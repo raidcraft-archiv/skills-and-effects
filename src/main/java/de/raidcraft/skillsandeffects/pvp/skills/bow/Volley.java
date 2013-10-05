@@ -57,7 +57,7 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
             public void run(BowFireTrigger trigger) throws CombatException {
 
                 Vector velocity = trigger.getEvent().getProjectile().getVelocity();
-                for (int i = 0; i < getAmount(); i++) {
+                for (int i = 1; i < getAmount(); i++) {
                     RangedAttack<ProjectileCallback> attack = rangedAttack(ProjectileType.ARROW, getTotalDamage());
                     attack.setVelocity(velocity.clone().add(
                             new Vector(MathUtil.RANDOM.nextInt(i), MathUtil.RANDOM.nextInt(i), MathUtil.RANDOM.nextInt(i))
