@@ -12,9 +12,11 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -30,6 +32,9 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
 
     private final PotionEffect jumpBlock;
     private final PotionEffect moveBlock;
+    private boolean abortSkillCast = true;
+    private boolean abortDestruction = true;
+    private boolean abortKnockback = true;
     private Block web;
 
     public Web(Ability source, CharacterTemplate target, EffectData data) {
@@ -39,9 +44,20 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
         moveBlock = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), 6, false);
     }
 
+    @Override
+    public void load(ConfigurationSection data) {
+
+        abortSkillCast = data.getBoolean("abort-skillcast", true);
+        abortDestruction = data.getBoolean("abort-destruction", true);
+        abortKnockback = data.getBoolean("abort-knockback", true);
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST, filterTargets = false)
     public void onBlockDestroy(BlockBreakTrigger trigger) throws CombatException {
 
+        if (!abortDestruction) {
+            return;
+        }
         if (trigger.getEvent().getBlock().equals(web)) {
             trigger.getEvent().setCancelled(true);
             throw new CombatException("Du versuchst dich vergeblich aus dem Netz zu befreien.");
@@ -51,7 +67,22 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
     @TriggerHandler(ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) {
 
+        if (!abortKnockback) {
+            return;
+        }
         trigger.getAttack().setKnockback(false);
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onCastTrigger(PlayerCastSkillTrigger trigger) throws CombatException {
+
+        if (!abortSkillCast) {
+            return;
+        }
+        if (trigger.getSkill().isOfType(EffectType.MOVEMENT) && trigger.getSkill().isOfType(EffectType.HELPFUL)) {
+            trigger.setCancelled(true);
+            throw new CombatException("Du versucht dich vergeblich mit Zaubern aus dem Netz zu befreien.");
+        }
     }
 
     @Override
