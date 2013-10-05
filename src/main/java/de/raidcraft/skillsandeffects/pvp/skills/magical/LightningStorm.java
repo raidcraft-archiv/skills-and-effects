@@ -65,7 +65,7 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                     EffectUtil.playFirework(world, circle.get(i), effect);
                     i++;
                 } else {
-                    world.strikeLightningEffect(center);
+                    EffectUtil.strikeLightning(center);
                     Entity[] entities = LocationUtil.getNearbyEntities(center, getTotalRange());
                     for (Entity entity : entities) {
                         if (entity instanceof LivingEntity) {
@@ -76,7 +76,7 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                             }
                             try {
                                 magicalAttack(character, getTotalDamage());
-                                world.strikeLightningEffect(entity.getLocation());
+                                EffectUtil.strikeLightning(entity.getLocation());
                             } catch (CombatException e) {
                                 getHolder().sendMessage(ChatColor.RED + e.getMessage());
                             }

@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.pvp.skills.magical.ChainLightning;
+import de.raidcraft.util.EffectUtil;
 
 /**
  * @author Silthus
@@ -26,7 +27,7 @@ public class ChainLightningEffect extends ExpirableEffect<ChainLightning> {
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        target.getEntity().getLocation().getWorld().strikeLightningEffect(target.getEntity().getLocation());
+        EffectUtil.strikeLightning(target.getEntity().getLocation());
     }
 
     @Override
