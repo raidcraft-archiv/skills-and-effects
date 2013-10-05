@@ -11,6 +11,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.BlockBreakTrigger;
+import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -45,6 +46,12 @@ public class Web extends ExpirableEffect<Ability> implements Triggered {
             trigger.getEvent().setCancelled(true);
             throw new CombatException("Du versuchst dich vergeblich aus dem Netz zu befreien.");
         }
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onDamage(DamageTrigger trigger) {
+
+        trigger.getAttack().setKnockback(false);
     }
 
     @Override
