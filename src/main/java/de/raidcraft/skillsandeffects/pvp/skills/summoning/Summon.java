@@ -78,6 +78,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void onLevelGain() {
 
+        super.onLevelGain();
         boolean match = true;
         for (SummonedCreatureConfig config : creatureConfigs.values()) {
             for (Requirement<Hero> requirement : config.requirements) {
