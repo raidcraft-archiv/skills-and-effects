@@ -57,7 +57,7 @@ public class ArchAngel extends AbstractSkill implements CommandTriggered {
         }
         if (action.getSource() instanceof Skill) {
             double resourceCost = ((Skill) action.getSource()).getTotalResourceCost(resource.getName());
-            resource.setCurrent((int) (resource.getCurrent() + resourceCost * ConfigUtil.getTotalValue(this, resourceBonus)));
+            resource.setCurrent(resource.getCurrent() + resourceCost * ConfigUtil.getTotalValue(this, resourceBonus));
         }
     }
 

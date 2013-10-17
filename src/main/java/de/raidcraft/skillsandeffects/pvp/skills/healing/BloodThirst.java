@@ -27,7 +27,7 @@ public class BloodThirst extends AbstractSkill implements CommandTriggered {
 
     private String resourceName = "rage";
     private double healFactor = 1.0;
-    private int minCost = 20;
+    private double minCost = 20;
 
     public BloodThirst(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -39,7 +39,7 @@ public class BloodThirst extends AbstractSkill implements CommandTriggered {
 
         resourceName = data.getString("resource");
         healFactor = ConfigUtil.getTotalValue(this, data.getConfigurationSection("heal"));
-        minCost = (int) ConfigUtil.getTotalValue(this, data.getConfigurationSection("min"));
+        minCost = ConfigUtil.getTotalValue(this, data.getConfigurationSection("min"));
     }
 
     @Override

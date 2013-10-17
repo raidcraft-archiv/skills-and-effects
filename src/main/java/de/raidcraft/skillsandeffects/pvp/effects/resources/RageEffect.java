@@ -80,14 +80,14 @@ public class RageEffect extends AbstractEffect<Rage> implements Triggered {
     public void onAttack(AttackTrigger trigger) {
 
         Resource resource = getSource().getResource();
-        resource.setCurrent((int) (resource.getCurrent() + trigger.getAttack().getDamage() * ragePerAttackDamage));
+        resource.setCurrent(resource.getCurrent() + trigger.getAttack().getDamage() * ragePerAttackDamage);
     }
 
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
         Resource resource = getSource().getResource();
-        resource.setCurrent((int) (resource.getCurrent() + trigger.getAttack().getDamage() * ragePerDamage));
+        resource.setCurrent(resource.getCurrent() + trigger.getAttack().getDamage() * ragePerDamage);
     }
 
     @Override

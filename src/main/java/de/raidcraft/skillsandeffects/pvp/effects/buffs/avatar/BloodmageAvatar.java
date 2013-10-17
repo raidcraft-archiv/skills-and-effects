@@ -59,8 +59,8 @@ public class BloodmageAvatar extends AbstractAvatar implements Triggered {
     public void onHeal(HealTrigger trigger) {
 
         // increase the gained heal by the defined amount
-        int oldHeal = trigger.getAmount();
-        int newHeal = (int) (oldHeal + oldHeal * healPercentage);
+        double oldHeal = trigger.getAmount();
+        double newHeal = oldHeal + oldHeal * healPercentage;
         combatLog("Erhaltene Heilung um " + (newHeal - oldHeal) + "(" + MathUtil.toPercent(healPercentage) + "%) erhöht.");
         trigger.setAmount(newHeal);
     }

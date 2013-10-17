@@ -48,7 +48,7 @@ public class FlameCloak extends AbstractSkill implements CommandTriggered {
         if (resource == null) {
             return;
         }
-        int current = (int) (resource.getCurrent() - ConfigUtil.getTotalValue(this, resourceBurnTick));
+        double current = resource.getCurrent() - ConfigUtil.getTotalValue(this, resourceBurnTick);
         if (current < 0) {
             getHolder().removeEffect(FlameCloakEffect.class);
             return;

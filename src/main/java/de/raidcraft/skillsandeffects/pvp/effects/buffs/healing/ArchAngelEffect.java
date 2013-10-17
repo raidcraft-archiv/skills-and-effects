@@ -52,9 +52,9 @@ public class ArchAngelEffect extends ExpirableEffect<ArchAngel> implements Trigg
     @TriggerHandler(ignoreCancelled = true)
     public void onHeal(HealTrigger trigger) {
 
-        int oldAmount = trigger.getAmount();
+        double oldAmount = trigger.getAmount();
         double bonusHealAmount = getSource().getBonusHealAmount();
-        int newAmount = (int) (oldAmount + oldAmount * bonusHealAmount);
+        double newAmount = oldAmount + oldAmount * bonusHealAmount;
         combatLog("Erhaltene Heilung um " + (newAmount - oldAmount) + "(" + MathUtil.toPercent(bonusHealAmount) + "%) erhöht.");
         trigger.setAmount(newAmount);
 

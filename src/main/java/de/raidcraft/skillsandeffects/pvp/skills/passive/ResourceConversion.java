@@ -62,7 +62,7 @@ public class ResourceConversion extends AbstractSkill implements Triggered {
                 || !trigger.getResource().equals(resourceToListen)) {
             return;
         }
-        int change = resourceToListen.getCurrent() - trigger.getNewValue();
+        double change = resourceToListen.getCurrent() - trigger.getNewValue();
         double chance = getChance() * change;
         if (Math.random() < chance) {
             resourceToRestore.setCurrent(resourceToRestore.getCurrent() + getAmount());
