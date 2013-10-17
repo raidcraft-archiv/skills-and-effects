@@ -12,6 +12,7 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.skills.trigger.PlayerVehicleExitTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -79,6 +80,12 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
             trigger.getAttack().setCancelled(true);
             trigger.setCancelled(true);
         }
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onInteract(PlayerVehicleExitTrigger trigger) {
+
+        trigger.getEvent().setCancelled(true);
     }
 
     @Override
