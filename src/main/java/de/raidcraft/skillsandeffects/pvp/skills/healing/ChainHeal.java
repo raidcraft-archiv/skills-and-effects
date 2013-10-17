@@ -36,7 +36,7 @@ public class ChainHeal extends AbstractSkill implements CommandTriggered {
     private ConfigurationSection reductionPerJump;
     private int jumpRange;
     private int jumpCount = 0;
-    private int intialHeal;
+    private double intialHeal;
 
     public ChainHeal(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -70,7 +70,7 @@ public class ChainHeal extends AbstractSkill implements CommandTriggered {
         jumpCount = 0;
     }
 
-    private void castChainHeal(CharacterTemplate target, final int heal) throws CombatException {
+    private void castChainHeal(CharacterTemplate target, final double heal) throws CombatException {
 
         new HealAction<>(this, target, heal).run();
         ++jumpCount;

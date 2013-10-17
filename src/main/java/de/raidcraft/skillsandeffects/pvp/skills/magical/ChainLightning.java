@@ -37,7 +37,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
     private ConfigurationSection reductionPerJump;
     private int jumpRange;
     private int jumpCount = 0;
-    private int initialDamage;
+    private double initialDamage;
 
     public ChainLightning(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -71,7 +71,7 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
         jumpCount = 0;
     }
 
-    private void strikeChainLightning(CharacterTemplate target, final int damage) throws CombatException {
+    private void strikeChainLightning(CharacterTemplate target, final double damage) throws CombatException {
 
         magicalAttack(target, damage, new EntityAttackCallback() {
             @Override
