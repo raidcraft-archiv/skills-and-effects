@@ -68,7 +68,7 @@ public class HolyBlood extends AbstractSkill implements Triggered {
 
     private void healParty(int amount) throws CombatException {
 
-        for (CharacterTemplate target : getNearbyTargets(true)) {
+        for (CharacterTemplate target : getSafeNearbyTargets(true)) {
             if (!target.equals(getHolder())) {
                 new HealAction<>(this, target, amount).run();
             }

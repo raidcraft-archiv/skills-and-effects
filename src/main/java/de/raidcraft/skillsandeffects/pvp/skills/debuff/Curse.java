@@ -90,7 +90,7 @@ public class Curse extends AbstractSkill implements CommandTriggered {
         }
 
         if (!singleTarget) {
-            List<CharacterTemplate> targets = getNearbyTargets(false);
+            List<CharacterTemplate> targets = getSafeNearbyTargets(false);
             for (CharacterTemplate target : targets) {
                 addEffect(target, CurseEffect.class);
             }

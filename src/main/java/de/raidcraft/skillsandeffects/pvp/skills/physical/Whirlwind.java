@@ -44,7 +44,7 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         int i = 0;
-        for (CharacterTemplate target : getNearbyTargets()) {
+        for (CharacterTemplate target : getSafeNearbyTargets()) {
 
             if (target.equals(getHolder())) {
                 continue;

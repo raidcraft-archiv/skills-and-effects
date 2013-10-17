@@ -91,7 +91,7 @@ public class ConeCast extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (CharacterTemplate target : getTargetsInFront(degrees)) {
+        for (CharacterTemplate target : getSafeTargetsInFront(degrees)) {
 
             magicalAttack(target, new EntityAttackCallback() {
                 @Override

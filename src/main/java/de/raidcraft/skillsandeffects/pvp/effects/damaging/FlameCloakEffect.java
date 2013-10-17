@@ -28,13 +28,9 @@ public class FlameCloakEffect extends PeriodicEffect<FlameCloak> {
     @Override
     protected void tick(CharacterTemplate t) throws CombatException {
 
-        try {
-            getSource().substractResourceTick();
-            for (CharacterTemplate target : getSource().getNearbyTargets(false)) {
-                getSource().magicalAttack(target, getDamage());
-            }
-        } catch (CombatException e) {
-            // ignore the tick exceptions
+        getSource().substractResourceTick();
+        for (CharacterTemplate target : getSource().getSafeNearbyTargets(false)) {
+            getSource().magicalAttack(target, getDamage());
         }
     }
 
