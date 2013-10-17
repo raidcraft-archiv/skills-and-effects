@@ -51,6 +51,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
     private static CharacterManager CHARACTER_MANAGER;
 
     private final Map<String, SummonedCreatureConfig> creatureConfigs = new HashMap<>();
+    private final Map<EntityType, List<CharacterTemplate>> summonedCreatures = new HashMap<>();
     private String resource;
 
     public Summon(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -134,7 +135,17 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             getHolder().sendMessage(ChatColor.RED + "Du kannst maximal " + maxAmount + " " + config.getFriendlyName() + " beschwören.");
         }
 
-        summonCreatures(config, amount);
+        for (CharacterTemplate summoned : summonCreatures(config, amount)) {
+            EntityType type = summoned.getEntity().getType();
+            if (!summonedCreatures.containsKey(type)) {
+                summonedCreatures.put(type, new ArrayList<CharacterTemplate>());
+            }
+            if (maxAmount < summonedCreatures.get(type).size() && !summonedCreatures.get(type).isEmpty()) {
+                // we need to kill the first one
+                summonedCreatures.get(type).get(0).removeEffect(Summoned.class);
+            }
+            summonedCreatures.get(type).add(summoned);
+        }
     }
 
     public List<CharacterTemplate> summonCreatures(SummonedCreatureConfig config, int amount) throws CombatException {
