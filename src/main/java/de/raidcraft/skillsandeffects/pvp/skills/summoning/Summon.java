@@ -26,10 +26,12 @@ import de.raidcraft.skills.util.StringUtils;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -296,6 +298,11 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             setDamage(config.getDamage());
             getEntity().setCustomName(ChatColor.RED + "Kreatur von " + config.skill.getHolder().getName());
             getEntity().setCustomNameVisible(true);
+            // set a bow if its a skeleton
+            // TODO: switch over to custom mobs for this
+            if (getEntity().getType() == EntityType.SKELETON) {
+                getEntity().getEquipment().setItemInHand(new ItemStack(Material.BOW));
+            }
         }
     }
 }
