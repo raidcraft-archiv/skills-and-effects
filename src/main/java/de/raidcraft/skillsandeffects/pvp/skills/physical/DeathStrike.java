@@ -50,7 +50,7 @@ public class DeathStrike extends AbstractSkill implements Triggered {
     public void onEntityDeath(EntityDeathTrigger trigger) {
 
         Attack attack = trigger.getEvent().getCharacter().getLastDamageCause();
-        if (attack != null && attack.isSource(getHolder()) && canUseAbility()) {
+        if (attack != null && attack.isAttacker(getHolder()) && canUseAbility()) {
             try {
                 addEffect(getHolder(), DeathStrikeEffect.class);
             } catch (CombatException ignored) {
