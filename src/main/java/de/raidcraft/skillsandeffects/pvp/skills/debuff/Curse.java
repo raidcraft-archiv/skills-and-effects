@@ -16,8 +16,6 @@ import de.raidcraft.skillsandeffects.pvp.effects.debuff.CurseEffect;
 import de.raidcraft.util.EnumUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.List;
-
 /**
  * @author Silthus
  */
@@ -90,9 +88,11 @@ public class Curse extends AbstractSkill implements CommandTriggered {
         }
 
         if (!singleTarget) {
-            List<CharacterTemplate> targets = getSafeNearbyTargets(false);
-            for (CharacterTemplate target : targets) {
-                addEffect(target, CurseEffect.class);
+            for (CharacterTemplate target : getSafeNearbyTargets(false)) {
+                try {
+                    addEffect(target, CurseEffect.class);
+                } catch (CombatException ignored) {
+                }
             }
         } else {
             addEffect(getTarget(), CurseEffect.class);

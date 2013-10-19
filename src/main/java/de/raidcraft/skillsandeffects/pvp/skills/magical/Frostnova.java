@@ -36,13 +36,16 @@ public class Frostnova extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         for (CharacterTemplate target : getSafeNearbyTargets(false)) {
-            magicalAttack(target, new EntityAttackCallback() {
-                @Override
-                public void run(EntityAttack attack) throws CombatException {
+            try {
+                magicalAttack(target, new EntityAttackCallback() {
+                    @Override
+                    public void run(EntityAttack attack) throws CombatException {
 
-                    Frostnova.this.addEffect(attack.getTarget(), Immobilize.class);
-                }
-            });
+                        Frostnova.this.addEffect(attack.getTarget(), Immobilize.class);
+                    }
+                });
+            } catch (CombatException ignored) {
+            }
         }
     }
 }

@@ -87,25 +87,28 @@ public class AreaAttack extends AbstractSkill implements CommandTriggered {
 
         for (CharacterTemplate target : getSafeNearbyTargets()) {
 
-            attack(target, new EntityAttackCallback() {
-                @Override
-                public void run(EntityAttack attack) throws CombatException {
+            try {
+                attack(target, new EntityAttackCallback() {
+                    @Override
+                    public void run(EntityAttack attack) throws CombatException {
 
-                    if (knockBack) AreaAttack.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
-                    if (bleed) AreaAttack.this.addEffect(attack.getTarget(), Bleed.class);
-                    if (stun) AreaAttack.this.addEffect(attack.getTarget(), Stun.class);
-                    if (sunderArmor) AreaAttack.this.addEffect(attack.getTarget(), SunderingArmor.class);
-                    if (disarm) AreaAttack.this.addEffect(attack.getTarget(), Disarm.class);
-                    if (slow) AreaAttack.this.addEffect(attack.getTarget(), Slow.class);
-                    if (weaken) AreaAttack.this.addEffect(attack.getTarget(), Weakness.class);
-                    if (burn) AreaAttack.this.addEffect(attack.getTarget(), Burn.class);
-                    if (interrupt) AreaAttack.this.addEffect(attack.getTarget(), Interrupt.class);
-                    if (poison) AreaAttack.this.addEffect(attack.getTarget(), Poison.class);
-                    if (isLifeLeech) {
-                        new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                        if (knockBack) AreaAttack.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                        if (bleed) AreaAttack.this.addEffect(attack.getTarget(), Bleed.class);
+                        if (stun) AreaAttack.this.addEffect(attack.getTarget(), Stun.class);
+                        if (sunderArmor) AreaAttack.this.addEffect(attack.getTarget(), SunderingArmor.class);
+                        if (disarm) AreaAttack.this.addEffect(attack.getTarget(), Disarm.class);
+                        if (slow) AreaAttack.this.addEffect(attack.getTarget(), Slow.class);
+                        if (weaken) AreaAttack.this.addEffect(attack.getTarget(), Weakness.class);
+                        if (burn) AreaAttack.this.addEffect(attack.getTarget(), Burn.class);
+                        if (interrupt) AreaAttack.this.addEffect(attack.getTarget(), Interrupt.class);
+                        if (poison) AreaAttack.this.addEffect(attack.getTarget(), Poison.class);
+                        if (isLifeLeech) {
+                            new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                        }
                     }
-                }
-            }).run();
+                }).run();
+            } catch (CombatException ignored) {
+            }
         }
     }
 }

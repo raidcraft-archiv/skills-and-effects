@@ -32,7 +32,10 @@ public class AreaHeal extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         for (CharacterTemplate target : getSafeNearbyTargets(true)) {
-            new HealAction<>(this, target, getTotalDamage()).run();
+            try {
+                new HealAction<>(this, target, getTotalDamage()).run();
+            } catch (CombatException ignored) {
+            }
         }
         // also heal ourselves
         new HealAction<>(this, getHolder(), getTotalDamage()).run();

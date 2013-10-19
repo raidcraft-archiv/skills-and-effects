@@ -93,26 +93,29 @@ public class ConeAttack extends AbstractSkill implements CommandTriggered {
 
         for (CharacterTemplate target : getSafeTargetsInFront(degrees)) {
 
-            attack(target, new EntityAttackCallback() {
-                @Override
-                public void run(EntityAttack attack) throws CombatException {
+            try {
+                attack(target, new EntityAttackCallback() {
+                    @Override
+                    public void run(EntityAttack attack) throws CombatException {
 
-                    if (knockBack) ConeAttack.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
-                    if (bleed) ConeAttack.this.addEffect(attack.getTarget(), Bleed.class);
-                    if (stun) ConeAttack.this.addEffect(attack.getTarget(), Stun.class);
-                    if (sunderArmor) ConeAttack.this.addEffect(attack.getTarget(), SunderingArmor.class);
-                    if (disarm) ConeAttack.this.addEffect(attack.getTarget(), Disarm.class);
-                    if (slow) ConeAttack.this.addEffect(attack.getTarget(), Slow.class);
-                    if (weaken) ConeAttack.this.addEffect(attack.getTarget(), Weakness.class);
-                    if (burn) ConeAttack.this.addEffect(attack.getTarget(), Burn.class);
-                    if (interrupt) ConeAttack.this.addEffect(attack.getTarget(), Interrupt.class);
-                    if (disable) ConeAttack.this.addEffect(attack.getTarget(), Pigify.class);
-                    if (poison) ConeAttack.this.addEffect(attack.getTarget(), Poison.class);
-                    if (isLifeLeech) {
-                        new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                        if (knockBack) ConeAttack.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                        if (bleed) ConeAttack.this.addEffect(attack.getTarget(), Bleed.class);
+                        if (stun) ConeAttack.this.addEffect(attack.getTarget(), Stun.class);
+                        if (sunderArmor) ConeAttack.this.addEffect(attack.getTarget(), SunderingArmor.class);
+                        if (disarm) ConeAttack.this.addEffect(attack.getTarget(), Disarm.class);
+                        if (slow) ConeAttack.this.addEffect(attack.getTarget(), Slow.class);
+                        if (weaken) ConeAttack.this.addEffect(attack.getTarget(), Weakness.class);
+                        if (burn) ConeAttack.this.addEffect(attack.getTarget(), Burn.class);
+                        if (interrupt) ConeAttack.this.addEffect(attack.getTarget(), Interrupt.class);
+                        if (disable) ConeAttack.this.addEffect(attack.getTarget(), Pigify.class);
+                        if (poison) ConeAttack.this.addEffect(attack.getTarget(), Poison.class);
+                        if (isLifeLeech) {
+                            new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                        }
                     }
-                }
-            }).run();
+                }).run();
+            } catch (CombatException ignored) {
+            }
         }
     }
 }

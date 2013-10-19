@@ -46,15 +46,18 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
         int i = 0;
         for (CharacterTemplate target : getSafeNearbyTargets()) {
 
-            if (target.equals(getHolder())) {
-                continue;
-            }
-            if (!(i < maxTargets)) {
-                break;
-            }
-            Attack<CharacterTemplate, CharacterTemplate> attack = attack(target);
-            if (!attack.isCancelled() && knockBack) {
-                addEffect(getHolder().getPlayer().getLocation(), target, KnockBack.class);
+            try {
+                if (target.equals(getHolder())) {
+                    continue;
+                }
+                if (!(i < maxTargets)) {
+                    break;
+                }
+                Attack<CharacterTemplate, CharacterTemplate> attack = attack(target);
+                if (!attack.isCancelled() && knockBack) {
+                    addEffect(getHolder().getPlayer().getLocation(), target, KnockBack.class);
+                }
+            } catch (CombatException ignored) {
             }
             i++;
         }

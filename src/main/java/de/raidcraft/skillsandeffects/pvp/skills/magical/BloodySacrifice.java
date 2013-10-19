@@ -37,13 +37,16 @@ public class BloodySacrifice extends AbstractSkill implements CommandTriggered {
 
         List<CharacterTemplate> nearbyTargets = getSafeNearbyTargets();
         for (CharacterTemplate target : nearbyTargets) {
-            if (target.equals(getHolder())) {
-                continue;
-            }
-            if (target.isFriendly(getHolder())) {
-                new HealAction<>(this, target, getTotalDamage()).run();
-            } else {
-                magicalAttack(target, getTotalDamage());
+            try {
+                if (target.equals(getHolder())) {
+                    continue;
+                }
+                if (target.isFriendly(getHolder())) {
+                    new HealAction<>(this, target, getTotalDamage()).run();
+                } else {
+                    magicalAttack(target, getTotalDamage());
+                }
+            } catch (CombatException ignored) {
             }
         }
     }
