@@ -14,8 +14,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 
-import java.util.List;
-
 /**
  * @author Silthus
  */
@@ -35,8 +33,7 @@ public class BloodySacrifice extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        List<CharacterTemplate> nearbyTargets = getSafeNearbyTargets();
-        for (CharacterTemplate target : nearbyTargets) {
+        for (CharacterTemplate target : getSafeNearbyTargets()) {
             try {
                 if (target.equals(getHolder())) {
                     continue;
