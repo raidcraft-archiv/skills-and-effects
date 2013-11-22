@@ -5,6 +5,7 @@ import de.raidcraft.api.items.CustomArmor;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -57,7 +58,9 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onDamage(DamageTrigger trigger) {
 
-        if (trigger.getAttack().hasSource(AttackSource.ENVIRONMENT) || !trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)) {
+        if (trigger.getAttack().hasSource(AttackSource.ENVIRONMENT)
+                || !trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
+                || !canUseAbility()) {
             return;
         }
         // check if the player is wearing a shield
@@ -71,6 +74,7 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
             double newDamage = oldDamage - oldDamage * blockValue;
             trigger.getAttack().setDamage(newDamage);
             getAttachedLevel().addExp(getUseExp());
+            substractUsageCost(new SkillAction(this));
             getHolder().combatLog(this, "Schaden um " + (oldDamage - newDamage) + "(" + MathUtil.toPercent(blockValue) + "%) verringert.");
         }
     }
