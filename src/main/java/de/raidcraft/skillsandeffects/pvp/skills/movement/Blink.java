@@ -35,7 +35,7 @@ public class Blink extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Location loc = getBlockTarget().add(0, 1, 0);
+        Location loc = getTargetBlock().add(0, 1, 0);
         Location oldLoc = getHolder().getEntity().getLocation();
         List<Block> lineOfSight = getHolder().getEntity().getLineOfSight(null, getTotalRange());
 

@@ -170,7 +170,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         for (int i = 0; i < amount; i++) {
             SummonedCreature creature = CHARACTER_MANAGER.spawnCharacter(
                     config.entityType,
-                    getBlockTarget().add(0, 1, 0),
+                    getTargetBlock().add(0, 1, 0),
                     SummonedCreature.class,
                     config
             );

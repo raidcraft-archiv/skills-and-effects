@@ -73,7 +73,7 @@ public class SummonBlock extends AbstractSkill implements CommandTriggered {
             getHolder().sendMessage(ChatColor.RED + "Dein letzter beschworener Block wurde entfernt.");
         }
         // dont store the block directly because this will keep the chunk loaded
-        Block block = findBlock(getBlockTarget().getBlock());
+        Block block = findBlock(getTargetBlock().getBlock());
         block.setTypeIdAndData(blockId, (byte) blockData, true);
         lastBlock = block.getLocation();
     }

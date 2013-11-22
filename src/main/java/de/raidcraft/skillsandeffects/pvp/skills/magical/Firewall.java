@@ -51,7 +51,7 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Block sourceBlock = getBlockTarget().getBlock();
+        Block sourceBlock = getTargetBlock().getBlock();
         BlockFace face = LocationUtil.rotateBlockFace(getFacing());
         BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
     }

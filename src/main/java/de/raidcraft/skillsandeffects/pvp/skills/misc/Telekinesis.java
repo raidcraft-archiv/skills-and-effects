@@ -32,7 +32,7 @@ public class Telekinesis extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        org.bukkit.block.Block block = getBlockTarget().getBlock();
+        org.bukkit.block.Block block = getTargetBlock().getBlock();
         int typeId = block.getTypeId();
         if (BlockID.LEVER != typeId && BlockID.STONE_BUTTON != typeId && BlockID.WOODEN_BUTTON != typeId) {
             throw new CombatException("Ziel muss ein Hebel oder Knopf sein!");
