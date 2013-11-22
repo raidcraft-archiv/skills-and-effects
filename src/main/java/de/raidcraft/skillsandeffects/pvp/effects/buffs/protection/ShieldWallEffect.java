@@ -6,7 +6,6 @@ import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
-import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
@@ -35,7 +34,7 @@ public class ShieldWallEffect extends ExpirableEffect<ShieldWall> implements Tri
         damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-reduction"));
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
+    @TriggerHandler(ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) {
 
         double oldDamage = trigger.getAttack().getDamage();
