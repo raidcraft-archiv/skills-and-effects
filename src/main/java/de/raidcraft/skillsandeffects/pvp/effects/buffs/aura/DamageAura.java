@@ -53,6 +53,5 @@ public class DamageAura extends AbstractAura implements Triggered {
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this,
                 "Schaden um " + (int)(getDamageIncrease() * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
-        getSource().getHolder().debug("damaged increased " + oldDamage + "->" + newDamage + " - " + getName());
     }
 }

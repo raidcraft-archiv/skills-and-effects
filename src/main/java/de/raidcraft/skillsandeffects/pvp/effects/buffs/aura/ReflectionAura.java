@@ -49,7 +49,6 @@ public class ReflectionAura extends AbstractAura implements Triggered {
             int reflectedDamage = (int) (trigger.getAttack().getDamage() * getReflectionAmount());
             new MagicalAttack(getSource().getHolder(), (CharacterTemplate) trigger.getAttack().getSource(), reflectedDamage).run();
             trigger.getAttack().combatLog(this, reflectedDamage + " Schaden zurückgeworfen.");
-            getSource().getHolder().debug("reflected " + reflectedDamage + " - " + getName());
         }
     }
 }

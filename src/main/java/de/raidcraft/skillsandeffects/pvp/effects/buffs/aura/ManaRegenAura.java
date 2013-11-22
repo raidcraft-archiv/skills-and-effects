@@ -51,7 +51,6 @@ public class ManaRegenAura extends AbstractAura {
         getSource().getHolder().getResource(RESOURCE_NAME).setRegenValue(newManaRegen);
         super.apply(target);
         hero.combatLog(this, "Mana Regeneration auf " + (int) (newManaRegen * 100) + "% erhöht.");
-        hero.debug("increased mana regain " + oldManaRegen + "->" + newManaRegen + " - " + getName());
     }
 
     @Override
@@ -61,6 +60,5 @@ public class ManaRegenAura extends AbstractAura {
         getSource().getHolder().getResource(RESOURCE_NAME).setRegenValue(oldManaRegen);
         super.remove(target);
         hero.combatLog(this, "Mana Regeneration auf " + (int) (oldManaRegen * 100) + "% verringert.");
-        hero.debug("resetted mana regain to default: " + oldManaRegen + " - " + getName());
     }
 }
