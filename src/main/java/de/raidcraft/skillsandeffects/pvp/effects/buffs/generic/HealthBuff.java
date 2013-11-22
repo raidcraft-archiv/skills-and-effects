@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -38,12 +39,14 @@ public class HealthBuff extends ExpirableEffect<Skill> {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         increasedHealth = (int) (target.getMaxHealth() * modifier);
+        combatLog("Maximale Leben um " + increasedHealth + "(" + MathUtil.toPercent(modifier) + ") erhöht.");
         target.increaseMaxHealth(increasedHealth);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
+        combatLog("Maximale Leben um " + increasedHealth + "(" + MathUtil.toPercent(modifier) + ") verringert.");
         target.decreaseMaxHealth(increasedHealth);
     }
 
