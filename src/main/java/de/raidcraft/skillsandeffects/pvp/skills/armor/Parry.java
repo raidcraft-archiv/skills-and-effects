@@ -3,6 +3,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.armor;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -10,6 +11,7 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.DamageTrigger;
@@ -49,18 +51,20 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
         return ConfigUtil.getTotalValue(this, chance);
     }
 
-    @TriggerHandler
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOW)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         if (!trigger.getAttack().isOfAttackType(EffectType.PHYSICAL)
+                || trigger.getAttack().getAttackSource() == AttackSource.ENVIRONMENT
                 || getHolder().hasEffect(ParryEffect.class)
-                || trigger.getAttack().getAttackSource() == AttackSource.ENVIRONMENT) {
+                || !canUseAbility()) {
             return;
         }
         if (Math.random() < getParryChance()) {
             addEffect(getHolder(), ParryEffect.class);
             getHolder().combatLog(this, "Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
             getAttachedLevel().addExp(exp);
+            substractUsageCost(new SkillAction(this));
             throw new CombatException(CombatException.Type.PARRIED);
         }
     }
