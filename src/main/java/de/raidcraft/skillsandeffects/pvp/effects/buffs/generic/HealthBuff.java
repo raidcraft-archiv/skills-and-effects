@@ -7,6 +7,9 @@ import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.Triggered;
+import de.raidcraft.skills.trigger.MaxHealthChangeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
         description = "Erhöht die maximale Lebensenergie.",
         types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE}
 )
-public class HealthBuff extends ExpirableEffect<Skill> {
+public class HealthBuff extends ExpirableEffect<Skill> implements Triggered {
 
     private int increasedHealth;
     private double modifier;
@@ -33,6 +36,14 @@ public class HealthBuff extends ExpirableEffect<Skill> {
     public void load(ConfigurationSection data) {
 
         modifier = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health"));
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onMaxHealthChange(MaxHealthChangeTrigger trigger) {
+
+        double value = trigger.getEvent().getValue();
+        trigger.getEvent().setValue(value + (value * modifier));
+        increasedHealth += value * modifier;
     }
 
     @Override

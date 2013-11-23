@@ -8,8 +8,10 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.HealTrigger;
+import de.raidcraft.skills.trigger.MaxHealthChangeTrigger;
 import de.raidcraft.skillsandeffects.pvp.skills.armor.BuffingArmor;
 import de.raidcraft.util.MathUtil;
 
@@ -43,6 +45,17 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
         int newAmount = (int) (amount + amount * healIncrease);
         combatLog("Erhaltene Heilung um " + (newAmount - amount) + "(" + MathUtil.toPercent(healIncrease) + ") erhöht.");
         trigger.setAmount(newAmount);
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGH)
+    public void onMaxHealthChange(MaxHealthChangeTrigger trigger) {
+
+        if (!getSource().hasType(BuffingArmor.Type.HEALTH_INCREASE)) {
+            return;
+        }
+        double value = trigger.getEvent().getValue();
+        trigger.getEvent().setValue(value + (value * increasePercent));
+        healthIncrease += value * increasePercent;
     }
 
     @Override

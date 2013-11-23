@@ -6,7 +6,11 @@ import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.TriggerPriority;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.trigger.MaxHealthChangeTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -18,7 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
         description = "Erhöht die maximalen Leben des Zaubernden.",
         types = {EffectType.HELPFUL}
 )
-public class HealthIncrease extends AbstractSkill {
+public class HealthIncrease extends AbstractSkill implements Triggered {
 
     private double increase;
     private int increaseAmount;
@@ -32,6 +36,14 @@ public class HealthIncrease extends AbstractSkill {
     public void load(ConfigurationSection data) {
 
         increase = ConfigUtil.getTotalValue(this, data.getConfigurationSection("health-increase"));
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOW)
+    public void onMaxHealthChange(MaxHealthChangeTrigger trigger) {
+
+        double value = trigger.getEvent().getValue();
+        trigger.getEvent().setValue(value + (value * increase));
+        increaseAmount += value * increase;
     }
 
     @Override
