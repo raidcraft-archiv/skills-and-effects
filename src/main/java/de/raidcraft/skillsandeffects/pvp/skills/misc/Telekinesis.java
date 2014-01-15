@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.misc;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.worldedit.blocks.BlockID;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -11,8 +10,9 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import net.minecraft.server.v1_6_R3.Block;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 
 /**
  * @author Silthus
@@ -32,12 +32,12 @@ public class Telekinesis extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        org.bukkit.block.Block block = getTargetBlock().getBlock();
-        int typeId = block.getTypeId();
-        if (BlockID.LEVER != typeId && BlockID.STONE_BUTTON != typeId && BlockID.WOODEN_BUTTON != typeId) {
+        Block block = getTargetBlock().getBlock();
+        Material type = block.getType();
+        if (type != Material.LEVER && type != Material.STONE_BUTTON && type != Material.WOOD_BUTTON) {
             throw new CombatException("Ziel muss ein Hebel oder Knopf sein!");
         }
-        Block nmsBlock = Block.byId[typeId];
+        net.minecraft.server.v1_7_R1.Block nmsBlock = net.minecraft.server.v1_7_R1.Block.b(block.toString());
         nmsBlock.interact(((CraftWorld) block.getWorld()).getHandle(), block.getX(), block.getY(), block.getZ(), null, 0, 0F, 0F, 0F);
     }
 }
