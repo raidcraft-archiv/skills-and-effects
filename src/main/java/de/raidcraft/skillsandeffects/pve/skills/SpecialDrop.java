@@ -216,7 +216,11 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
             int max = getMaxAmount();
             int min = getMinAmount();
-            return MathUtil.RANDOM.nextInt(max - min + 1) + min;
+            int n = max - min + 1;
+            if (n < 1) {
+                return 0;
+            }
+            return MathUtil.RANDOM.nextInt(n) + min;
         }
 
         public byte getData() {
