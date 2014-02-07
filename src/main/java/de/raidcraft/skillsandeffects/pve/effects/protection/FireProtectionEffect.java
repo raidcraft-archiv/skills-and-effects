@@ -10,7 +10,9 @@ import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.effects.Burn;
 import de.raidcraft.skillsandeffects.pve.skills.Fireprotection;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Silthus
@@ -44,19 +46,19 @@ public class FireProtectionEffect extends PeriodicExpirableEffect<Fireprotection
         Location location = target.getEntity().getLocation();
         if (armor.getHelmet() != null) {
             location.getWorld().dropItemNaturally(location, armor.getHelmet());
-            armor.setHelmet(null);
+            armor.setHelmet(new ItemStack(Material.AIR));
             target.removeArmor(EquipmentSlot.HEAD);
         } else if (armor.getChestplate() != null) {
             location.getWorld().dropItemNaturally(location, armor.getChestplate());
-            armor.setChestplate(null);
+            armor.setChestplate(new ItemStack(Material.AIR));
             target.removeArmor(EquipmentSlot.CHEST);
         } else if (armor.getLeggings() != null) {
             location.getWorld().dropItemNaturally(location, armor.getLeggings());
-            armor.setLeggings(null);
+            armor.setLeggings(new ItemStack(Material.AIR));
             target.removeArmor(EquipmentSlot.LEGS);
         } else if (armor.getBoots() != null) {
             location.getWorld().dropItemNaturally(location, armor.getBoots());
-            armor.setBoots(null);
+            armor.setBoots(new ItemStack(Material.AIR));
             target.removeArmor(EquipmentSlot.FEET);
         }
         tossedItems++;
