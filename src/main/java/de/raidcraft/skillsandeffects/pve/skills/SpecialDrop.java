@@ -87,7 +87,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                     Material droppedConfigItem = ItemUtils.getItem(dropKey);
                     if (droppedConfigItem != null) {
                         ConfigurationSection section = config.getConfigurationSection(key + ".drops." + dropKey);
-                        Drop drop = new Drop(getHolder(), droppedConfigItem.getId());
+                        Drop drop = new Drop(getHolder(), droppedConfigItem);
                         drop.setData((byte) ItemUtils.getItemData(dropKey));
                         drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
                         drop.setMinAmount(section.getConfigurationSection("min-amount"));
@@ -163,7 +163,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     public class Drop implements RequirementResolver<Hero> {
 
         private final Hero hero;
-        private final int itemId;
+        private final Material material;
         private byte data;
         private int exp;
         private ConfigurationSection minAmount;
@@ -171,15 +171,15 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         private List<Requirement<Hero>> requirements = new ArrayList<>();
         private ConfigurationSection chance;
 
-        public Drop(Hero hero, int itemId) {
+        public Drop(Hero hero, Material material) {
 
             this.hero = hero;
-            this.itemId = itemId;
+            this.material = material;
         }
 
-        public int getItemId() {
+        public Material getMaterial() {
 
-            return itemId;
+            return material;
         }
 
         public int getMinAmount() {
@@ -258,7 +258,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
             }
 
             if (MathUtil.RANDOM.nextDouble() < getChance(skill)) {
-                return new ItemStack(getItemId(), getAmount(), getData());
+                return new ItemStack(getMaterial(), getAmount(), getData());
             }
             return null;
         }
