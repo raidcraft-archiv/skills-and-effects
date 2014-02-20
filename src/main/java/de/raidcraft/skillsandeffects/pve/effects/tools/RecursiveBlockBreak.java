@@ -32,7 +32,7 @@ import java.util.List;
  * @author Philip
  */
 @EffectInformation(
-        name = "SpeedBlockBreak",
+        name = "Recursive Block Break",
         description = "Blitzschnelles abbauen von Blöcken",
         types = {EffectType.BUFF},
         elements = {EffectElement.HOLY}
