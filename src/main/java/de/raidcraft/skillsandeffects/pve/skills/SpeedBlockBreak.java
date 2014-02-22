@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
@@ -13,14 +14,13 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.items.ToolType;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.pve.effects.tools.SpeedBlockBreakEffect;
-import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,8 +35,8 @@ import java.util.Set;
 )
 public class SpeedBlockBreak extends AbstractSkill implements Triggered {
 
-    private ToolType toolType;
-    private final Set<Integer> blockIds = new HashSet<>();
+    private ItemStack tool;
+    private final Set<Material> allowedBlocks = new HashSet<>();
 
     public SpeedBlockBreak(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -46,14 +46,18 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        toolType = ToolType.fromName(data.getString("tool"));
-        for (String key : data.getStringList("blocks")) {
-            Material item = ItemUtils.getItem(key);
-            if (item != null) {
-                blockIds.add(item.getId());
-            } else {
-                RaidCraft.LOGGER.warning("Unknown item in skill config of: " + getName() + ".yml");
+        try {
+            tool = RaidCraft.getItem(data.getString("tool"));
+            for (String key : data.getStringList("blocks")) {
+                Material material = Material.matchMaterial(key);
+                if (material != null) {
+                    allowedBlocks.add(material);
+                } else {
+                    RaidCraft.LOGGER.warning("Unknown material in skill config of: " + getName() + ".yml");
+                }
             }
+        } catch (CustomItemException e) {
+            warn(e);
         }
     }
 
@@ -81,7 +85,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
 
     public boolean isValid(PlayerInteractTrigger trigger) {
 
-        return blockIds.contains(trigger.getEvent().getClickedBlock().getTypeId())
-                && !(toolType == null || !toolType.isOfType(getHolder().getItemTypeInHand()));
+        return allowedBlocks.contains(trigger.getEvent().getClickedBlock().getType())
+                && tool != null && trigger.getEvent().getItem() != null && trigger.getEvent().getItem().isSimilar(tool);
     }
 }

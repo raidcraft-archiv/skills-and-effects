@@ -7,11 +7,9 @@ import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
-import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.pve.skills.SpeedBlockBreak;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -26,8 +24,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 )
 public class SpeedBlockBreakEffect extends ExpirableEffect<SpeedBlockBreak> implements Triggered {
 
-    private String activateMsg;
-    private String deactivateMsg;
 
     public SpeedBlockBreakEffect(SpeedBlockBreak source, CharacterTemplate target, EffectData data) {
 
@@ -37,27 +33,24 @@ public class SpeedBlockBreakEffect extends ExpirableEffect<SpeedBlockBreak> impl
     @Override
     public void load(ConfigurationSection data) {
 
-        this.activateMsg = data.getString("activate-message", "SuperBreaker aktiviert!");
-        this.deactivateMsg = data.getString("deactivate-message", "SuperBreaker abgelaufen!");
     }
 
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        msg(ChatColor.GREEN + activateMsg);
     }
 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        msg(ChatColor.RED + deactivateMsg);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
+    @TriggerHandler(ignoreCancelled = true)
     public void onInteract(PlayerInteractTrigger trigger) throws CombatException {
 
         PlayerInteractEvent event = trigger.getEvent();
