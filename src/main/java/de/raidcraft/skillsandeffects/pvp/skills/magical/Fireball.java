@@ -15,6 +15,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.effects.Burn;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.util.LocationUtil;
 
 /**
  * @author Silthus
@@ -39,6 +40,9 @@ public class Fireball extends AbstractLevelableSkill implements CommandTriggered
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
+                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                    throw new CombatException(CombatException.Type.INVALID_TARGET);
+                }
                 Fireball.this.addEffect(target, Burn.class);
             }
         });

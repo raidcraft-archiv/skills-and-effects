@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.skill.IgnoredSkill;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -46,7 +47,9 @@ public abstract class AbstractBowTrap extends AbstractSkill implements CommandTr
             @Override
             public void run(Location location) throws CombatException {
 
-                runTrap(location);
+                if (!LocationUtil.isSafeZone(location)) {
+                    runTrap(location);
+                }
             }
         }, ProjectileType.ARROW);
     }

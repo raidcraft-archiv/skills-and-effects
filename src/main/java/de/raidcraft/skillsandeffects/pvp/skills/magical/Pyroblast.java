@@ -16,6 +16,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.debuff.FlamestrikeEffect;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -54,6 +55,9 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
+                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                    throw new CombatException(CombatException.Type.INVALID_TARGET);
+                }
                 if (target.hasEffect(FlamestrikeEffect.class)) {
                     int stacks = target.getEffect(FlamestrikeEffect.class).getStacks();
                     magicalAttack(target, (int) (stacks * getStackDamage()));

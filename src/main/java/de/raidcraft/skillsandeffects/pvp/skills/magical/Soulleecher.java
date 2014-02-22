@@ -17,6 +17,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.pvp.effects.debuff.SoulleecherEffect;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -54,6 +55,9 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
+                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                    throw new CombatException(CombatException.Type.INVALID_TARGET);
+                }
                 addEffect(target, SoulleecherEffect.class).setDeathCallback(new Callback<CharacterTemplate>() {
                     @Override
                     public void run(CharacterTemplate target) throws CombatException {

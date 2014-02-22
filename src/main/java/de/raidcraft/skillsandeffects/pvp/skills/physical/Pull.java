@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
@@ -40,6 +41,9 @@ public class Pull extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
+                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                    throw new CombatException(CombatException.Type.INVALID_TARGET);
+                }
                 // calculate the velocity and pull the target towards the caster
                 Location sourceLoc = target.getEntity().getLocation();
                 Location targetLoc = getHolder().getEntity().getLocation();
