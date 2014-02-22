@@ -35,7 +35,7 @@ import java.util.Set;
 )
 public class SpeedBlockBreak extends AbstractSkill implements Triggered {
 
-    private ItemStack tool;
+    private final Set<ItemStack> allowedTools = new HashSet<>();
     private final Set<Material> allowedBlocks = new HashSet<>();
 
     public SpeedBlockBreak(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -46,19 +46,37 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        try {
-            tool = RaidCraft.getItem(data.getString("tool"));
-            for (String key : data.getStringList("blocks")) {
-                Material material = Material.matchMaterial(key);
-                if (material != null) {
-                    allowedBlocks.add(material);
-                } else {
-                    RaidCraft.LOGGER.warning("Unknown material in skill config of: " + getName() + ".yml");
-                }
+        for (String key : data.getStringList("blocks")) {
+            Material material = Material.matchMaterial(key);
+            if (material != null) {
+                allowedBlocks.add(material);
+            } else {
+                RaidCraft.LOGGER.warning("Unknown material in skill config of: " + getName() + ".yml");
             }
-        } catch (CustomItemException e) {
-            warn(e);
         }
+        for (String entry : data.getStringList("tools")) {
+            try {
+                ItemStack item = RaidCraft.getItem(entry);
+                allowedTools.add(item);
+            } catch (CustomItemException e) {
+                warn(e);
+            }
+        }
+    }
+
+    public boolean isAllowedTool(ItemStack itemStack) {
+
+        for (ItemStack tool : allowedTools) {
+            if (tool.isSimilar(itemStack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Set<ItemStack> getAllowedTools() {
+
+        return allowedTools;
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
@@ -86,6 +104,6 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
     public boolean isValid(PlayerInteractTrigger trigger) {
 
         return allowedBlocks.contains(trigger.getEvent().getClickedBlock().getType())
-                && tool != null && trigger.getEvent().getItem() != null && trigger.getEvent().getItem().isSimilar(tool);
+                && trigger.getEvent().getItem() != null && isAllowedTool(trigger.getEvent().getItem());
     }
 }

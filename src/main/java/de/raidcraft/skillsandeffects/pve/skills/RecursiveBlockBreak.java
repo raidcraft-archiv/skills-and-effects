@@ -35,8 +35,8 @@ import java.util.Set;
 )
 public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
 
+    private final Set<ItemStack> allowedTools = new HashSet<>();
     private final Set<Material> allowedBlocks = new HashSet<>();
-    private ItemStack tool;
     private int maxAmount;
 
     public RecursiveBlockBreak(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -47,19 +47,22 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        try {
-            this.tool = RaidCraft.getItem(data.getString("tool"));
-            this.maxAmount = (int) ConfigUtil.getTotalValue(this, data.getConfigurationSection("max-amount"));
-            for (String entry : data.getStringList("allowed-blocks")) {
-                Material material = Material.matchMaterial(entry);
-                if (material != null) {
-                    allowedBlocks.add(material);
-                } else {
-                    RaidCraft.LOGGER.warning("Wrong material in config of " + getName() + ": " + entry);
-                }
+        this.maxAmount = (int) ConfigUtil.getTotalValue(this, data.getConfigurationSection("max-amount"));
+        for (String entry : data.getStringList("allowed-blocks")) {
+            Material material = Material.matchMaterial(entry);
+            if (material != null) {
+                allowedBlocks.add(material);
+            } else {
+                RaidCraft.LOGGER.warning("Wrong material in config of " + getName() + ": " + entry);
             }
-        } catch (CustomItemException e) {
-            warn(e);
+        }
+        for (String entry : data.getStringList("tools")) {
+            try {
+                ItemStack item = RaidCraft.getItem(entry);
+                allowedTools.add(item);
+            } catch (CustomItemException e) {
+                warn(e);
+            }
         }
     }
 
@@ -68,9 +71,19 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
         return allowedBlocks;
     }
 
-    public ItemStack getTool() {
+    public boolean isAllowedTool(ItemStack itemStack) {
 
-        return tool;
+        for (ItemStack tool : allowedTools) {
+            if (tool.isSimilar(itemStack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Set<ItemStack> getAllowedTools() {
+
+        return allowedTools;
     }
 
     public int getMaxAmount() {
@@ -104,6 +117,6 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
     public boolean isValid(PlayerInteractTrigger trigger) {
 
         return allowedBlocks.contains(trigger.getEvent().getClickedBlock().getType())
-                && trigger.getEvent().getItem() != null && tool.isSimilar(trigger.getEvent().getItem());
+                && trigger.getEvent().getItem() != null && isAllowedTool(trigger.getEvent().getItem());
     }
 }
