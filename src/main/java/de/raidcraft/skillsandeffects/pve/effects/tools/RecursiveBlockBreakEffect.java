@@ -46,13 +46,13 @@ public class RecursiveBlockBreakEffect extends ExpirableEffect<RecursiveBlockBre
         }
 
         // check if correct tool in use
-        if (event.getItem() == null || event.getItem().isSimilar(getSource().getTool())) {
+        if (!getSource().isValid(trigger)) {
             warn(Translator.tr(SkillsPlugin.class, event.getPlayer(),
                     "skills.recursive-block-break.wrong-tool", "You have the wrong tool equiped for this skill!"));
             return;
         }
 
-        int amount = breakRecursive(event.getPlayer(), getSource().getTool(), event.getClickedBlock(), 0, getSource().getMaxAmount());
+        int amount = breakRecursive(event.getPlayer(), event.getItem(), event.getClickedBlock(), 0, getSource().getMaxAmount());
         info(Translator.tr(SkillsPlugin.class, event.getPlayer(),
                 "skills.recursive-block-break.break-amount", "You have destroyed {0} blocks with {1}.", amount, getFriendlyName()));
         remove();
