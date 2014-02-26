@@ -23,7 +23,13 @@ import org.bukkit.configuration.ConfigurationSection;
 @EffectInformation(
         name = "Shielded",
         description = "Schützt dich vor Angriffen",
-        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.REDUCING, EffectType.REFLECTING}
+        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.REDUCING, EffectType.REFLECTING},
+        configUsage = {
+            "reflect[bool]: should the blocked damage reflect?",
+            "reduction-in-percent[bool]",
+            "reduction[baseSection]: how much damage is reduced",
+            "max-abosorption[baseSection]: when to remove the effect"
+        }
 )
 public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
