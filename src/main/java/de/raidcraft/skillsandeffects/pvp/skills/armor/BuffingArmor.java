@@ -24,7 +24,15 @@ import java.util.Set;
  */
 @SkillInformation(
         name = "Buffing Armor",
-        description = "Eine Schützende Rüstung die verschiedene Effekte hat."
+        description = "Eine Schützende Rüstung die verschiedene Effekte hat.",
+        configUsage = {
+            "types[list]: HEAL_INCREASE, HEALTH_INCREASE, RESOURCE_REGAIN",
+            "health-increase[baseSection]",
+            "heal-increase[baseSection]",
+            "resource[string]: For resource regain type",
+            "resource-regain[baseSection]"
+        },
+        effects = {BuffingArmorEffect.class}
 )
 public class BuffingArmor extends AbstractSkill implements CommandTriggered {
 
