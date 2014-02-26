@@ -32,7 +32,30 @@ import org.bukkit.configuration.ConfigurationSection;
         name = "Shot",
         description = "Schiesst einen Pfeil mit extra Fähigkeiten ab.",
         types = {EffectType.DAMAGING, EffectType.PHYSICAL, EffectType.HARMFUL},
-        queuedAttack = true
+        queuedAttack = true,
+        configUsage = {
+            "knockback[bool]",
+            "bleed[bool]",
+            "stun[bool]",
+            "sunder-armor[bool]",
+            "disarm[bool]",
+            "slow[bool]",
+            "weaken[bool]",
+            "burn[bool]",
+            "heal[bool]",
+            "silence[bool]"
+        },
+        effects = {
+            KnockBack.class,
+            Bleed.class,
+            Stun.class,
+            SunderingArmor.class,
+            Disarm.class,
+            Slow.class,
+            Weakness.class,
+            Burn.class,
+            Silence.class
+        }
 )
 public class Shot extends AbstractLevelableSkill implements CommandTriggered {
 
@@ -65,7 +88,6 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
         burn = data.getBoolean("burn", false);
         heal = data.getBoolean("heal", false);
         silence = data.getBoolean("silence", false);
-
     }
 
     @Override
