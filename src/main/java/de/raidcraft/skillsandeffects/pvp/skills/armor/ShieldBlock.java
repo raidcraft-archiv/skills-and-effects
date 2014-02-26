@@ -26,7 +26,11 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Shield Block",
         description = "Absorbiert Schaden durch das Tragen eines Schildes.",
-        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL}
+        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL},
+        configUsage = {
+            "block-value[baseSection]: damage value that is blocked",
+            "block-chance[baseSection]: chance to block"
+        }
 )
 public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
 
