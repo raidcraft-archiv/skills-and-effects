@@ -25,13 +25,17 @@ import org.bukkit.configuration.ConfigurationSection;
 @SkillInformation(
         name = "Parry",
         description = "Hat die Chance einen Angriff zu parrieren.",
-        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL}
+        types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL},
+        configUsage = {
+            "weapon[string]: requires valid weapon type",
+            "chance[baseSection]: chance to parry"
+        },
+        effects = {ParryEffect.class}
 )
 public class Parry extends AbstractLevelableSkill implements Triggered {
 
     private WeaponType weapon;
     private ConfigurationSection chance;
-    private int exp;
 
     public Parry(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -43,7 +47,6 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
 
         weapon = WeaponType.fromString(data.getString("weapon", "sword"));
         chance = data.getConfigurationSection("chance");
-        exp = data.getInt("exp");
     }
 
     private double getParryChance() {
@@ -63,7 +66,7 @@ public class Parry extends AbstractLevelableSkill implements Triggered {
         if (Math.random() < getParryChance()) {
             addEffect(getHolder(), ParryEffect.class);
             getHolder().combatLog(this, "Angriff von " + trigger.getAttack().getSource() + " wurde parriert.");
-            getAttachedLevel().addExp(exp);
+            getAttachedLevel().addExp(getUseExp());
             substractUsageCost(new SkillAction(this));
             throw new CombatException(CombatException.Type.PARRIED);
         }
