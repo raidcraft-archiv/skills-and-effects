@@ -21,7 +21,8 @@ import org.bukkit.util.Vector;
 @SkillInformation(
         name = "Bow Mastery",
         description = "Erhöht die Spannkraft des Bogens",
-        types = {EffectType.PHYSICAL, EffectType.HELPFUL}
+        types = {EffectType.PHYSICAL, EffectType.HELPFUL},
+        configUsage = {"minimal-force[baseSection]: minimal force arrows are shot with"}
 )
 public class BowMastery extends AbstractSkill implements Triggered {
 
