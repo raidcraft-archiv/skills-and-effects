@@ -150,7 +150,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         List<ItemStack> droppedItems = new ArrayList<>();
         for (Drop drop : drops) {
-            ItemStack stack = drop.getDrops(this);
+            ItemStack stack = drop.getDrops(this).clone();
             if (stack != null) {
                 droppedItems.add(stack);
             }
