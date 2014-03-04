@@ -113,7 +113,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                     attack.getTarget().getEntity().setVelocity(new Vector(0, throwUp, 0));
                 }
                 if (lifeLeech != null) {
-                    new HealAction<>(this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+                    new HealAction<>(MagicBolt.this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
                 }
                 if (!(attack.getTarget() instanceof Hero)) {
                     attack.setDamage((int) (attack.getDamage() + ConfigUtil.getTotalValue(MagicBolt.this, entityDamageBonus)));
