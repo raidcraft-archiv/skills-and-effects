@@ -94,7 +94,7 @@ public class Aura extends AbstractSkill implements CommandTriggered {
         if (auraType == null) return;
 
         // add the effect to ourselves and our nearby party
-        if (getHolder().hasEffect(auraType.getEffectClass())) {
+        if (!getHolder().hasEffect(auraType.getEffectClass())) {
             getHolder().removeEffectTypes(EffectType.AURA);
         }
         addEffect(this, getHolder(), auraType.getEffectClass());
