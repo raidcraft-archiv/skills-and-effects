@@ -1,6 +1,5 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
-import com.sk89q.worldedit.blocks.BlockID;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.requirement.Requirement;
 import de.raidcraft.api.requirement.RequirementManager;
@@ -30,6 +29,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +44,10 @@ import java.util.Set;
 )
 public class SpecialDrop extends AbstractSkill implements Triggered {
 
-    private final Map<Integer, List<Drop>> specialBlockDrops = new HashMap<>();
-    private final Map<Integer, List<Drop>> specialFishingDrops = new HashMap<>();
-    private final Map<Integer, List<Drop>> specialCraftingDrops = new HashMap<>();
-    private final Map<Integer, ToolType> requiredTools = new HashMap<>();
+    private final Map<Material, List<Drop>> specialBlockDrops = new EnumMap<>(Material.class);
+    private final Map<Material, List<Drop>> specialFishingDrops = new EnumMap<>(Material.class);
+    private final Map<Material, List<Drop>> specialCraftingDrops = new EnumMap<>(Material.class);
+    private final Map<Material, ToolType> requiredTools = new EnumMap<>(Material.class);
 
     public SpecialDrop(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -62,9 +62,9 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         if (data.getConfigurationSection("crafting") != null) specialCraftingDrops.putAll(parseConfig(data.getConfigurationSection("crafting")));
     }
 
-    private Map<Integer, List<Drop>> parseConfig(ConfigurationSection config) {
+    private Map<Material, List<Drop>> parseConfig(ConfigurationSection config) {
 
-        Map<Integer, List<Drop>> map = new HashMap<>();
+        Map<Material, List<Drop>> map = new HashMap<>();
         if (config == null) return map;
         Set<String> keys = config.getKeys(false);
         if (keys == null) return map;
@@ -77,7 +77,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                 if (!toolName.equalsIgnoreCase("none")) {
                     ToolType toolType = ToolType.fromName(toolName);
                     if (toolType != null) {
-                        requiredTools.put(item.getId(), toolType);
+                        requiredTools.put(item, toolType);
                     } else {
                         RaidCraft.LOGGER.warning("Wrong tool configured in custom config " + config.getName() + " section - " + key);
                     }
@@ -94,11 +94,11 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                         drop.setMinAmount(section.getConfigurationSection("max-amount"));
                         drop.setChance(section.getConfigurationSection("chance"));
                         drop.setExp(section.getInt("exp", 0));
-                        if (!map.containsKey(item.getId())) {
-                            map.put(item.getId(), new ArrayList<Drop>());
+                        if (!map.containsKey(item)) {
+                            map.put(item, new ArrayList<Drop>());
                         }
                         // finally add the created dropping item to our list
-                        map.get(item.getId()).add(drop);
+                        map.get(item).add(drop);
                     } else {
                         RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
                     }
@@ -114,36 +114,36 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     public void onBlockBreak(BlockBreakTrigger trigger) {
 
         Block block = trigger.getEvent().getBlock();
-        int blockId = block.getTypeId();
-        if (requiredTools.containsKey(blockId) && !requiredTools.get(blockId).isOfType(getHolder().getItemTypeInHand())) {
+        Material blockType = block.getType();
+        if (requiredTools.containsKey(blockType) && !requiredTools.get(blockType).isOfType(getHolder().getItemTypeInHand())) {
             return;
         }
-        if (!specialBlockDrops.containsKey(blockId) || RaidCraft.isPlayerPlacedBlock(block)) {
+        if (!specialBlockDrops.containsKey(blockType) || RaidCraft.isPlayerPlacedBlock(block)) {
             return;
         }
-        dropItems(specialBlockDrops.get(blockId), block.getLocation());
+        dropItems(specialBlockDrops.get(blockType), block.getLocation());
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onPlayerFishTrigger(PlayerFishTrigger trigger) {
 
-        if (!specialFishingDrops.containsKey(BlockID.WATER)) {
+        if (!specialFishingDrops.containsKey(Material.WATER)) {
             return;
         }
         if (trigger.getEvent().getState() != PlayerFishEvent.State.CAUGHT_FISH) {
             return;
         }
-        dropItems(specialFishingDrops.get(BlockID.WATER), trigger.getEvent().getPlayer().getLocation());
+        dropItems(specialFishingDrops.get(Material.WATER), trigger.getEvent().getPlayer().getLocation());
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onPlayerCraft(CraftTrigger trigger) {
 
-        int itemId = trigger.getEvent().getRecipe().getResult().getTypeId();
-        if (!specialCraftingDrops.containsKey(itemId)) {
+        Material itemType = trigger.getEvent().getRecipe().getResult().getType();
+        if (!specialCraftingDrops.containsKey(itemType)) {
             return;
         }
-        dropItems(specialCraftingDrops.get(itemId), trigger.getEvent().getWhoClicked().getLocation());
+        dropItems(specialCraftingDrops.get(itemType), trigger.getEvent().getWhoClicked().getLocation());
     }
 
     private void dropItems(List<Drop> drops, Location location) {
