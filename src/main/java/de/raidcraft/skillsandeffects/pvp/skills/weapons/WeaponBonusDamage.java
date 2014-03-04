@@ -96,6 +96,6 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
         double newDamage = oldDamage + oldDamage * bonusDamage;
         attack.combatLog(this, "Waffenschaden um " + (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
         attack.setDamage(newDamage);
-        getAttachedLevel().addExp((int) (newDamage * expPerDamage));
+        getAttachedLevel().addExp((int) (newDamage * expPerDamage) + getUseExp());
     }
 }
