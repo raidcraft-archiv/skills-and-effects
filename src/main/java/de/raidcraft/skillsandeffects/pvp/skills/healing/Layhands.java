@@ -52,8 +52,5 @@ public class Layhands extends AbstractSkill implements CommandTriggered {
         }
         new HealAction<>(this, target, target.getMaxHealth()).run();
         addEffect(this, target, LayhandsEffect.class);
-        for (Resource resource : getHolder().getResources()) {
-            resource.setCurrent(resource.getDefault());
-        }
     }
 }
