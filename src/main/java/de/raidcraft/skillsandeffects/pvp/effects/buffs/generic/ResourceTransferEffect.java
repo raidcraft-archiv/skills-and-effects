@@ -38,11 +38,13 @@ public class ResourceTransferEffect extends AbstractEffect<ResourceTransfer> imp
         }
         // lets reduce the source resource by the transfered amount
         double transferAmount = sourceCost * getSource().getTransferAmount();
+        transferAmount = ((int)(100 * transferAmount)) / 100.0;
         action.setResourceCost(getSource().getSource().getName(), sourceCost - transferAmount);
 
         // then lets calculate the ratio and add the new resource cost
         double newResourceCost = action.getResourceCost(getSource().getDestination().getName());
         newResourceCost += transferAmount * getSource().getTransferRatio();
+        newResourceCost = ((int)(100 * newResourceCost)) / 100.0;
         combatLog(transferAmount + " " + getSource().getSource().getFriendlyName()
                 + " wurde in " + newResourceCost + getSource().getDestination().getFriendlyName() + " umgewandelt.");
         action.setResourceCost(getSource().getDestination().getName(), newResourceCost);
