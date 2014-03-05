@@ -55,7 +55,7 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
         }
         double value = trigger.getEvent().getValue();
         trigger.getEvent().setValue(value + (value * increasePercent));
-        healthIncrease += value * increasePercent;
+        healthIncrease += MathUtil.trim(value * increasePercent);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
         if (getSource().hasType(BuffingArmor.Type.HEALTH_INCREASE)) {
             double maxHealth = target.getMaxHealth();
             increasePercent = getSource().getHealthIncrease();
-            healthIncrease = maxHealth * increasePercent;
+            healthIncrease = MathUtil.trim(maxHealth * increasePercent);
             combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + ") erhöht.");
             target.increaseMaxHealth(healthIncrease);
         }
