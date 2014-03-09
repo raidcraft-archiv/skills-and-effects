@@ -32,7 +32,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/skillsandeffects.git</developerConnection>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <repositories>
         <repository>
