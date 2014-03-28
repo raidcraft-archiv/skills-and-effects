@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
 
 /**
  * @author Silthus
@@ -37,7 +37,7 @@ public class Telekinesis extends AbstractSkill implements CommandTriggered {
         if (type != Material.LEVER && type != Material.STONE_BUTTON && type != Material.WOOD_BUTTON) {
             throw new CombatException("Ziel muss ein Hebel oder Knopf sein!");
         }
-        net.minecraft.server.v1_7_R1.Block nmsBlock = net.minecraft.server.v1_7_R1.Block.b(block.toString());
+        net.minecraft.server.v1_7_R2.Block nmsBlock = net.minecraft.server.v1_7_R2.Block.b(block.toString());
         nmsBlock.interact(((CraftWorld) block.getWorld()).getHandle(), block.getX(), block.getY(), block.getZ(), null, 0, 0F, 0F, 0F);
     }
 }
