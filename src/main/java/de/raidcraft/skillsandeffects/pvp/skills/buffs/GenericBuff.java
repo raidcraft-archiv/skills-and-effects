@@ -33,15 +33,15 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
         HEALTH(HealthBuff.class),
         HASTE(HasteBuff.class);
 
-        private final Class<? extends Effect<Skill>> aClass;
+        private final Class<? extends Effect<? extends Skill>> aClass;
 
-        private BuffType(Class<? extends Effect<Skill>> aClass) {
+        private BuffType(Class<? extends Effect<? extends Skill>> aClass) {
 
             this.aClass = aClass;
         }
 
         @SuppressWarnings("unchecked")
-        public <E extends Effect<Skill>> Class<E> clazz() {
+        public <E extends Effect<S>, S> Class<E> clazz() {
 
             return (Class<E>) aClass;
         }
