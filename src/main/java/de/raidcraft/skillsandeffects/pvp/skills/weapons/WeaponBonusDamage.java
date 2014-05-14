@@ -45,10 +45,12 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
 
         allAttacks = data.getBoolean("all-attacks", false);
         expPerDamage = data.getDouble("exp-per-damage", 0.0);
-        for (String key : data.getKeys(false)) {
+        ConfigurationSection weapons = data.getConfigurationSection("weapons");
+        if (weapons == null || weapons.getKeys(false) == null) return;
+        for (String key : weapons.getKeys(false)) {
             WeaponType type = WeaponType.fromString(key);
             if (type != null) {
-                bonusDamage.put(type, data.getConfigurationSection(key));
+                bonusDamage.put(type, weapons.getConfigurationSection(key));
             } else {
                 RaidCraft.LOGGER.warning("Unknown Weapon Type " + key + " in skill config: " + getName() + ".yml");
             }
