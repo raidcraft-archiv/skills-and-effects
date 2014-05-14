@@ -100,11 +100,11 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                         // finally add the created dropping item to our list
                         map.get(item).add(drop);
                     } else {
-                        RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
+                        RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName() + "." + item + "." + dropKey);
                     }
                 }
             } else {
-                RaidCraft.LOGGER.warning("Wrong item configured in custom config " + config.getName());
+                RaidCraft.LOGGER.warning("Wrong item type configured in custom config " + config.getName() + "." + key);
             }
         }
         return map;
