@@ -13,21 +13,30 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
 
 /**
  * @author Silthus
  */
 @SkillInformation(
         name = "Backstab",
-        description = "Verursacht sehr hohen Schaden wenn von hinten angegriffen wird.",
+        description = "Verursacht sehr hohen Schaden wenn man unsichtbar angreift.",
         types = {EffectType.PHYSICAL, EffectType.DAMAGING, EffectType.HARMFUL},
         queuedAttack = true
 )
 public class Backstab extends AbstractSkill implements CommandTriggered {
+    
+    private boolean needsInvisibility = true;
 
     public Backstab(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+    }
+    
+    @Override
+    public void load(ConfigurationSection data) {
+
+        this.needsInvisibility = data.getBoolean("needs-invisibility", true);
     }
 
     @Override
@@ -37,9 +46,8 @@ public class Backstab extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
-                if (!trigger.getSource().isBehind(trigger.getAttack().getTarget())) {
-                    trigger.getAttack().setCancelled(true);
-                    throw new CombatException("Du kannst mit dem Skill " + getFriendlyName() + " nur von hinten angreifen.");
+                if (needsInvisibility && !getHolder().hasEffect(Invisibility.class)) {
+                    throw new CombatException("Du kannst mit dem Skill " + getFriendlyName() + " nur aus der Unsichtbarkeit heraus angreifen.");
                 }
             }
         });
