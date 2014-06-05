@@ -14,6 +14,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
