@@ -39,8 +39,7 @@ public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Trigg
         }
         // bow force of 1.0 is max
         if (trigger.getEvent().getForce() >= 1.0) {
-            RangedAttack<ProjectileCallback> attack = new RangedAttack<>(
-                    getSource().getHolder(),
+            RangedAttack<ProjectileCallback> attack = getSource().rangedAttack(
                     ProjectileType.ARROW,
                     getSource().getTotalDamage()
             );

@@ -5,7 +5,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
-import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -45,7 +44,7 @@ public class MultishotEffect extends ExpirableEffect<Multishot> implements Trigg
                 public void run() {
 
                     try {
-                        new RangedAttack<>(getTarget(), getSource().getType()).run();
+                        getSource().rangedAttack(getSource().getType()).run();
                     } catch (CombatException e) {
                         warn(e.getMessage());
                     }

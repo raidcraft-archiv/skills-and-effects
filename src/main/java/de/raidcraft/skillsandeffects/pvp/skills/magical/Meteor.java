@@ -89,7 +89,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 }
                 try {
                     origin.add(MathUtil.RANDOM.nextInt(3), MathUtil.RANDOM.nextInt(5) + 3, MathUtil.RANDOM.nextInt(3));
-                    RangedAttack<ProjectileCallback> attack = new RangedAttack<>(getHolder(), ProjectileType.LARGE_FIREBALL, getTotalDamage());
+                    RangedAttack<ProjectileCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage());
                     LargeFireball fireball = getHolder().getEntity().launchProjectile(LargeFireball.class);
                     fireball.teleport(origin);
                     fireball.setShooter(getHolder().getPlayer());
