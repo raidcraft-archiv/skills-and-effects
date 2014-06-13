@@ -77,7 +77,7 @@ public class ShadowDanceEffect extends PeriodicExpirableEffect<ShadowDance> impl
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (bonusDamage) {
-            target.removeEffect(DamageBuff.class);
+            target.removeEffect(DamageBuff.class, getSource());
         }
     }
 

@@ -45,6 +45,6 @@ public class Fade extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), FadeEffect.class);
+        addEffect(FadeEffect.class);
     }
 }

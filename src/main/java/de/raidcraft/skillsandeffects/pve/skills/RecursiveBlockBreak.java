@@ -108,7 +108,7 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
                     return;
                 }
 
-                addEffect(getHolder(), SpeedBlockBreakEffect.class);
+                addEffect(SpeedBlockBreakEffect.class);
                 substractUsageCost(skillAction);
             }
         }, Action.LEFT_CLICK_BLOCK);

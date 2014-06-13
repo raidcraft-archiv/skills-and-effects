@@ -57,9 +57,9 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
             if (i >= maxSacrifice) {
                 break;
             }
-            if (partyMember.hasEffect(Summoned.class)) {
+            if (hasEffect(partyMember, Summoned.class)) {
                 // this will kill the creature
-                partyMember.removeEffect(Summoned.class);
+                removeEffect(partyMember, Summoned.class);
                 heal += healthPerSacrifice;
                 i++;
             }

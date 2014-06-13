@@ -42,10 +42,10 @@ public class Rampage extends AbstractSkill implements CommandTriggered {
             throw new CombatException(CombatException.Type.LOW_HEALTH);
         }
         if (getHolder().hasEffect(BloodlustEffect.class)) {
-            BloodlustEffect effect = getHolder().getEffect(BloodlustEffect.class);
+            BloodlustEffect effect = getEffect(BloodlustEffect.class);
             effect.setStacks(effect.getMaxStacks());
         } else {
-            BloodlustEffect effect = addEffect(getHolder(), BloodlustEffect.class);
+            BloodlustEffect effect = addEffect(BloodlustEffect.class);
             effect.setStacks(effect.getMaxStacks());
         }
         getHolder().setHealth(getHolder().getHealth() - healthCost);

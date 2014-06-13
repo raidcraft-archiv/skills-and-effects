@@ -47,7 +47,7 @@ public class Grace extends AbstractSkill implements Triggered {
 
         if (trigger.getAttack().isOfAttackElement(EffectElement.HOLY)
                 && trigger.getAttack().isOfAttackType(EffectType.DAMAGING)) {
-            addEffect(getHolder(), GraceEffect.class);
+            addEffect(GraceEffect.class);
         }
     }
 
@@ -55,11 +55,11 @@ public class Grace extends AbstractSkill implements Triggered {
     public void onSkillCast(PlayerCastSkillTrigger trigger) throws CombatException {
 
         if (trigger.getSkill().isOfElement(EffectElement.HOLY)
-                && getHolder().hasEffect(GraceEffect.class)
+                && hasEffect(GraceEffect.class)
                 && trigger.getSkill().isOfType(EffectType.HEALING)) {
-            int stacks = getHolder().getEffect(GraceEffect.class).getStacks();
+            int stacks = getEffect(GraceEffect.class).getStacks();
             trigger.getAction().setCastTime((int) (trigger.getAction().getCastTime() - castDecreasePerStack * stacks));
-            getHolder().removeEffect(GraceEffect.class);
+            removeEffect(GraceEffect.class);
         }
     }
 }

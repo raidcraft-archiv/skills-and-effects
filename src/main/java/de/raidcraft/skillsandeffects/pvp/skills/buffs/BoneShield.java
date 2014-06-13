@@ -78,7 +78,7 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
             throw new CombatException("Wrong resource defined! Please fix your config...");
         }
         if (affectedTargets.size() >= getMaxTargets() && affectedTargets.size() > 0) {
-            affectedTargets.remove(0).removeEffect(BoneShieldEffect.class);
+            removeEffect(affectedTargets.remove(0), BoneShieldEffect.class);
         }
         CharacterTemplate target = getTarget(args, true, false);
         addEffect(target, BoneShieldEffect.class);

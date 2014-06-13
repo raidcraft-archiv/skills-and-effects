@@ -30,6 +30,6 @@ public class DivineShield extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), DivineShieldEffect.class);
+        addEffect(DivineShieldEffect.class);
     }
 }

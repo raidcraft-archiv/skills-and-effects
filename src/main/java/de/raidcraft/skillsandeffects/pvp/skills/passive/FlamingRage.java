@@ -45,11 +45,11 @@ public class FlamingRage extends AbstractLevelableSkill implements Triggered {
     public void onSkillCast(PlayerCastSkillTrigger trigger) throws CombatException {
 
         if (trigger.getSkill().getClass() == Fireball.class) {
-            addEffect(getHolder(), FlamingRageEffect.class);
-        } else if (trigger.getSkill().isOfElement(EffectElement.FIRE) && getHolder().hasEffect(FlamingRageEffect.class)) {
-            int stacks = getHolder().getEffect(FlamingRageEffect.class).getStacks();
+            addEffect(FlamingRageEffect.class);
+        } else if (trigger.getSkill().isOfElement(EffectElement.FIRE) && hasEffect(FlamingRageEffect.class)) {
+            int stacks = getEffect(FlamingRageEffect.class).getStacks();
             trigger.getAction().setCastTime((int) (trigger.getAction().getCastTime() - trigger.getAction().getCastTime() * castDecreasePerStack * stacks));
-            getHolder().removeEffect(FlamingRageEffect.class);
+            removeEffect(FlamingRageEffect.class);
         }
     }
 }

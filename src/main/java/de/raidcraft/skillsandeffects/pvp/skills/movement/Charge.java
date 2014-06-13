@@ -55,7 +55,7 @@ public class Charge extends AbstractSkill implements CommandTriggered {
         double zDir = targetLoc.getZ() - playerLoc.getZ();
         Vector v = new Vector(xDir / 3.0D, 0.5D, zDir / 3.0D);
         getHolder().getPlayer().setVelocity(v);
-        addEffect(getHolder(), Charging.class);
+        addEffect(Charging.class);
         playerLoc.getWorld().playSound(playerLoc, Sound.WITHER_IDLE, 10F, 100F);
         // lets add a stun effect if configured
         if (stun) {

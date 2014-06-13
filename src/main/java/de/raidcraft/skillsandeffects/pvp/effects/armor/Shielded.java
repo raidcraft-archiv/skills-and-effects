@@ -146,7 +146,7 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (slow) {
-            target.removeEffect(Slow.class);
+            target.removeEffect(Slow.class, getSource());
         }
         absorbed = 0;
     }

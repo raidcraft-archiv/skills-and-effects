@@ -51,7 +51,7 @@ public class StrongSoul extends AbstractSkill implements Triggered {
         if (!trigger.getSource().equals(getHolder()) || !trigger.getTarget().hasEffect(WeakenSoul.class)) {
             return;
         }
-        WeakenSoul effect = trigger.getTarget().getEffect(WeakenSoul.class);
-        effect.setDuration(effect.getRemainingDuration() - getReduction());
+        trigger.getTarget().getEffects(WeakenSoul.class)
+                .forEach(effect -> effect.setDuration(effect.getRemainingDuration() - getReduction()));
     }
 }

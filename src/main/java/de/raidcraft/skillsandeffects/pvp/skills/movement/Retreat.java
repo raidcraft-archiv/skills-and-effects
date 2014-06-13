@@ -59,9 +59,9 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
         getHolder().getEntity().setVelocity(vector);
         // also remove the combat effect
         if (removeCombat) {
-            getHolder().removeEffect(Combat.class);
+            removeEffect(Combat.class);
         }
         // and add the retreat effect
-        addEffect(getHolder(), RetreatEffect.class);
+        addEffect(RetreatEffect.class);
     }
 }

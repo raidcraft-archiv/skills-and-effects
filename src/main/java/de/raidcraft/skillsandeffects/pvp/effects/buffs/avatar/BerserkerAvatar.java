@@ -52,7 +52,7 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
     protected void apply(CharacterTemplate target) throws CombatException {
 
         // set the rage regen
-        RageEffect effect = target.getEffect(RageEffect.class);
+        RageEffect effect = getSource().getEffect(RageEffect.class);
         oldRagePerAttack = effect.getRagePerAttackDamage();
         oldRagePerDamage = effect.getRagePerDamage();
         effect.setRagePerAttackDamage(oldRagePerAttack + rageRegenIncrease * oldRagePerAttack);
@@ -63,7 +63,7 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         // reset the rage regen
-        RageEffect effect = target.getEffect(RageEffect.class);
+        RageEffect effect = getSource().getEffect(RageEffect.class);
         effect.setRagePerAttackDamage(oldRagePerAttack);
         effect.setRagePerDamage(oldRagePerDamage);
     }

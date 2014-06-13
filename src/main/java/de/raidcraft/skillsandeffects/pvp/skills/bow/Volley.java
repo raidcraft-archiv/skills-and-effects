@@ -52,7 +52,7 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedBowFire.class).addCallback(new BowFireCallback() {
+        addEffect(QueuedBowFire.class).addCallback(new BowFireCallback() {
             @Override
             public void run(BowFireTrigger trigger) throws CombatException {
 

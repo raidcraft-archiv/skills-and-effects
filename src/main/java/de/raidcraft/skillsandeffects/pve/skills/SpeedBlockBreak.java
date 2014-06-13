@@ -87,7 +87,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
         }
         checkUsage(new SkillAction(this));
 
-        addEffect(getHolder(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
+        addEffect(QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
             @Override
             public void run(PlayerInteractTrigger trigger) throws CombatException {
 
@@ -95,7 +95,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
                     return;
                 }
 
-                addEffect(getHolder(), SpeedBlockBreakEffect.class);
+                addEffect(SpeedBlockBreakEffect.class);
                 substractUsageCost(new SkillAction(SpeedBlockBreak.this));
             }
         }, Action.LEFT_CLICK_BLOCK);
