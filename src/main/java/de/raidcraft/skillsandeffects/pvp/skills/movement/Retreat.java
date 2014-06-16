@@ -12,7 +12,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skillsandeffects.pvp.effects.misc.RetreatEffect;
-import org.bukkit.Location;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
@@ -47,16 +47,9 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Location targetLoc = getTargetBlock();
-        Location playerLoc = getHolder().getEntity().getLocation();
-        double xDir = targetLoc.getX() - playerLoc.getX();
-        double zDir = targetLoc.getZ() - playerLoc.getZ();
-        // set the target block and flip it
-        Vector vector = new Vector(xDir, 1.5D, zDir).multiply(-1);
-        // lets first null the velocity of the player to stop movement
-        getHolder().getEntity().setVelocity(new Vector(0, 0, 0));
-        // and finally apply it to the player
-        getHolder().getEntity().setVelocity(vector);
+        Vector direction = LocationUtil.getRevertedViewDirection(getHolder().getEntity().getLocation());
+        direction.normalize().add(new Vector(0, 3, 0)).multiply(5);
+        getHolder().getEntity().setVelocity(direction);
         // also remove the combat effect
         if (removeCombat) {
             removeEffect(Combat.class);
