@@ -4,9 +4,8 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
-import de.raidcraft.skills.api.combat.callback.BowFireCallback;
 import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
-import de.raidcraft.skills.api.effect.common.QueuedBowFire;
+import de.raidcraft.skills.api.effect.common.QueuedProjectile;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -15,11 +14,13 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.BowFireTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.util.MathUtil;
+import org.apache.commons.lang.math.RandomUtils;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
+
+import java.util.stream.IntStream;
 
 /**
  * @author Silthus
@@ -31,6 +32,7 @@ import org.bukkit.util.Vector;
 )
 public class Volley extends AbstractLevelableSkill implements CommandTriggered {
 
+    private final int[] angles = IntStream.range(-15, 15).toArray();
     private ConfigurationSection amount;
 
     public Volley(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -52,19 +54,44 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(QueuedBowFire.class).addCallback(new BowFireCallback() {
-            @Override
-            public void run(BowFireTrigger trigger) throws CombatException {
+        addEffect(QueuedProjectile.class).addCallback(location -> {
 
-                Vector velocity = trigger.getEvent().getProjectile().getVelocity();
-                for (int i = 1; i < getAmount(); i++) {
-                    RangedAttack<ProjectileCallback> attack = rangedAttack(ProjectileType.ARROW, getTotalDamage());
-                    attack.setVelocity(velocity.clone().add(
-                            new Vector(MathUtil.RANDOM.nextInt(i), MathUtil.RANDOM.nextInt(i), MathUtil.RANDOM.nextInt(i))
-                    ));
-                    attack.run();
-                }
+
+            for (int i = 1; i < getAmount(); i++) {
+                RangedAttack<ProjectileCallback> attack = rangedAttack(ProjectileType.ARROW, getTotalDamage());
+                Vector velocity = calculateDirection(attack.getSource().getEntity().getLocation(), attack.getSource().getEntity().getEyeLocation().toVector());
+                velocity.multiply(attack.getForce());
+                attack.setVelocity(velocity);
+                attack.run();
             }
         });
+    }
+
+    // the shooting player, his eyelocation, his view direction (player.getEyeLocation().getDirection()) and the speed of the spawned snowball:
+    public Vector calculateDirection(Location location, Vector direction) {
+        // making sure that the vector is length 1
+        direction.normalize();
+        // some trick, to get a vector pointing in the player's view direction, but on the x-z-plane only and without problems when looking straight up (x, z = 0 then)
+        Vector dirY = (new Location(location.getWorld(), 0, 0, 0, location.getYaw(), 0)).getDirection().normalize();
+        Vector vec;
+        int angle = angles[RandomUtils.nextInt(angles.length)];
+        if (angle != 0) {
+            vec = rotateYAxis(dirY, angle);
+            vec.multiply(Math.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ())).subtract(dirY);
+            vec = direction.clone().add(vec).normalize();
+        } else {
+            vec = direction.clone();
+        }
+        return vec;
+    }
+
+    public Vector rotateYAxis(Vector dir, double angleD) {
+
+        double angleR = Math.toRadians(angleD);
+        double x = dir.getX();
+        double z = dir.getZ();
+        double cos = Math.cos(angleR);
+        double sin = Math.sin(angleR);
+        return (new Vector(x*cos+z*(-sin), 0.0, x*sin+z*cos)).normalize();
     }
 }
