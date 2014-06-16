@@ -90,9 +90,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 RangedAttack<ProjectileCallback> attack = rangedAttack(ProjectileType.FIREBALL, getTotalDamage());
                 attack.setSpawnLocation(origin);
                 // lets calculate the direction of the meteor
-                Vector direction = new Vector(location.getX() - origin.getX(),
-                        location.getY() - origin.getY(),
-                        location.getZ() - origin.getZ());
+                Vector direction = location.toVector().clone().subtract(origin.toVector());
                 direction.multiply(speed);
 
                 attack.setVelocity(direction);
