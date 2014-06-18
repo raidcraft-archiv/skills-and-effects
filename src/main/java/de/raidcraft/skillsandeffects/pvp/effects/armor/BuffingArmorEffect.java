@@ -81,17 +81,17 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (getSource().hasType(BuffingArmor.Type.HEALTH_INCREASE)) {
             combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + ") verringert.");
             target.decreaseMaxHealth(healthIncrease);
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-
     }
 }

@@ -25,14 +25,14 @@ public abstract class AbstractAura extends AbstractEffect<Aura> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        info("Die Aura " + getFriendlyName() + " ist nicht mehr aktiv.");
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         info("Die Aura " + getFriendlyName() + " wurde erneuert.");
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        info("Die Aura " + getFriendlyName() + " ist nicht mehr aktiv.");
     }
 }

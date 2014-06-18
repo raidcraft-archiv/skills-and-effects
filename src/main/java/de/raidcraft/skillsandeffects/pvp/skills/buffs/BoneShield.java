@@ -50,12 +50,6 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
         maxTargets = data.getConfigurationSection("max-targets");
     }
 
-    public int getMaxTargets() {
-
-        double value = ConfigUtil.getTotalValue(this, maxTargets);
-        return value > 0 ? (int) value : 1;
-    }
-
     public double getAbsorbtion() {
 
         Resource resource = getHolder().getResource(this.resource);
@@ -83,5 +77,11 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
         CharacterTemplate target = getTarget(args, true, false);
         addEffect(target, BoneShieldEffect.class);
         affectedTargets.add(target);
+    }
+
+    public int getMaxTargets() {
+
+        double value = ConfigUtil.getTotalValue(this, maxTargets);
+        return value > 0 ? (int) value : 1;
     }
 }

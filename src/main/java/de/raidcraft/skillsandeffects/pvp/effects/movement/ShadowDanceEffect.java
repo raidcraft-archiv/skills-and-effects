@@ -37,13 +37,6 @@ public class ShadowDanceEffect extends PeriodicExpirableEffect<ShadowDance> impl
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        resource = data.getString("resource");
-        bonusDamage = data.getBoolean("bonus-damage", false);
-    }
-
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onSkillCast(PlayerCastSkillTrigger trigger) {
 
@@ -74,17 +67,24 @@ public class ShadowDanceEffect extends PeriodicExpirableEffect<ShadowDance> impl
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        if (bonusDamage) {
-            target.removeEffect(DamageBuff.class, getSource());
-        }
+        resource = data.getString("resource");
+        bonusDamage = data.getBoolean("bonus-damage", false);
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         apply(target);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        if (bonusDamage) {
+            target.removeEffect(DamageBuff.class, getSource());
+        }
     }
 
     private void shadowStep(List<CharacterTemplate> targets) throws CombatException {

@@ -35,14 +35,14 @@ public class HasteBuff extends ExpirableEffect<Skill> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.SPEED);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(potionEffect);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.SPEED);
     }
 }

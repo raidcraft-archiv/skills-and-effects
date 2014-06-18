@@ -58,12 +58,6 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
         delay = TimeUtil.secondsToTicks(data.getDouble("delay", 1.0));
     }
 
-    public int getAmount() {
-
-        int value = (int) ConfigUtil.getTotalValue(this, amount);
-        return value > 0 ? value : 1;
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -100,5 +94,11 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 getHolder().sendMessage(ChatColor.RED + e.getMessage());
             }
         }, delay, interval);
+    }
+
+    public int getAmount() {
+
+        int value = (int) ConfigUtil.getTotalValue(this, amount);
+        return value > 0 ? value : 1;
     }
 }

@@ -39,11 +39,6 @@ public class BonusStrike extends AbstractSkill implements Triggered {
         chance = data.getConfigurationSection("chance");
     }
 
-    public double getChance() {
-
-        return ConfigUtil.getTotalValue(this, chance);
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
@@ -60,5 +55,10 @@ public class BonusStrike extends AbstractSkill implements Triggered {
             attack((CharacterTemplate) trigger.getAttack().getSource());
             substractUsageCost(new SkillAction(this));
         }
+    }
+
+    public double getChance() {
+
+        return ConfigUtil.getTotalValue(this, chance);
     }
 }

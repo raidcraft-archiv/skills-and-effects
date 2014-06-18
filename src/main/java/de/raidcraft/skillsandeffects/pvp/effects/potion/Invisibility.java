@@ -35,26 +35,16 @@ import org.bukkit.potion.PotionEffectType;
 )
 public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
 
+    private final PotionEffect invisibility;
     private boolean slow = false;
     private boolean removeOnDamage = true;
     private boolean removeOnAttack = true;
-    private final PotionEffect invisibility;
     private PotionEffect slowEffect;
 
     public Invisibility(S source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
         invisibility = new PotionEffect(PotionEffectType.INVISIBILITY, (int) getDuration(), 1);
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-
-        slow = data.getBoolean("slow", false);
-        // slows by 15% for each strength point
-        slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), data.getInt("slow-modifier", 2));
-        removeOnDamage = data.getBoolean("remove-on-damage", true);
-        removeOnAttack = data.getBoolean("remove-on-attack", true);
     }
 
     @TriggerHandler(ignoreCancelled = true)
@@ -106,16 +96,13 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        info("Unsichtbarkeit wurde aufgehoben.");
-        target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
-        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
-        if (target instanceof Hero) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                player.showPlayer((Player) target.getEntity());
-            }
-        }
+        slow = data.getBoolean("slow", false);
+        // slows by 15% for each strength point
+        slowEffect = new PotionEffect(PotionEffectType.SLOW, (int) getDuration(), data.getInt("slow-modifier", 2));
+        removeOnDamage = data.getBoolean("remove-on-damage", true);
+        removeOnAttack = data.getBoolean("remove-on-attack", true);
     }
 
     @Override
@@ -126,6 +113,19 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
         if (target instanceof Hero) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.hidePlayer((Player) target.getEntity());
+            }
+        }
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        info("Unsichtbarkeit wurde aufgehoben.");
+        target.getEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+        target.getEntity().removePotionEffect(PotionEffectType.SLOW);
+        if (target instanceof Hero) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.showPlayer((Player) target.getEntity());
             }
         }
     }

@@ -31,13 +31,6 @@ public class GatherStrengthEffect extends PeriodicExpirableEffect<GatherStrength
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        restorePerTick = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-percent-per-tick"));
-        initialHeal = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("initial-heal-percent"));
-    }
-
-    @Override
     protected void tick(CharacterTemplate target) throws CombatException {
 
         new HealAction<>(this, target, (int) (target.getMaxHealth() * restorePerTick)).run();
@@ -52,12 +45,19 @@ public class GatherStrengthEffect extends PeriodicExpirableEffect<GatherStrength
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
+        restorePerTick = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-percent-per-tick"));
+        initialHeal = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("initial-heal-percent"));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 }

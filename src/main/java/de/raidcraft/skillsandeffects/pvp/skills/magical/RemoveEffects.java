@@ -43,11 +43,6 @@ public class RemoveEffects extends AbstractSkill implements CommandTriggered {
         amount = data.getConfigurationSection("amount");
     }
 
-    public int getAmount() {
-
-        return (int) ConfigUtil.getTotalValue(this, amount);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -72,5 +67,10 @@ public class RemoveEffects extends AbstractSkill implements CommandTriggered {
                 removedEffects++;
             }
         }
+    }
+
+    public int getAmount() {
+
+        return (int) ConfigUtil.getTotalValue(this, amount);
     }
 }

@@ -50,7 +50,19 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     @Override
     public void loadAttachment(ConfigurationSection data) {
 
-        
+
+    }
+
+    @Override
+    public void applyAttachment(Player player) throws CustomItemException {
+
+
+    }
+
+    @Override
+    public void removeAttachment(Player player) throws CustomItemException {
+
+
     }
 
     @Override
@@ -85,18 +97,6 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     }
 
     @Override
-    public void applyAttachment(Player player) throws CustomItemException {
-
-
-    }
-
-    @Override
-    public void removeAttachment(Player player) throws CustomItemException {
-
-
-    }
-
-    @Override
     public void runCommand(CommandContext args) throws CombatException {
 
         if (bedSpawn) {
@@ -118,14 +118,6 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         checkForSkillCast();
     }
 
-    public void onAttack(AttackTrigger trigger) throws CombatException {
-
-        if (!cancelOnAttack) {
-            return;
-        }
-        checkForSkillCast();
-    }
-
     private void checkForSkillCast() throws CombatException {
 
         if (!getHolder().hasEffect(CastTime.class)) {
@@ -135,5 +127,13 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
             removeEffect(CastTime.class);
             removeEffect(Immobilize.class);
         }
+    }
+
+    public void onAttack(AttackTrigger trigger) throws CombatException {
+
+        if (!cancelOnAttack) {
+            return;
+        }
+        checkForSkillCast();
     }
 }

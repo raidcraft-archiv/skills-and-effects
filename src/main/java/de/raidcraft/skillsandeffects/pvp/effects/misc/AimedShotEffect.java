@@ -56,12 +56,12 @@ public class AimedShotEffect extends ExpirableEffect<AimedShot> implements Trigg
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 }

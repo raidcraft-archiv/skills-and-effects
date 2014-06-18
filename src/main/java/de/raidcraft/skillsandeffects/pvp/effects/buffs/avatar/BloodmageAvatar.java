@@ -33,18 +33,18 @@ public class BloodmageAvatar extends AbstractAvatar implements Triggered {
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        healthIncreasePercent = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-increase"));
-        healPercentage = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-increase"));
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         healthIncrease = (int) (target.getMaxHealth() * healthIncreasePercent);
         target.increaseMaxHealth(healthIncrease);
         getSource().getHolder().combatLog("Maximale Leben um " + healthIncreasePercent * 100 + "% (" + (healthIncrease) + ") erhöht.");
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        healthIncreasePercent = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-increase"));
+        healPercentage = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-increase"));
     }
 
     @Override

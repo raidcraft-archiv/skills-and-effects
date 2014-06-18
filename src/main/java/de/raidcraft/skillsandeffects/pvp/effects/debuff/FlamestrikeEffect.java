@@ -5,8 +5,8 @@ import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.MagicalAttack;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.effect.Stackable;
+import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.pvp.skills.magical.Flamestrike;
@@ -32,44 +32,9 @@ public class FlamestrikeEffect extends PeriodicExpirableEffect<Flamestrike> impl
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        maxStacks = data.getInt("max-stacks", 5);
-    }
-
-    @Override
     public double getPriority() {
 
         return super.getPriority() * getStacks();
-    }
-
-    @Override
-    protected void tick(CharacterTemplate target) throws CombatException {
-
-        if (stacks < 1) {
-            remove();
-            return;
-        }
-        stacks--;
-        new MagicalAttack(getSource().getHolder(), target, getDamage()).run();
-    }
-
-    @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-        this.stacks = maxStacks;
-    }
-
-    @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        this.stacks = 0;
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        this.stacks = maxStacks;
     }
 
     @Override
@@ -88,5 +53,40 @@ public class FlamestrikeEffect extends PeriodicExpirableEffect<Flamestrike> impl
     public int getMaxStacks() {
 
         return maxStacks;
+    }
+
+    @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        this.stacks = maxStacks;
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        maxStacks = data.getInt("max-stacks", 5);
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        this.stacks = maxStacks;
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        this.stacks = 0;
+    }
+
+    @Override
+    protected void tick(CharacterTemplate target) throws CombatException {
+
+        if (stacks < 1) {
+            remove();
+            return;
+        }
+        stacks--;
+        new MagicalAttack(getSource().getHolder(), target, getDamage()).run();
     }
 }

@@ -31,22 +31,22 @@ public class SpeedBlockBreakEffect extends ExpirableEffect<SpeedBlockBreak> impl
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 

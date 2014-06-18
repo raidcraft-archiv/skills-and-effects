@@ -82,6 +82,12 @@ public class Consume extends AbstractSkill implements Triggered {
         }
     }
 
+    public enum ConsumeableType {
+
+        HEALTH,
+        RESOURCE
+    }
+
     public class Consumeable {
 
         private final int itemId;
@@ -134,11 +140,5 @@ public class Consume extends AbstractSkill implements Triggered {
 
             return percentage;
         }
-    }
-
-    public enum ConsumeableType {
-
-        HEALTH,
-        RESOURCE
     }
 }

@@ -52,14 +52,14 @@ public class BoneShieldEffect extends ExpirableEffect<BoneShield> implements Tri
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         damageToAbsorb = (int) getSource().getAbsorbtion();
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+
     }
 }

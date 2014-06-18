@@ -32,15 +32,23 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        renew(target);
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         blastRadius = data.getInt("blast-radius", 3);
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
-        renew(target);
+        hit = 0;
+        target.getEntity().setFireTicks((int) getDuration());
+        target.getEntity().setNoDamageTicks((int) getDuration());
     }
 
     @Override
@@ -58,13 +66,5 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
             target.getEntity().setVelocity(new Vector(0, 3 + hit, 0));
             EffectUtil.fakeExplosion(target.getEntity().getLocation());
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        hit = 0;
-        target.getEntity().setFireTicks((int) getDuration());
-        target.getEntity().setNoDamageTicks((int) getDuration());
     }
 }

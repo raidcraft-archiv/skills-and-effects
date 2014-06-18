@@ -46,11 +46,6 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
         amount = data.getConfigurationSection("amount");
     }
 
-    public int getAmount() {
-
-        return (int) ConfigUtil.getTotalValue(this, amount);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -65,6 +60,11 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
                 attack.run();
             }
         });
+    }
+
+    public int getAmount() {
+
+        return (int) ConfigUtil.getTotalValue(this, amount);
     }
 
     // the shooting player, his eyelocation, his view direction (player.getEyeLocation().getDirection()) and the speed of the spawned snowball:
@@ -92,6 +92,6 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
         double z = dir.getZ();
         double cos = Math.cos(angleR);
         double sin = Math.sin(angleR);
-        return (new Vector(x*cos+z*(-sin), 0.0, x*sin+z*cos)).normalize();
+        return (new Vector(x * cos + z * (-sin), 0.0, x * sin + z * cos)).normalize();
     }
 }

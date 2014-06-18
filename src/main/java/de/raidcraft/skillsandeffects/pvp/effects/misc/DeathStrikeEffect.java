@@ -48,13 +48,13 @@ public class DeathStrikeEffect extends ExpirableEffect<DeathStrike> implements T
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
 
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
 
     }

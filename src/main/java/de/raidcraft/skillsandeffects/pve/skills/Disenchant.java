@@ -40,11 +40,6 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
         salvageChance = data.getConfigurationSection("salvage-chance");
     }
 
-    public double getSalvageChance() {
-
-        return ConfigUtil.getTotalValue(this, salvageChance);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -52,7 +47,7 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
         if (item == null) {
             throw new CombatException("Bitte nehme das Item das zu entzaubern willst in die Hand.");
         }
-        Map<Enchantment,Integer> enchantments = item.getEnchantments();
+        Map<Enchantment, Integer> enchantments = item.getEnchantments();
         if (enchantments.size() < 1 || item.getTypeId() == ItemID.WRITTEN_BOOK) {
             throw new CombatException("Dieses Item hat keine Verzauberungen die du entfernen kannst.");
         }
@@ -66,5 +61,10 @@ public class Disenchant extends AbstractSkill implements CommandTriggered {
                 item.setDurability((short) (item.getDurability() / 2));
             }
         }
+    }
+
+    public double getSalvageChance() {
+
+        return ConfigUtil.getTotalValue(this, salvageChance);
     }
 }

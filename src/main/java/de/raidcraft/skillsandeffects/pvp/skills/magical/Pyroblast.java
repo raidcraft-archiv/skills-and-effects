@@ -43,11 +43,6 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
         damagePerStack = data.getConfigurationSection("stack-damage");
     }
 
-    public double getStackDamage() {
-
-        return ConfigUtil.getTotalValue(this, damagePerStack);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -65,5 +60,10 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
                 }
             }
         });
+    }
+
+    public double getStackDamage() {
+
+        return ConfigUtil.getTotalValue(this, damagePerStack);
     }
 }

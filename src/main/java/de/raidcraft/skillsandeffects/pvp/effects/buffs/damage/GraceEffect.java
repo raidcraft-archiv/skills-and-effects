@@ -33,14 +33,14 @@ public class GraceEffect extends ExpirableEffect<FlamingRage> implements Stackab
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        setStacks(0);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
 
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        setStacks(0);
     }
 }

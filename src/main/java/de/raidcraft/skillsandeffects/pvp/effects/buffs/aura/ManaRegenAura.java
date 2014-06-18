@@ -37,11 +37,6 @@ public class ManaRegenAura extends AbstractAura {
         regen = data.getConfigurationSection("mana-regain");
     }
 
-    private double getManaIncrease() {
-
-        return ConfigUtil.getTotalValue(getSource(), regen);
-    }
-
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
@@ -51,6 +46,11 @@ public class ManaRegenAura extends AbstractAura {
         getSource().getHolder().getResource(RESOURCE_NAME).setRegenValue(newManaRegen);
         super.apply(target);
         hero.combatLog(this, "Mana Regeneration auf " + (int) (newManaRegen * 100) + "% erhöht.");
+    }
+
+    private double getManaIncrease() {
+
+        return ConfigUtil.getTotalValue(getSource(), regen);
     }
 
     @Override

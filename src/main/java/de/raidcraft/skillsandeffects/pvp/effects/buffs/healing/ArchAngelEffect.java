@@ -71,17 +71,17 @@ public class ArchAngelEffect extends ExpirableEffect<ArchAngel> implements Trigg
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (!died) {
             // reduce the cooldown of the archangel spell to the defined amount
             getSource().setCooldown(getSource().getCooldownReduction());
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-
     }
 }

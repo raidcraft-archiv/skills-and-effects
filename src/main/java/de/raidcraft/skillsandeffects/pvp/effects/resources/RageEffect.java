@@ -36,15 +36,6 @@ public class RageEffect extends AbstractEffect<Rage> implements Triggered {
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        rageInterval = data.getConfigurationSection("rage-interval");
-        rageAmount = data.getConfigurationSection("rage-amount");
-        ragePerAttackDamage = data.getDouble("rage-per-attack", 0.1);
-        ragePerDamage = data.getDouble("rage-per-damage", 0.1);
-    }
-
     public double getRagePerAttackDamage() {
 
         return ragePerAttackDamage;
@@ -63,17 +54,6 @@ public class RageEffect extends AbstractEffect<Rage> implements Triggered {
     public void setRagePerDamage(double ragePerDamage) {
 
         this.ragePerDamage = ragePerDamage;
-    }
-
-    private int getRageAmount() {
-
-        // rage amount per interval tick
-        return (int) ConfigUtil.getTotalValue(getSource(), rageAmount);
-    }
-
-    private long getRageInterval() {
-
-        return (long) (ConfigUtil.getTotalValue(getSource(), rageInterval) * 20);
     }
 
     @TriggerHandler
@@ -102,6 +82,20 @@ public class RageEffect extends AbstractEffect<Rage> implements Triggered {
     }
 
     @Override
+    public void load(ConfigurationSection data) {
+
+        rageInterval = data.getConfigurationSection("rage-interval");
+        rageAmount = data.getConfigurationSection("rage-amount");
+        ragePerAttackDamage = data.getDouble("rage-per-attack", 0.1);
+        ragePerDamage = data.getDouble("rage-per-damage", 0.1);
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         // reenable the rage deregeneration
@@ -110,8 +104,14 @@ public class RageEffect extends AbstractEffect<Rage> implements Triggered {
         resource.setRegenInterval(oldRegainInterval);
     }
 
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    private int getRageAmount() {
 
+        // rage amount per interval tick
+        return (int) ConfigUtil.getTotalValue(getSource(), rageAmount);
+    }
+
+    private long getRageInterval() {
+
+        return (long) (ConfigUtil.getTotalValue(getSource(), rageInterval) * 20);
     }
 }

@@ -40,15 +40,6 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        attackIncrease = data.getDouble("attack-increase", 0.25);
-        damageIncrease = data.getDouble("damage-increase", 0.10);
-        deepWoundChance = data.getDouble("deep-wound-chance", 0.05);
-        rageRegenIncrease = data.getDouble("rage-increase", 1.0);
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         // set the rage regen
@@ -57,6 +48,15 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
         oldRagePerDamage = effect.getRagePerDamage();
         effect.setRagePerAttackDamage(oldRagePerAttack + rageRegenIncrease * oldRagePerAttack);
         effect.setRagePerDamage(oldRagePerDamage + rageRegenIncrease * oldRagePerDamage);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        attackIncrease = data.getDouble("attack-increase", 0.25);
+        damageIncrease = data.getDouble("damage-increase", 0.10);
+        deepWoundChance = data.getDouble("deep-wound-chance", 0.05);
+        rageRegenIncrease = data.getDouble("rage-increase", 1.0);
     }
 
     @Override

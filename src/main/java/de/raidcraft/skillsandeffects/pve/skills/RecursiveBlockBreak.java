@@ -71,16 +71,6 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
         return allowedBlocks;
     }
 
-    public boolean isAllowedTool(ItemStack itemStack) {
-
-        for (ItemStack tool : allowedTools) {
-            if (tool.isSimilar(itemStack)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Set<ItemStack> getAllowedTools() {
 
         return allowedTools;
@@ -118,5 +108,15 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
 
         return allowedBlocks.contains(trigger.getEvent().getClickedBlock().getType())
                 && trigger.getEvent().getItem() != null && isAllowedTool(trigger.getEvent().getItem());
+    }
+
+    public boolean isAllowedTool(ItemStack itemStack) {
+
+        for (ItemStack tool : allowedTools) {
+            if (tool.isSimilar(itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

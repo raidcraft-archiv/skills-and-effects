@@ -93,34 +93,14 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
     }
 
-    private SummonedCreatureConfig findMatchingCreature(String name) throws CombatException {
-
-        name = StringUtils.formatName(name);
-
-        List<String> foundConfigs = new ArrayList<>();
-        for (SummonedCreatureConfig config : creatureConfigs.values()) {
-            if (config.name.startsWith(name) || StringUtils.formatName(config.getFriendlyName()).startsWith(name)) {
-                foundConfigs.add(config.name);
-            }
-        }
-
-        if (foundConfigs.size() > 1) {
-            throw new CombatException("Es gibt mehrere beschwörbare Kreaturen mit dem Namen " + name + ":\n" +
-                    StringUtil.joinString(foundConfigs, ", ", 0));
-        }
-        if (foundConfigs.size() < 1) {
-            throw new CombatException("Du kennst keine beschwörbaren Kreaturen mit dem Namen: " + name);
-        }
-        return creatureConfigs.get(foundConfigs.get(0));
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
         if (args.argsLength() < 1) {
             throw new CombatException(
                     "Du musst mindestens eine Kreatur zum beschwören angeben: /cast " + getFriendlyName() + " <kreatur> [anzahl]\n" +
-                            StringUtil.joinString(creatureConfigs.keySet(), ", ", 0));
+                            StringUtil.joinString(creatureConfigs.keySet(), ", ", 0)
+            );
         }
 
         SummonedCreatureConfig config = findMatchingCreature(args.getString(0));
@@ -147,6 +127,27 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             }
             summonedCreatures.get(type).add(summoned);
         }
+    }
+
+    private SummonedCreatureConfig findMatchingCreature(String name) throws CombatException {
+
+        name = StringUtils.formatName(name);
+
+        List<String> foundConfigs = new ArrayList<>();
+        for (SummonedCreatureConfig config : creatureConfigs.values()) {
+            if (config.name.startsWith(name) || StringUtils.formatName(config.getFriendlyName()).startsWith(name)) {
+                foundConfigs.add(config.name);
+            }
+        }
+
+        if (foundConfigs.size() > 1) {
+            throw new CombatException("Es gibt mehrere beschwörbare Kreaturen mit dem Namen " + name + ":\n" +
+                    StringUtil.joinString(foundConfigs, ", ", 0));
+        }
+        if (foundConfigs.size() < 1) {
+            throw new CombatException("Du kennst keine beschwörbaren Kreaturen mit dem Namen: " + name);
+        }
+        return creatureConfigs.get(foundConfigs.get(0));
     }
 
     public List<CharacterTemplate> summonCreatures(SummonedCreatureConfig config, int amount) throws CombatException {
@@ -185,6 +186,25 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         return summonedCreatures;
     }
 
+    public static class SummonedCreature extends Creature {
+
+        public SummonedCreature(LivingEntity entity, SummonedCreatureConfig config) {
+
+            super(entity);
+            usingHealthBar = false;
+            setMaxHealth(config.getMaxHealth());
+            setHealth(getMaxHealth());
+            setDamage(config.getDamage());
+            getEntity().setCustomName(ChatColor.RED + "Kreatur von " + config.skill.getHolder().getName());
+            getEntity().setCustomNameVisible(true);
+            // set a bow if its a skeleton
+            // TODO: switch over to custom mobs for this
+            if (getEntity().getType() == EntityType.SKELETON) {
+                getEntity().getEquipment().setItemInHand(new ItemStack(Material.BOW));
+            }
+        }
+    }
+
     public class SummonedCreatureConfig implements RequirementResolver<Hero> {
 
         private final String name;
@@ -213,8 +233,9 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             this.resourceCost = config.getConfigurationSection("resource-cost");
 
             this.entityType = EntityType.fromName(config.getString("type"));
-            if (entityType == null)
+            if (entityType == null) {
                 throw new InvalidConfigurationException("No Entity with the type " + config.getString("type") + " found!");
+            }
 
             expForSummon = config.getInt("exp", 0);
 
@@ -240,11 +261,6 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             if (maxHealth == null) maxHealth = minHealth;
         }
 
-        public String getFriendlyName() {
-
-            return friendlyName;
-        }
-
         public int getAmount() {
 
             return (int) ConfigUtil.getTotalValue(skill, amount);
@@ -265,15 +281,15 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
 
         @Override
-        public List<Requirement<Hero>> getRequirements() {
-
-            return requirements;
-        }
-
-        @Override
         public Hero getObject() {
 
             return getHolder();
+        }
+
+        @Override
+        public List<Requirement<Hero>> getRequirements() {
+
+            return requirements;
         }
 
         @Override
@@ -297,24 +313,10 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             }
             return getFriendlyName() + " kann freigeschaltet werden.";
         }
-    }
 
-    public static class SummonedCreature extends Creature {
+        public String getFriendlyName() {
 
-        public SummonedCreature(LivingEntity entity, SummonedCreatureConfig config) {
-
-            super(entity);
-            usingHealthBar = false;
-            setMaxHealth(config.getMaxHealth());
-            setHealth(getMaxHealth());
-            setDamage(config.getDamage());
-            getEntity().setCustomName(ChatColor.RED + "Kreatur von " + config.skill.getHolder().getName());
-            getEntity().setCustomNameVisible(true);
-            // set a bow if its a skeleton
-            // TODO: switch over to custom mobs for this
-            if (getEntity().getType() == EntityType.SKELETON) {
-                getEntity().getEquipment().setItemInHand(new ItemStack(Material.BOW));
-            }
+            return friendlyName;
         }
     }
 }

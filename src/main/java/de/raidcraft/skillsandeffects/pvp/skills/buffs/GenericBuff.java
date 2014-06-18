@@ -28,34 +28,9 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class GenericBuff extends AbstractSkill implements CommandTriggered {
 
-    public enum BuffType {
-
-        HEALTH(HealthBuff.class),
-        HASTE(HasteBuff.class);
-
-        private final Class<? extends Effect<? extends Skill>> aClass;
-
-        private BuffType(Class<? extends Effect<? extends Skill>> aClass) {
-
-            this.aClass = aClass;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <E extends Effect<S>, S> Class<E> clazz() {
-
-            return (Class<E>) aClass;
-        }
-
-        public static BuffType fromString(String name) {
-
-            return EnumUtils.getEnumFromString(BuffType.class, name);
-        }
-    }
-
     private BuffType type;
     private boolean self;
     private boolean group;
-
     public GenericBuff(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
@@ -83,6 +58,30 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
         } else {
             CharacterTemplate target = getTarget(args, true, self);
             addEffect(target, type.clazz());
+        }
+    }
+
+    public enum BuffType {
+
+        HEALTH(HealthBuff.class),
+        HASTE(HasteBuff.class);
+
+        private final Class<? extends Effect<? extends Skill>> aClass;
+
+        private BuffType(Class<? extends Effect<? extends Skill>> aClass) {
+
+            this.aClass = aClass;
+        }
+
+        public static BuffType fromString(String name) {
+
+            return EnumUtils.getEnumFromString(BuffType.class, name);
+        }
+
+        @SuppressWarnings("unchecked")
+        public <E extends Effect<S>, S> Class<E> clazz() {
+
+            return (Class<E>) aClass;
         }
     }
 }

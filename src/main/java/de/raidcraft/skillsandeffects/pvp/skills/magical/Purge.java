@@ -50,7 +50,7 @@ public class Purge extends AbstractSkill implements CommandTriggered {
         CharacterTemplate target;
         if (selfCast || getHolder().getPlayer().isSneaking()) {
             target = getHolder();
-        } else         if (args.argsLength() > 0) {
+        } else if (args.argsLength() > 0) {
             try {
                 Hero hero = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
                 if (!LocationUtil.isWithinRadius(getHolder().getPlayer().getLocation(), hero.getPlayer().getLocation(), getTotalRange())) {

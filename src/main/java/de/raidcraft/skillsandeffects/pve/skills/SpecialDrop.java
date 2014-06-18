@@ -58,8 +58,12 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
     public void load(ConfigurationSection data) {
 
         if (data.getConfigurationSection("blocks") != null) specialBlockDrops.putAll(parseConfig(data.getConfigurationSection("blocks")));
-        if (data.getConfigurationSection("fishing") != null) specialFishingDrops.putAll(parseConfig(data.getConfigurationSection("fishing")));
-        if (data.getConfigurationSection("crafting") != null) specialCraftingDrops.putAll(parseConfig(data.getConfigurationSection("crafting")));
+        if (data.getConfigurationSection("fishing") != null) {
+            specialFishingDrops.putAll(parseConfig(data.getConfigurationSection("fishing")));
+        }
+        if (data.getConfigurationSection("crafting") != null) {
+            specialCraftingDrops.putAll(parseConfig(data.getConfigurationSection("crafting")));
+        }
     }
 
     private Map<Material, List<Drop>> parseConfig(ConfigurationSection config) {
@@ -124,6 +128,21 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         dropItems(specialBlockDrops.get(blockType), block.getLocation());
     }
 
+    private void dropItems(List<Drop> drops, Location location) {
+
+        List<ItemStack> droppedItems = new ArrayList<>();
+        for (Drop drop : drops) {
+            if (drop == null) continue;
+            ItemStack stack = drop.getDrops(this);
+            if (stack != null) {
+                droppedItems.add(stack);
+            }
+        }
+        for (ItemStack itemStack : droppedItems) {
+            location.getWorld().dropItemNaturally(location, itemStack);
+        }
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onPlayerFishTrigger(PlayerFishTrigger trigger) {
 
@@ -146,21 +165,6 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         dropItems(specialCraftingDrops.get(itemType), trigger.getEvent().getWhoClicked().getLocation());
     }
 
-    private void dropItems(List<Drop> drops, Location location) {
-
-        List<ItemStack> droppedItems = new ArrayList<>();
-        for (Drop drop : drops) {
-            if (drop == null) continue;
-            ItemStack stack = drop.getDrops(this);
-            if (stack != null) {
-                droppedItems.add(stack);
-            }
-        }
-        for (ItemStack itemStack : droppedItems) {
-            location.getWorld().dropItemNaturally(location, itemStack);
-        }
-    }
-
     public class Drop implements RequirementResolver<Hero> {
 
         private final Hero hero;
@@ -178,31 +182,6 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
             this.material = material;
         }
 
-        public Material getMaterial() {
-
-            return material;
-        }
-
-        public int getMinAmount() {
-
-            return (int) ConfigUtil.getTotalValue(SpecialDrop.this, minAmount);
-        }
-
-        public void setMinAmount(ConfigurationSection minAmount) {
-
-            this.minAmount = minAmount;
-        }
-
-        public int getMaxAmount() {
-
-            return (int) ConfigUtil.getTotalValue(SpecialDrop.this, maxAmount);
-        }
-
-        public void setMaxAmount(ConfigurationSection maxAmount) {
-
-            this.maxAmount = maxAmount;
-        }
-
         public int getExp() {
 
             return exp;
@@ -211,6 +190,35 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         public void setExp(int exp) {
 
             this.exp = exp;
+        }
+
+        public void setChance(ConfigurationSection chance) {
+
+            this.chance = chance;
+        }
+
+        public ItemStack getDrops(Skill skill) {
+
+            for (Requirement<Hero> requirement : getRequirements()) {
+                if (!requirement.isMet(skill.getHolder())) {
+                    return null;
+                }
+            }
+
+            if (MathUtil.RANDOM.nextDouble() < getChance(skill)) {
+                return new ItemStack(getMaterial(), getAmount(), getData());
+            }
+            return null;
+        }
+
+        public double getChance(Skill skill) {
+
+            return ConfigUtil.getTotalValue(skill, chance);
+        }
+
+        public Material getMaterial() {
+
+            return material;
         }
 
         public int getAmount() {
@@ -229,39 +237,29 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
             return data;
         }
 
+        public int getMaxAmount() {
+
+            return (int) ConfigUtil.getTotalValue(SpecialDrop.this, maxAmount);
+        }
+
+        public int getMinAmount() {
+
+            return (int) ConfigUtil.getTotalValue(SpecialDrop.this, minAmount);
+        }
+
+        public void setMinAmount(ConfigurationSection minAmount) {
+
+            this.minAmount = minAmount;
+        }
+
+        public void setMaxAmount(ConfigurationSection maxAmount) {
+
+            this.maxAmount = maxAmount;
+        }
+
         public void setData(byte data) {
 
             this.data = data;
-        }
-
-        public void setRequirements(List<Requirement<Hero>> requirements) {
-
-            this.requirements.clear();
-            this.requirements.addAll(requirements);
-        }
-
-        public void setChance(ConfigurationSection chance) {
-
-            this.chance = chance;
-        }
-
-        public double getChance(Skill skill) {
-
-            return ConfigUtil.getTotalValue(skill, chance);
-        }
-
-        public ItemStack getDrops(Skill skill) {
-
-            for (Requirement<Hero> requirement : getRequirements()) {
-                if (!requirement.isMet(skill.getHolder())) {
-                    return null;
-                }
-            }
-
-            if (MathUtil.RANDOM.nextDouble() < getChance(skill)) {
-                return new ItemStack(getMaterial(), getAmount(), getData());
-            }
-            return null;
         }
 
         @Override
@@ -274,6 +272,12 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         public List<Requirement<Hero>> getRequirements() {
 
             return requirements;
+        }
+
+        public void setRequirements(List<Requirement<Hero>> requirements) {
+
+            this.requirements.clear();
+            this.requirements.addAll(requirements);
         }
 
         @Override

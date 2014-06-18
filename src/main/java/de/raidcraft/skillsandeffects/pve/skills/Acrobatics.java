@@ -45,9 +45,25 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
         this.rollChance = data.getConfigurationSection("roll-chance");
     }
 
-    public double getRollChance() {
+    /*
+     * Level increase and damage reduction
+     */
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
+    public void onDamage(DamageTrigger trigger) throws CombatException {
 
-        return ConfigUtil.getTotalValue(this, rollChance);
+        if (trigger.getCause() != EntityDamageEvent.DamageCause.FALL) {
+            return;
+        }
+
+        int fallHeight = getFallHeight(trigger.getAttack().getDamage());
+        // lets add the exp for the fallen block height
+        getAttachedLevel().addExp((int) (expPerHeight * fallHeight));
+
+        // calculate roll chance
+        if (Math.random() < getRollChance()) {
+            trigger.getAttack().setDamage(trigger.getAttack().getDamage() / 2); // half damage
+            getHolder().getPlayer().sendMessage(ChatColor.GREEN + "**abgerollt**");
+        }
     }
 
     public int getFallHeight(double takenDamage) {
@@ -74,24 +90,8 @@ public class Acrobatics extends AbstractLevelableSkill implements Triggered {
         return height;
     }
 
-    /*
-     * Level increase and damage reduction
-     */
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
-    public void onDamage(DamageTrigger trigger) throws CombatException {
+    public double getRollChance() {
 
-        if (trigger.getCause() != EntityDamageEvent.DamageCause.FALL) {
-            return;
-        }
-
-        int fallHeight = getFallHeight(trigger.getAttack().getDamage());
-        // lets add the exp for the fallen block height
-        getAttachedLevel().addExp((int) (expPerHeight * fallHeight));
-
-        // calculate roll chance
-        if (Math.random() < getRollChance()) {
-            trigger.getAttack().setDamage(trigger.getAttack().getDamage() / 2); // half damage
-            getHolder().getPlayer().sendMessage(ChatColor.GREEN + "**abgerollt**");
-        }
+        return ConfigUtil.getTotalValue(this, rollChance);
     }
 }

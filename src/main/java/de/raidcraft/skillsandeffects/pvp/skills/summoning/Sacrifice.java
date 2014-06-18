@@ -11,9 +11,9 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.effects.Summoned;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skills.effects.Summoned;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -41,11 +41,6 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
         healthPerSacrifice = data.getConfigurationSection("health-per-sacrifice");
     }
 
-    private int getHealthPerSacrifice() {
-
-        return (int) ConfigUtil.getTotalValue(this, healthPerSacrifice);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -68,5 +63,10 @@ public class Sacrifice extends AbstractSkill implements CommandTriggered {
         if (heal > 0) {
             new HealAction<>(this, getHolder(), heal).run();
         }
+    }
+
+    private int getHealthPerSacrifice() {
+
+        return (int) ConfigUtil.getTotalValue(this, healthPerSacrifice);
     }
 }

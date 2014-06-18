@@ -32,12 +32,6 @@ public class HealthBuff extends ExpirableEffect<Skill> implements Triggered {
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        modifier = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health"));
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onMaxHealthChange(MaxHealthChangeTrigger trigger) {
 
@@ -55,15 +49,21 @@ public class HealthBuff extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        combatLog("Maximale Leben um " + increasedHealth + "(" + MathUtil.toPercent(modifier) + ") verringert.");
-        target.decreaseMaxHealth(increasedHealth);
+        modifier = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health"));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
 
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        combatLog("Maximale Leben um " + increasedHealth + "(" + MathUtil.toPercent(modifier) + ") verringert.");
+        target.decreaseMaxHealth(increasedHealth);
     }
 }

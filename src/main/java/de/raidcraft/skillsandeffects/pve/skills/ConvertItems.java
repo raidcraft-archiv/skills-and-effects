@@ -63,11 +63,6 @@ public class ConvertItems extends AbstractSkill implements CommandTriggered {
         }
     }
 
-    private int getAmount() {
-
-        return (int) ConfigUtil.getTotalValue(this, amount);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -87,5 +82,10 @@ public class ConvertItems extends AbstractSkill implements CommandTriggered {
         }
         getHolder().sendMessage(ChatColor.GREEN + getFriendlyName() + " wurde vollzogen und deine Items wurden konvertiert.");
         getHolder().getPlayer().updateInventory();
+    }
+
+    private int getAmount() {
+
+        return (int) ConfigUtil.getTotalValue(this, amount);
     }
 }

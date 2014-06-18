@@ -37,11 +37,6 @@ public class ReflectionAura extends AbstractAura implements Triggered {
         reflection = data.getConfigurationSection("reflection");
     }
 
-    private double getReflectionAmount() {
-
-        return ConfigUtil.getTotalValue(getSource(), reflection);
-    }
-
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
@@ -50,5 +45,10 @@ public class ReflectionAura extends AbstractAura implements Triggered {
             new MagicalAttack(getSource().getHolder(), (CharacterTemplate) trigger.getAttack().getSource(), reflectedDamage).run();
             trigger.getAttack().combatLog(this, reflectedDamage + " Schaden zurückgeworfen.");
         }
+    }
+
+    private double getReflectionAmount() {
+
+        return ConfigUtil.getTotalValue(getSource(), reflection);
     }
 }

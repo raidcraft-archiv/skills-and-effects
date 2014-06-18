@@ -33,7 +33,8 @@ public class FlameCloakEffect extends PeriodicEffect<FlameCloak> {
             if (target.equals(t)) continue;
             try {
                 getSource().magicalAttack(target, getDamage());
-            } catch (CombatException ignored) {}
+            } catch (CombatException ignored) {
+            }
         }
     }
 
@@ -44,13 +45,13 @@ public class FlameCloakEffect extends PeriodicEffect<FlameCloak> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
 
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
 
     }

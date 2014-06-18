@@ -11,10 +11,10 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -41,11 +41,6 @@ public class ShadowStrike extends AbstractSkill implements CommandTriggered {
         bonusDamage = data.getConfigurationSection("bonus-damage");
     }
 
-    private int getBonusDamage() {
-
-        return (int) ConfigUtil.getTotalValue(this, bonusDamage);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -58,5 +53,10 @@ public class ShadowStrike extends AbstractSkill implements CommandTriggered {
                 }
             }
         });
+    }
+
+    private int getBonusDamage() {
+
+        return (int) ConfigUtil.getTotalValue(this, bonusDamage);
     }
 }

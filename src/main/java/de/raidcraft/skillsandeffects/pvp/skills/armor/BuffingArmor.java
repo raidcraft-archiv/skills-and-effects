@@ -26,35 +26,21 @@ import java.util.Set;
         name = "Buffing Armor",
         description = "Eine Schützende Rüstung die verschiedene Effekte hat.",
         configUsage = {
-            "types[list]: HEAL_INCREASE, HEALTH_INCREASE, RESOURCE_REGAIN",
-            "health-increase[baseSection]",
-            "heal-increase[baseSection]",
-            "resource[string]: For resource regain type",
-            "resource-regain[baseSection]"
+                "types[list]: HEAL_INCREASE, HEALTH_INCREASE, RESOURCE_REGAIN",
+                "health-increase[baseSection]",
+                "heal-increase[baseSection]",
+                "resource[string]: For resource regain type",
+                "resource-regain[baseSection]"
         },
         effects = {BuffingArmorEffect.class}
 )
 public class BuffingArmor extends AbstractSkill implements CommandTriggered {
-
-    public enum Type {
-
-        HEAL_INCREASE,
-        HEALTH_INCREASE,
-        RESOURCE_REGAIN;
-
-        public static Type fromString(String str) {
-
-            return EnumUtils.getEnumFromString(BuffingArmor.Type.class, str);
-        }
-
-    }
 
     private Set<Type> types = new HashSet<>();
     private ConfigurationSection healthIncrease;
     private ConfigurationSection healIncrease;
     private String resource;
     private ConfigurationSection resourceRegain;
-
     public BuffingArmor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
@@ -116,5 +102,18 @@ public class BuffingArmor extends AbstractSkill implements CommandTriggered {
             removeEffect(BuffingArmorEffect.class);
         }
         addEffect(BuffingArmorEffect.class);
+    }
+
+    public enum Type {
+
+        HEAL_INCREASE,
+        HEALTH_INCREASE,
+        RESOURCE_REGAIN;
+
+        public static Type fromString(String str) {
+
+            return EnumUtils.getEnumFromString(BuffingArmor.Type.class, str);
+        }
+
     }
 }

@@ -43,11 +43,6 @@ public class BloodNova extends AbstractSkill implements CommandTriggered {
         damagePerBlock = data.getConfigurationSection("damage-per-block");
     }
 
-    public double getDamagePerBlock() {
-
-        return ConfigUtil.getTotalValue(this, damagePerBlock);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -60,5 +55,10 @@ public class BloodNova extends AbstractSkill implements CommandTriggered {
             } catch (CombatException ignored) {
             }
         }
+    }
+
+    public double getDamagePerBlock() {
+
+        return ConfigUtil.getTotalValue(this, damagePerBlock);
     }
 }

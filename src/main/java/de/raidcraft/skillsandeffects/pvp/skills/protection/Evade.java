@@ -39,11 +39,6 @@ public class Evade extends AbstractSkill implements Triggered {
         this.evadeChance = data.getConfigurationSection("evade-chance");
     }
 
-    private double getEvadeChance() {
-
-        return ConfigUtil.getTotalValue(this, evadeChance);
-    }
-
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
@@ -55,5 +50,10 @@ public class Evade extends AbstractSkill implements Triggered {
         if (Math.random() < getEvadeChance()) {
             throw new CombatException(CombatException.Type.EVADED);
         }
+    }
+
+    private double getEvadeChance() {
+
+        return ConfigUtil.getTotalValue(this, evadeChance);
     }
 }

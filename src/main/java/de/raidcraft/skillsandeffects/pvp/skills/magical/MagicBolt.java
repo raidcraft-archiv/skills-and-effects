@@ -81,11 +81,6 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
         entityDamageBonus = data.getConfigurationSection("entity-damage-bonus");
     }
 
-    private double getLifeLeechPercentage() {
-
-        return ConfigUtil.getTotalValue(this, lifeLeech);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -117,5 +112,10 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
                 attack.setDamage((int) (attack.getDamage() + ConfigUtil.getTotalValue(MagicBolt.this, entityDamageBonus)));
             }
         });
+    }
+
+    private double getLifeLeechPercentage() {
+
+        return ConfigUtil.getTotalValue(this, lifeLeech);
     }
 }

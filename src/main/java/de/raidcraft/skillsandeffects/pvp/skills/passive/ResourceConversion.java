@@ -43,16 +43,6 @@ public class ResourceConversion extends AbstractSkill implements Triggered {
         amount = data.getConfigurationSection("amount");
     }
 
-    public double getChance() {
-
-        return ConfigUtil.getTotalValue(this, chancePerResource);
-    }
-
-    public int getAmount() {
-
-        return (int) ConfigUtil.getTotalValue(this, amount);
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onResourceChange(ResourceChangeTrigger trigger) {
 
@@ -67,5 +57,15 @@ public class ResourceConversion extends AbstractSkill implements Triggered {
         if (Math.random() < chance) {
             resourceToRestore.setCurrent(resourceToRestore.getCurrent() + getAmount());
         }
+    }
+
+    public double getChance() {
+
+        return ConfigUtil.getTotalValue(this, chancePerResource);
+    }
+
+    public int getAmount() {
+
+        return (int) ConfigUtil.getTotalValue(this, amount);
     }
 }
