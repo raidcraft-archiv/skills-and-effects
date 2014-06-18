@@ -46,7 +46,7 @@ public class ShadowStep extends AbstractLevelableSkill implements CommandTrigger
         shadowStep(getHolder(), getTarget());
 
         if (damageBonus) {
-            addEffect(getHolder(), DamageBuff.class);
+            addEffect(DamageBuff.class);
         }
     }
 

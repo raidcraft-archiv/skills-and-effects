@@ -45,7 +45,7 @@ public class HolyShield extends AbstractSkill implements CommandTriggered {
 
         CharacterTemplate target = getTarget(args, true, selfCast);
         if (target.hasEffect(WeakenSoul.class)) {
-            throw new CombatException("Das Ziel ist von " + target.getEffect(WeakenSoul.class).getFriendlyName()
+            throw new CombatException("Das Ziel ist von " + getEffect(target, WeakenSoul.class).getFriendlyName()
                     + " betroffen und kann kein Schild erhalten.");
         }
         addEffect(target, Shielded.class);

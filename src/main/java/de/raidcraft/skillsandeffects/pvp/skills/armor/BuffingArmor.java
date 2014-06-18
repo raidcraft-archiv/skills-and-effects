@@ -112,9 +112,9 @@ public class BuffingArmor extends AbstractSkill implements CommandTriggered {
         if (types.contains(Type.RESOURCE_REGAIN) && resource == null) {
             throw new CombatException("Wrong resource defined in the config! Please fix it...");
         }
-        if (getHolder().hasEffect(BuffingArmorEffect.class)) {
-            getHolder().removeEffect(BuffingArmorEffect.class);
+        if (hasEffect(BuffingArmorEffect.class)) {
+            removeEffect(BuffingArmorEffect.class);
         }
-        addEffect(getHolder(), BuffingArmorEffect.class);
+        addEffect(BuffingArmorEffect.class);
     }
 }

@@ -139,11 +139,11 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         for (CharacterTemplate summoned : summonCreatures(config, amount)) {
             EntityType type = summoned.getEntity().getType();
             if (!summonedCreatures.containsKey(type)) {
-                summonedCreatures.put(type, new ArrayList<CharacterTemplate>());
+                summonedCreatures.put(type, new ArrayList<>());
             }
             if (maxAmount < summonedCreatures.get(type).size() && !summonedCreatures.get(type).isEmpty()) {
                 // we need to kill the first one
-                summonedCreatures.get(type).get(0).removeEffect(Summoned.class);
+                removeEffect(summonedCreatures.get(type).get(0), Summoned.class);
             }
             summonedCreatures.get(type).add(summoned);
         }

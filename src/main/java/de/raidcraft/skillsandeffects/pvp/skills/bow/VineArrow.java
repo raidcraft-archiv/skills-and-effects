@@ -69,7 +69,7 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
 
         clearVines();
         affectedBlocks.clear();
-        addEffect(getHolder(), QueuedProjectile.class).addCallback(new LocationCallback() {
+        addEffect(QueuedProjectile.class).addCallback(new LocationCallback() {
             @Override
             public void run(Location location) throws CombatException {
 

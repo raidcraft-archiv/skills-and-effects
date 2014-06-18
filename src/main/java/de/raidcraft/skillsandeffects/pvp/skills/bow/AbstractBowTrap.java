@@ -43,7 +43,7 @@ public abstract class AbstractBowTrap extends AbstractSkill implements CommandTr
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedProjectile.class).addCallback(new LocationCallback() {
+        addEffect(QueuedProjectile.class).addCallback(new LocationCallback() {
             @Override
             public void run(Location location) throws CombatException {
 

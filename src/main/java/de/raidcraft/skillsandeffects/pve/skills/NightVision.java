@@ -30,6 +30,6 @@ public class NightVision extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), NightVisionEffect.class);
+        addEffect(NightVisionEffect.class);
     }
 }

@@ -58,10 +58,10 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
                 if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
                     throw new CombatException(CombatException.Type.INVALID_TARGET);
                 }
-                if (target.hasEffect(FlamestrikeEffect.class)) {
-                    int stacks = target.getEffect(FlamestrikeEffect.class).getStacks();
+                if (hasEffect(target, FlamestrikeEffect.class)) {
+                    int stacks = getEffect(target, FlamestrikeEffect.class).getStacks();
                     magicalAttack(target, (int) (stacks * getStackDamage()));
-                    target.removeEffect(FlamestrikeEffect.class);
+                    removeEffect(target, FlamestrikeEffect.class);
                 }
             }
         });

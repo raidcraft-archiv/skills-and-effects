@@ -93,7 +93,7 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedRangedAttack.class).addCallback(new RangedCallback() {
+        addEffect(QueuedRangedAttack.class).addCallback(new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 

@@ -52,7 +52,7 @@ public class Execute extends AbstractLevelableSkill implements CommandTriggered 
         if (resource == null) {
             throw new CombatException("Unbekannte Resource: " + resourceName);
         }
-        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 

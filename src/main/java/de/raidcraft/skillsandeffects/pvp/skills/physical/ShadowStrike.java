@@ -49,7 +49,7 @@ public class ShadowStrike extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 

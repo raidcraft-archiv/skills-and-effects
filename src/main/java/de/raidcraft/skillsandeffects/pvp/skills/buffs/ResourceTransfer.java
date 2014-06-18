@@ -71,9 +71,9 @@ public class ResourceTransfer extends AbstractSkill implements CommandTriggered 
             throw new CombatException("Skill is wrong configured! Could not find defined resources...");
         }
         if (getHolder().hasEffect(ResourceTransferEffect.class)) {
-            getHolder().removeEffect(ResourceTransferEffect.class);
+            removeEffect(ResourceTransferEffect.class);
         } else {
-            addEffect(getHolder(), ResourceTransferEffect.class);
+            addEffect(ResourceTransferEffect.class);
         }
     }
 }

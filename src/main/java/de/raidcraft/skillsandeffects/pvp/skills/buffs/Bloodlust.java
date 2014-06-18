@@ -37,10 +37,6 @@ public class Bloodlust extends AbstractSkill implements Triggered {
         if (isOnCooldown()) {
             return;
         }
-        if (getHolder().hasEffect(BloodlustEffect.class)) {
-            getHolder().getEffect(BloodlustEffect.class).renew();
-        } else {
-            addEffect(getHolder(), BloodlustEffect.class);
-        }
+        addEffect(BloodlustEffect.class);
     }
 }

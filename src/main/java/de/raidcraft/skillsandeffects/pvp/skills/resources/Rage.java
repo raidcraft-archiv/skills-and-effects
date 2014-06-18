@@ -50,9 +50,9 @@ public class Rage extends AbstractSkill implements Triggered {
         }
 
         if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
-            addEffect(getHolder(), RageEffect.class);
+            addEffect(RageEffect.class);
         } else {
-            getHolder().removeEffect(RageEffect.class);
+            removeEffect(RageEffect.class);
         }
     }
 }
