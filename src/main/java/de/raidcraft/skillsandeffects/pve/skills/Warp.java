@@ -50,7 +50,19 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     @Override
     public void loadAttachment(ConfigurationSection data) {
 
-        
+
+    }
+
+    @Override
+    public void applyAttachment(Player player) throws CustomItemException {
+
+
+    }
+
+    @Override
+    public void removeAttachment(Player player) throws CustomItemException {
+
+
     }
 
     @Override
@@ -73,27 +85,15 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         try {
             if (getHolder().hasEffect(CastTime.class)) {
                 getHolder().removeEffect(CastTime.class);
-                getHolder().removeEffect(Immobilize.class);
+                removeEffect(Immobilize.class);
             } else {
                 new SkillAction(this).run();
                 // also apply the lock down effect
-                addEffect(getHolder(), Immobilize.class);
+                addEffect(Immobilize.class);
             }
         } catch (CombatException e) {
             throw new ItemAttachmentException(e.getMessage());
         }
-    }
-
-    @Override
-    public void applyAttachment(Player player) throws CustomItemException {
-
-
-    }
-
-    @Override
-    public void removeAttachment(Player player) throws CustomItemException {
-
-
     }
 
     @Override
@@ -118,22 +118,22 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         checkForSkillCast();
     }
 
+    private void checkForSkillCast() throws CombatException {
+
+        if (!getHolder().hasEffect(CastTime.class)) {
+            return;
+        }
+        if (getEffect(CastTime.class).getSource().getSkill().equals(this)) {
+            removeEffect(CastTime.class);
+            removeEffect(Immobilize.class);
+        }
+    }
+
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
         if (!cancelOnAttack) {
             return;
         }
         checkForSkillCast();
-    }
-
-    private void checkForSkillCast() throws CombatException {
-
-        if (!getHolder().hasEffect(CastTime.class)) {
-            return;
-        }
-        if (getHolder().getEffect(CastTime.class).getSource().getSkill().equals(this)) {
-            getHolder().removeEffect(CastTime.class);
-            getHolder().removeEffect(Immobilize.class);
-        }
     }
 }

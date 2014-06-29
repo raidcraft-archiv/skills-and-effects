@@ -50,12 +50,6 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
         maxTargets = data.getConfigurationSection("max-targets");
     }
 
-    public int getMaxTargets() {
-
-        double value = ConfigUtil.getTotalValue(this, maxTargets);
-        return value > 0 ? (int) value : 1;
-    }
-
     public double getAbsorbtion() {
 
         Resource resource = getHolder().getResource(this.resource);
@@ -78,10 +72,16 @@ public class BoneShield extends AbstractSkill implements CommandTriggered {
             throw new CombatException("Wrong resource defined! Please fix your config...");
         }
         if (affectedTargets.size() >= getMaxTargets() && affectedTargets.size() > 0) {
-            affectedTargets.remove(0).removeEffect(BoneShieldEffect.class);
+            removeEffect(affectedTargets.remove(0), BoneShieldEffect.class);
         }
         CharacterTemplate target = getTarget(args, true, false);
         addEffect(target, BoneShieldEffect.class);
         affectedTargets.add(target);
+    }
+
+    public int getMaxTargets() {
+
+        double value = ConfigUtil.getTotalValue(this, maxTargets);
+        return value > 0 ? (int) value : 1;
     }
 }

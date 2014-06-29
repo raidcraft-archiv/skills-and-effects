@@ -50,7 +50,7 @@ public class FlameCloak extends AbstractSkill implements CommandTriggered {
         }
         double current = resource.getCurrent() - ConfigUtil.getTotalValue(this, resourceBurnTick);
         if (current < 0) {
-            getHolder().removeEffect(FlameCloakEffect.class);
+            removeEffect(FlameCloakEffect.class);
             return;
         }
         resource.setCurrent(current);
@@ -62,11 +62,11 @@ public class FlameCloak extends AbstractSkill implements CommandTriggered {
         if (resource == null) {
             throw new CombatException("Unknown resource defined! Please report this as a bug...");
         }
-        if (getHolder().hasEffect(FlameCloakEffect.class)) {
+        if (hasEffect(FlameCloakEffect.class)) {
             // remove
-            getHolder().removeEffect(FlameCloakEffect.class);
+            removeEffect(FlameCloakEffect.class);
         } else {
-            addEffect(getHolder(), FlameCloakEffect.class);
+            addEffect(FlameCloakEffect.class);
         }
     }
 }

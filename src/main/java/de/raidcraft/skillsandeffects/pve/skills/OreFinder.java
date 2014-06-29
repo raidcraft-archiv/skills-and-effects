@@ -64,9 +64,9 @@ public class OreFinder extends AbstractLevelableSkill implements CommandTriggere
     public void runCommand(CommandContext args) throws CombatException {
 
         if (getHolder().hasEffect(OreFinderEffect.class)) {
-            getHolder().removeEffect(OreFinderEffect.class);
+            removeEffect(OreFinderEffect.class);
         } else {
-            addEffect(getHolder(), OreFinderEffect.class);
+            addEffect(OreFinderEffect.class);
         }
     }
 }

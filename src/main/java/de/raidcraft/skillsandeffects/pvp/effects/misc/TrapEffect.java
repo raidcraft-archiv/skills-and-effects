@@ -47,15 +47,15 @@ public class TrapEffect extends ExpirableEffect<Skill> {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         for (Block block : changedBlocks) {
             block.setType(materialBefore);
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

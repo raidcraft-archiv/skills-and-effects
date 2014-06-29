@@ -54,22 +54,12 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
         duration = data.getConfigurationSection("duration");
     }
 
-    public int getMaxBlocks() {
-
-        return (int) ConfigUtil.getTotalValue(this, maxBlocks);
-    }
-
-    public long getDuration() {
-
-        return (long) (ConfigUtil.getTotalValue(this, duration) * 20);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
         clearVines();
         affectedBlocks.clear();
-        addEffect(getHolder(), QueuedProjectile.class).addCallback(new LocationCallback() {
+        addEffect(QueuedProjectile.class).addCallback(new LocationCallback() {
             @Override
             public void run(Location location) throws CombatException {
 
@@ -103,5 +93,15 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
                 block.setTypeId(0, true);
             }
         }
+    }
+
+    public int getMaxBlocks() {
+
+        return (int) ConfigUtil.getTotalValue(this, maxBlocks);
+    }
+
+    public long getDuration() {
+
+        return (long) (ConfigUtil.getTotalValue(this, duration) * 20);
     }
 }

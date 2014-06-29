@@ -72,11 +72,6 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
         return set;
     }
 
-    private double getChance() {
-
-        return ConfigUtil.getTotalValue(this, chanceConfig);
-    }
-
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onBlockBreak(BlockBreakTrigger trigger) {
 
@@ -99,6 +94,11 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
             exp += getUseExp();
             getAttachedLevel().addExp((doubleDrop ? exp * 2 : exp));
         }
+    }
+
+    private double getChance() {
+
+        return ConfigUtil.getTotalValue(this, chanceConfig);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)

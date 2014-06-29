@@ -6,6 +6,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.effect.common.QueuedRangedAttack;
+import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -15,14 +16,13 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.effects.Bleed;
 import de.raidcraft.skills.effects.Burn;
+import de.raidcraft.skills.effects.Slow;
+import de.raidcraft.skills.effects.Weakness;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.effects.disabling.Stun;
-import de.raidcraft.skills.effects.Slow;
-import de.raidcraft.skills.effects.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -34,27 +34,27 @@ import org.bukkit.configuration.ConfigurationSection;
         types = {EffectType.DAMAGING, EffectType.PHYSICAL, EffectType.HARMFUL},
         queuedAttack = true,
         configUsage = {
-            "knockback[bool]",
-            "bleed[bool]",
-            "stun[bool]",
-            "sunder-armor[bool]",
-            "disarm[bool]",
-            "slow[bool]",
-            "weaken[bool]",
-            "burn[bool]",
-            "heal[bool]",
-            "silence[bool]"
+                "knockback[bool]",
+                "bleed[bool]",
+                "stun[bool]",
+                "sunder-armor[bool]",
+                "disarm[bool]",
+                "slow[bool]",
+                "weaken[bool]",
+                "burn[bool]",
+                "heal[bool]",
+                "silence[bool]"
         },
         effects = {
-            KnockBack.class,
-            Bleed.class,
-            Stun.class,
-            SunderingArmor.class,
-            Disarm.class,
-            Slow.class,
-            Weakness.class,
-            Burn.class,
-            Silence.class
+                KnockBack.class,
+                Bleed.class,
+                Stun.class,
+                SunderingArmor.class,
+                Disarm.class,
+                Slow.class,
+                Weakness.class,
+                Burn.class,
+                Silence.class
         }
 )
 public class Shot extends AbstractLevelableSkill implements CommandTriggered {
@@ -93,7 +93,7 @@ public class Shot extends AbstractLevelableSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedRangedAttack.class).addCallback(new RangedCallback() {
+        addEffect(QueuedRangedAttack.class).addCallback(new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 

@@ -82,6 +82,12 @@ public class Consume extends AbstractSkill implements Triggered {
         }
     }
 
+    public enum ConsumeableType {
+
+        HEALTH,
+        RESOURCE
+    }
+
     public class Consumeable {
 
         private final int itemId;
@@ -107,7 +113,7 @@ public class Consume extends AbstractSkill implements Triggered {
             if (type != ConsumeableType.HEALTH && getResource() == null) {
                 throw new CombatException("Dir bringt der Verzehr dieses Essens keine Regeneration.");
             }
-            Consume.this.addEffect(getHolder(), ConsumeEffect.class).setConsumeable(this);
+            Consume.this.addEffect(ConsumeEffect.class).setConsumeable(this);
             if (itemStack.getAmount() > 1) {
                 itemStack.setAmount(itemStack.getAmount() - 1);
             } else {
@@ -134,11 +140,5 @@ public class Consume extends AbstractSkill implements Triggered {
 
             return percentage;
         }
-    }
-
-    public enum ConsumeableType {
-
-        HEALTH,
-        RESOURCE
     }
 }

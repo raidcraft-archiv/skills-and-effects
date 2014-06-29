@@ -36,6 +36,6 @@ public class ShieldWall extends AbstractSkill implements CommandTriggered {
                 || getHolder().getArmor(EquipmentSlot.SHIELD_HAND).getArmorType() != ArmorType.SHIELD) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
-        addEffect(getHolder(), ShieldWallEffect.class);
+        addEffect(ShieldWallEffect.class);
     }
 }

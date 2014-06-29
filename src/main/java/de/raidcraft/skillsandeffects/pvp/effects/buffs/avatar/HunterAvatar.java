@@ -44,6 +44,12 @@ public class HunterAvatar extends AbstractAvatar implements Triggered {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+
+    }
+
+    @Override
     public void load(ConfigurationSection data) {
 
         noResourceCost = data.getBoolean("no-resource-cost", true);
@@ -57,12 +63,6 @@ public class HunterAvatar extends AbstractAvatar implements Triggered {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }
         }
-    }
-
-    @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-
     }
 
     @Override
@@ -97,7 +97,7 @@ public class HunterAvatar extends AbstractAvatar implements Triggered {
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
-        Attack<?,CharacterTemplate> attack = trigger.getAttack();
+        Attack<?, CharacterTemplate> attack = trigger.getAttack();
         if (!attack.isOfAttackType(EffectType.PHYSICAL)
                 || !attack.isOfAttackType(EffectType.RANGE)) {
             return;

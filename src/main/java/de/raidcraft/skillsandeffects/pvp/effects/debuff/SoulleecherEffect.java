@@ -56,14 +56,14 @@ public class SoulleecherEffect extends ExpirableEffect<Soulleecher> implements T
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        getTarget().getEntity().removePotionEffect(PotionEffectType.WITHER);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         getTarget().getEntity().addPotionEffect(witherEffect);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        getTarget().getEntity().removePotionEffect(PotionEffectType.WITHER);
     }
 }

@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
+import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -12,19 +13,18 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.effects.Poison;
-import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.effects.Bleed;
 import de.raidcraft.skills.effects.Burn;
+import de.raidcraft.skills.effects.Poison;
+import de.raidcraft.skills.effects.Slow;
+import de.raidcraft.skills.effects.Weakness;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Interrupt;
 import de.raidcraft.skills.effects.disabling.KnockBack;
+import de.raidcraft.skills.effects.disabling.Silence;
 import de.raidcraft.skills.effects.disabling.Stun;
-import de.raidcraft.skills.effects.Slow;
-import de.raidcraft.skills.effects.Weakness;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
-import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -76,11 +76,13 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
-                if (knockBack) Strike.this.addEffect(getHolder().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                if (knockBack) {
+                    Strike.this.addEffect(getHolder().getEntity().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                }
                 if (bleed) Strike.this.addEffect(trigger.getAttack().getTarget(), Bleed.class);
                 if (stun) Strike.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
                 if (sunderArmor) Strike.this.addEffect(trigger.getAttack().getTarget(), SunderingArmor.class);

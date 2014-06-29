@@ -42,15 +42,6 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
         if (interval == 0) interval = 20;
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        healthRegain = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-regain"));
-        healthInPercent = data.getBoolean("health-regain.percent", false);
-        damageTreshhold = data.getDouble("damage-cap", 0.05);
-        minimumSheepTime = (int) (ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("min-time")) * 20);
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
@@ -96,6 +87,23 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
     }
 
     @Override
+    public void load(ConfigurationSection data) {
+
+        healthRegain = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-regain"));
+        healthInPercent = data.getBoolean("health-regain.percent", false);
+        damageTreshhold = data.getDouble("damage-cap", 0.05);
+        minimumSheepTime = (int) (ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("min-time")) * 20);
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+        pig.setMaxHealth(9999);
+        pig.setHealth(pig.getMaxHealth());
+        pig.setPassenger(target.getEntity());
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         pig.getPassenger().leaveVehicle();
@@ -115,13 +123,5 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
         if (pig.isDead()) {
             remove();
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
-        pig.setMaxHealth(9999);
-        pig.setHealth(pig.getMaxHealth());
-        pig.setPassenger(target.getEntity());
     }
 }

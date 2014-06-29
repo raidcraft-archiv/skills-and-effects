@@ -36,19 +36,19 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        healthIncrease = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-increase"));
-        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-reduction"));
-        healPercentage = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-percentage"));
-    }
-
-    @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
         healthIncreaseAmount = (int) (target.getMaxHealth() * healthIncrease);
         target.increaseMaxHealth(healthIncreaseAmount);
         getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (healthIncreaseAmount) + ") erhöht.");
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        healthIncrease = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("health-increase"));
+        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-reduction"));
+        healPercentage = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("heal-percentage"));
     }
 
     @Override

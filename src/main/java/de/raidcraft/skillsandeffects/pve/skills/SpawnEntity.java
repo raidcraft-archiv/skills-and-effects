@@ -119,6 +119,12 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
+        public List<Requirement<Hero>> getRequirements() {
+
+            return requirements;
+        }
+
+        @Override
         public boolean isMeetingAllRequirements(Hero object) {
 
             for (Requirement<Hero> requirement : requirements) {
@@ -138,12 +144,6 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
                 }
             }
             return "Erfüllt alle Vorraussetzungen.";
-        }
-
-        @Override
-        public List<Requirement<Hero>> getRequirements() {
-
-            return requirements;
         }
 
         public void setRequirements(List<Requirement<Hero>> requirements) {

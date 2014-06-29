@@ -40,18 +40,18 @@ public class StrongSoul extends AbstractSkill implements Triggered {
         cooldownReduction = data.getConfigurationSection("cooldown-reduction");
     }
 
-    public double getReduction() {
-
-        return ConfigUtil.getTotalValue(this, cooldownReduction);
-    }
-
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR, filterTargets = false)
     public void onHeal(HealTrigger trigger) {
 
         if (!trigger.getSource().equals(getHolder()) || !trigger.getTarget().hasEffect(WeakenSoul.class)) {
             return;
         }
-        WeakenSoul effect = trigger.getTarget().getEffect(WeakenSoul.class);
-        effect.setDuration(effect.getRemainingDuration() - getReduction());
+        trigger.getTarget().getEffects(WeakenSoul.class)
+                .forEach(effect -> effect.setDuration(effect.getRemainingDuration() - getReduction()));
+    }
+
+    public double getReduction() {
+
+        return ConfigUtil.getTotalValue(this, cooldownReduction);
     }
 }

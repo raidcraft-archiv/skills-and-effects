@@ -26,25 +26,11 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Curse extends AbstractSkill implements CommandTriggered {
 
-    public enum Type {
-
-        WEAKNESS,
-        BLINDNESS,
-        CASTTIME,
-        MAGIC_DAMAGE;
-
-        public static Type fromString(String str) {
-
-            return EnumUtils.getEnumFromString(Curse.Type.class, str);
-        }
-    }
-
     private Type type;
     private ConfigurationSection weakness;
     private ConfigurationSection castTime;
     private ConfigurationSection magicDamage;
     private boolean singleTarget = false;
-
     public Curse(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
@@ -96,6 +82,19 @@ public class Curse extends AbstractSkill implements CommandTriggered {
             }
         } else {
             addEffect(getTarget(), CurseEffect.class);
+        }
+    }
+
+    public enum Type {
+
+        WEAKNESS,
+        BLINDNESS,
+        CASTTIME,
+        MAGIC_DAMAGE;
+
+        public static Type fromString(String str) {
+
+            return EnumUtils.getEnumFromString(Curse.Type.class, str);
         }
     }
 }

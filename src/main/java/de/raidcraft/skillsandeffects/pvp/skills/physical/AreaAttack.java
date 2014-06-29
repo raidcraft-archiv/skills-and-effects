@@ -7,6 +7,7 @@ import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
+import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -14,18 +15,17 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.effects.Bleed;
+import de.raidcraft.skills.effects.Burn;
+import de.raidcraft.skills.effects.Poison;
+import de.raidcraft.skills.effects.Slow;
+import de.raidcraft.skills.effects.Weakness;
 import de.raidcraft.skills.effects.disabling.Disarm;
 import de.raidcraft.skills.effects.disabling.Interrupt;
 import de.raidcraft.skills.effects.disabling.KnockBack;
 import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skills.api.effect.common.SunderingArmor;
-import de.raidcraft.skills.effects.Bleed;
-import de.raidcraft.skills.effects.Burn;
-import de.raidcraft.skills.effects.Poison;
-import de.raidcraft.skills.effects.Slow;
-import de.raidcraft.skills.effects.Weakness;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -74,14 +74,6 @@ public class AreaAttack extends AbstractSkill implements CommandTriggered {
         isLifeLeech = lifeLeech != null;
     }
 
-    private double getLifeLeechPercentage() {
-
-        if (!isLifeLeech) {
-            return 0.0;
-        }
-        return ConfigUtil.getTotalValue(this, lifeLeech);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
@@ -92,7 +84,9 @@ public class AreaAttack extends AbstractSkill implements CommandTriggered {
                     @Override
                     public void run(EntityAttack attack) throws CombatException {
 
-                        if (knockBack) AreaAttack.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                        if (knockBack) {
+                            AreaAttack.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+                        }
                         if (bleed) AreaAttack.this.addEffect(attack.getTarget(), Bleed.class);
                         if (stun) AreaAttack.this.addEffect(attack.getTarget(), Stun.class);
                         if (sunderArmor) AreaAttack.this.addEffect(attack.getTarget(), SunderingArmor.class);
@@ -110,5 +104,13 @@ public class AreaAttack extends AbstractSkill implements CommandTriggered {
             } catch (CombatException ignored) {
             }
         }
+    }
+
+    private double getLifeLeechPercentage() {
+
+        if (!isLifeLeech) {
+            return 0.0;
+        }
+        return ConfigUtil.getTotalValue(this, lifeLeech);
     }
 }

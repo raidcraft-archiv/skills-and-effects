@@ -53,25 +53,25 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (!getHolder().hasEffect(Shielded.class) || CustomItemUtil.isShield(getHolder().getEntity().getEquipment().getItemInHand())) {
+        if (!hasEffect(Shielded.class) || CustomItemUtil.isShield(getHolder().getEntity().getEquipment().getItemInHand())) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
 
-        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 
                 if (stun) ShieldBash.this.addEffect(trigger.getAttack().getTarget(), Stun.class);
-                if (knockback) ShieldBash.this.addEffect(
-                        getHolder().getPlayer().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                if (knockback) {
+                    ShieldBash.this.addEffect(
+                            getHolder().getPlayer().getLocation(), trigger.getAttack().getTarget(), KnockBack.class);
+                }
                 if (purge > 0) {
-                    List<Effect> effects = trigger.getAttack().getTarget().getEffects();
+                    List<Effect> effects = trigger.getAttack().getTarget().getEffects(EffectType.PURGEABLE);
                     int i = 0;
                     for (Effect effect : effects) {
-                        if (effect.isOfType(EffectType.PURGEABLE)) {
-                            trigger.getAttack().getTarget().removeEffect(effect.getClass());
-                            i++;
-                        }
+                        effect.remove();
+                        i++;
                         if (i >= purge) {
                             break;
                         }

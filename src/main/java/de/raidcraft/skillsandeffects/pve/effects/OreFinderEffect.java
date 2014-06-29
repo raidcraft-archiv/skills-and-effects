@@ -50,13 +50,13 @@ public class OreFinderEffect extends PeriodicEffect<OreFinder> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
 
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
 
     }

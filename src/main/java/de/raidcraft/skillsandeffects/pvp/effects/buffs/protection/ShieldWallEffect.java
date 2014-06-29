@@ -28,12 +28,6 @@ public class ShieldWallEffect extends ExpirableEffect<ShieldWall> implements Tri
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-reduction"));
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) {
 
@@ -50,13 +44,19 @@ public class ShieldWallEffect extends ExpirableEffect<ShieldWall> implements Tri
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        info(getFriendlyName() + " vorbei.");
+        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-reduction"));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        info(getFriendlyName() + " vorbei.");
     }
 }

@@ -64,16 +64,6 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
         }
     }
 
-    public boolean isAllowedTool(ItemStack itemStack) {
-
-        for (ItemStack tool : allowedTools) {
-            if (tool.isSimilar(itemStack)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Set<ItemStack> getAllowedTools() {
 
         return allowedTools;
@@ -87,7 +77,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
         }
         checkUsage(new SkillAction(this));
 
-        addEffect(getHolder(), QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
+        addEffect(QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
             @Override
             public void run(PlayerInteractTrigger trigger) throws CombatException {
 
@@ -95,7 +85,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
                     return;
                 }
 
-                addEffect(getHolder(), SpeedBlockBreakEffect.class);
+                addEffect(SpeedBlockBreakEffect.class);
                 substractUsageCost(new SkillAction(SpeedBlockBreak.this));
             }
         }, Action.LEFT_CLICK_BLOCK);
@@ -105,5 +95,15 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
 
         return allowedBlocks.contains(trigger.getEvent().getClickedBlock().getType())
                 && trigger.getEvent().getItem() != null && isAllowedTool(trigger.getEvent().getItem());
+    }
+
+    public boolean isAllowedTool(ItemStack itemStack) {
+
+        for (ItemStack tool : allowedTools) {
+            if (tool.isSimilar(itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -9,8 +9,8 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
-import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
 
 /**
  * @author Silthus
@@ -32,9 +32,9 @@ public class Stealth extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         if (getHolder().hasEffect(Invisibility.class)) {
-            getHolder().removeEffect(Invisibility.class);
+            removeEffect(Invisibility.class);
         } else {
-            addEffect(getHolder(), Invisibility.class);
+            addEffect(Invisibility.class);
         }
     }
 }

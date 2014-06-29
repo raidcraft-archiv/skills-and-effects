@@ -37,11 +37,6 @@ public class ProtectionAura extends AbstractAura implements Triggered {
         reduction = data.getConfigurationSection("reduction");
     }
 
-    private double getDamageReduction() {
-
-        return ConfigUtil.getTotalValue(getSource(), reduction);
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onDamage(DamageTrigger trigger) {
 
@@ -50,5 +45,10 @@ public class ProtectionAura extends AbstractAura implements Triggered {
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this,
                 "Schaden um " + (int) (getDamageReduction() * 100) + "% (" + (oldDamage - newDamage) + ") veringert.");
+    }
+
+    private double getDamageReduction() {
+
+        return ConfigUtil.getTotalValue(getSource(), reduction);
     }
 }

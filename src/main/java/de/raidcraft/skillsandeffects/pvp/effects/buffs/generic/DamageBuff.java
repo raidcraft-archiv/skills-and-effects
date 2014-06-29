@@ -35,19 +35,10 @@ public class DamageBuff extends ExpirableEffect<Skill> implements Triggered {
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        physical = data.getBoolean("physical", true);
-        magical = data.getBoolean("magical", true);
-        oneTime = data.getBoolean("one-time", false);
-        increase = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("increase"));
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onAttack(AttackTrigger trigger) throws CombatException {
 
-        Attack<?,CharacterTemplate> attack = trigger.getAttack();
+        Attack<?, CharacterTemplate> attack = trigger.getAttack();
         if (!physical && attack.isOfAttackType(EffectType.PHYSICAL)) {
             return;
         }
@@ -77,12 +68,21 @@ public class DamageBuff extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
+        physical = data.getBoolean("physical", true);
+        magical = data.getBoolean("magical", true);
+        oneTime = data.getBoolean("one-time", false);
+        increase = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("increase"));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 }

@@ -35,6 +35,6 @@ public class WebTrap extends AbstractBowTrap {
     protected void runTrap(Location target) throws CombatException {
 
         Set<Block> blocks = BlockUtil.replaceNonSolidSurfaceBlocks(target.getBlock(), Material.WEB, width, length, height, true);
-        addEffect(getHolder(), TrapEffect.class).setChangedBlocks(blocks);
+        addEffect(TrapEffect.class).setChangedBlocks(blocks);
     }
 }

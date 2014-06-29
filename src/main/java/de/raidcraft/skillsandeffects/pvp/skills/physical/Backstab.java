@@ -26,14 +26,14 @@ import org.bukkit.configuration.ConfigurationSection;
         queuedAttack = true
 )
 public class Backstab extends AbstractSkill implements CommandTriggered {
-    
+
     private boolean needsInvisibility = true;
 
     public Backstab(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
     }
-    
+
     @Override
     public void load(ConfigurationSection data) {
 
@@ -43,7 +43,7 @@ public class Backstab extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
+        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
             @Override
             public void run(AttackTrigger trigger) throws CombatException {
 

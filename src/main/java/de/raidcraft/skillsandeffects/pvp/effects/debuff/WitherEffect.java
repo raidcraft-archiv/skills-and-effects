@@ -45,14 +45,14 @@ public class WitherEffect extends PeriodicExpirableEffect<Skill> implements Trig
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.WITHER);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(witherEffect);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.WITHER);
     }
 }

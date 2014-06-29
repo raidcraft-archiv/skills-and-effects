@@ -25,10 +25,10 @@ import org.bukkit.configuration.ConfigurationSection;
         description = "Schützt dich vor Angriffen",
         types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.REDUCING, EffectType.REFLECTING},
         configUsage = {
-            "reflect[bool]: should the blocked damage reflect?",
-            "reduction-in-percent[bool]",
-            "reduction[baseSection]: how much damage is reduced",
-            "max-abosorption[baseSection]: when to remove the effect"
+                "reflect[bool]: should the blocked damage reflect?",
+                "reduction-in-percent[bool]",
+                "reduction[baseSection]: how much damage is reduced",
+                "max-abosorption[baseSection]: when to remove the effect"
         }
 )
 public class Shielded extends AbstractEffect<Skill> implements Triggered {
@@ -45,15 +45,6 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     public Shielded(Skill source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
-    }
-
-    @Override
-    public void load(ConfigurationSection data) {
-
-        reflect = data.getBoolean("reflect", false);
-        reductionInPercent = data.getBoolean("reduction-in-percent", true);
-        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
-        maxAbsorption = (int) ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("max-absorption"));
     }
 
     public void addCallback(Callback<DamageTrigger> callback) {
@@ -116,6 +107,11 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         }
     }
 
+    public boolean isReductionInPercent() {
+
+        return reductionInPercent;
+    }
+
     public double getBlockedDamage() {
 
         return blockedDamage;
@@ -131,11 +127,6 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
         this.damageReduction = damageReduction;
     }
 
-    public boolean isReductionInPercent() {
-
-        return reductionInPercent;
-    }
-
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
@@ -143,12 +134,12 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        if (slow) {
-            target.removeEffect(Slow.class);
-        }
-        absorbed = 0;
+        reflect = data.getBoolean("reflect", false);
+        reductionInPercent = data.getBoolean("reduction-in-percent", true);
+        damageReduction = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("reduction"));
+        maxAbsorption = (int) ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("max-absorption"));
     }
 
     @Override
@@ -156,6 +147,15 @@ public class Shielded extends AbstractEffect<Skill> implements Triggered {
 
         if (slow) {
             target.addEffect(getSource(), getSource(), Slow.class);
+        }
+        absorbed = 0;
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        if (slow) {
+            target.removeEffect(Slow.class, getSource());
         }
         absorbed = 0;
     }

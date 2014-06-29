@@ -44,16 +44,6 @@ public class ResourceTransfer extends AbstractSkill implements CommandTriggered 
         transferRatio = data.getConfigurationSection("transfer-ratio");
     }
 
-    public Resource getSource() {
-
-        return getHolder().getResource(sourceResource);
-    }
-
-    public Resource getDestination() {
-
-        return getHolder().getResource(destinationResource);
-    }
-
     public double getTransferAmount() {
 
         return ConfigUtil.getTotalValue(this, transferAmount);
@@ -71,9 +61,19 @@ public class ResourceTransfer extends AbstractSkill implements CommandTriggered 
             throw new CombatException("Skill is wrong configured! Could not find defined resources...");
         }
         if (getHolder().hasEffect(ResourceTransferEffect.class)) {
-            getHolder().removeEffect(ResourceTransferEffect.class);
+            removeEffect(ResourceTransferEffect.class);
         } else {
-            addEffect(getHolder(), ResourceTransferEffect.class);
+            addEffect(ResourceTransferEffect.class);
         }
+    }
+
+    public Resource getDestination() {
+
+        return getHolder().getResource(destinationResource);
+    }
+
+    public Resource getSource() {
+
+        return getHolder().getResource(sourceResource);
     }
 }

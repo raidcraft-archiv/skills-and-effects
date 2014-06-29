@@ -39,11 +39,6 @@ public class BowMastery extends AbstractSkill implements Triggered {
         minimalForce = data.getConfigurationSection("minimal-force");
     }
 
-    public float getMinimalForce() {
-
-        return (float) ConfigUtil.getTotalValue(this, minimalForce);
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onBowFire(BowFireTrigger trigger) {
 
@@ -54,5 +49,10 @@ public class BowMastery extends AbstractSkill implements Triggered {
             velocity.multiply(minimalForce + 1);
             projectile.setVelocity(velocity);
         }
+    }
+
+    public float getMinimalForce() {
+
+        return (float) ConfigUtil.getTotalValue(this, minimalForce);
     }
 }

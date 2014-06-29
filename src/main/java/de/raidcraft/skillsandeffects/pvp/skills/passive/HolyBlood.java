@@ -44,15 +44,24 @@ public class HolyBlood extends AbstractSkill implements Triggered {
         resourceDamage = data.getBoolean("resource-damage", true);
     }
 
-    public double getHealAmount() {
-
-        return ConfigUtil.getTotalValue(this, healAmount);
-    }
-
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onDamage(DamageTrigger trigger) throws CombatException {
 
         healParty((int) (trigger.getAttack().getDamage() * getHealAmount()));
+    }
+
+    private void healParty(int amount) throws CombatException {
+
+        for (CharacterTemplate target : getNearbyPartyMembers()) {
+            if (!target.equals(getHolder())) {
+                new HealAction<>(this, target, amount).run();
+            }
+        }
+    }
+
+    public double getHealAmount() {
+
+        return ConfigUtil.getTotalValue(this, healAmount);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
@@ -63,15 +72,6 @@ public class HolyBlood extends AbstractSkill implements Triggered {
         }
         if (trigger.getResource() instanceof HealthResource) {
             healParty((int) (trigger.getNewValue() * getHealAmount()));
-        }
-    }
-
-    private void healParty(int amount) throws CombatException {
-
-        for (CharacterTemplate target : getNearbyPartyMembers()) {
-            if (!target.equals(getHolder())) {
-                new HealAction<>(this, target, amount).run();
-            }
         }
     }
 }

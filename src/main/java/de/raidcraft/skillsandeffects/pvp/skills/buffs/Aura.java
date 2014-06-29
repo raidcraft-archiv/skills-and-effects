@@ -28,53 +28,6 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Aura extends AbstractSkill implements CommandTriggered {
 
-    public enum Type {
-
-        PROTECTION(ProtectionAura.class, "protection"),
-        REFLECTION(ReflectionAura.class, "reflection"),
-        MANA_REGAIN(ManaRegenAura.class, "mana-regain"),
-        DAMAGE(DamageAura.class, "damage");
-
-        private final Class<? extends AbstractAura> effectClass;
-
-        private final String[] aliases;
-        private Type(Class<? extends AbstractAura> effectClass, String... aliases) {
-
-            this.effectClass = effectClass;
-            this.aliases = aliases;
-        }
-
-        public Class<? extends AbstractAura> getEffectClass() {
-
-            return effectClass;
-        }
-
-        public String[] getAliases() {
-
-            return aliases;
-        }
-
-        public boolean isAlias(String alias) {
-
-            for (String name : aliases) {
-                if (name.equalsIgnoreCase(alias)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static Type fromAlias(String alias) {
-
-            for (Type type : values()) {
-                if (type.isAlias(alias)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
     private Type auraType;
 
     public Aura(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -104,6 +57,54 @@ public class Aura extends AbstractSkill implements CommandTriggered {
                 member.removeEffectTypes(EffectType.AURA);
             }
             addEffect(this, getHolder(), auraType.getEffectClass());
+        }
+    }
+
+    public enum Type {
+
+        PROTECTION(ProtectionAura.class, "protection"),
+        REFLECTION(ReflectionAura.class, "reflection"),
+        MANA_REGAIN(ManaRegenAura.class, "mana-regain"),
+        DAMAGE(DamageAura.class, "damage");
+
+        private final Class<? extends AbstractAura> effectClass;
+
+        private final String[] aliases;
+
+        private Type(Class<? extends AbstractAura> effectClass, String... aliases) {
+
+            this.effectClass = effectClass;
+            this.aliases = aliases;
+        }
+
+        public static Type fromAlias(String alias) {
+
+            for (Type type : values()) {
+                if (type.isAlias(alias)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public boolean isAlias(String alias) {
+
+            for (String name : aliases) {
+                if (name.equalsIgnoreCase(alias)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Class<? extends AbstractAura> getEffectClass() {
+
+            return effectClass;
+        }
+
+        public String[] getAliases() {
+
+            return aliases;
         }
     }
 }

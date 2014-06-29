@@ -27,53 +27,6 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Avatar extends AbstractSkill implements CommandTriggered {
 
-    public enum Type {
-
-        BERSERKER(BerserkerAvatar.class, "berserker"),
-        PALADIN(PaladinAvatar.class, "paladin"),
-        HUNTER(HunterAvatar.class, "hunter"),
-        BLOODMAGE(BloodmageAvatar.class, "bloodmage");
-
-        private final Class<? extends AbstractAvatar> effectClass;
-
-        private final String[] aliases;
-        private Type(Class<? extends AbstractAvatar> effectClass, String... aliases) {
-
-            this.effectClass = effectClass;
-            this.aliases = aliases;
-        }
-
-        public Class<? extends AbstractAvatar> getEffectClass() {
-
-            return effectClass;
-        }
-
-        public String[] getAliases() {
-
-            return aliases;
-        }
-
-        public boolean isAlias(String alias) {
-
-            for (String name : aliases) {
-                if (name.equalsIgnoreCase(alias)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static Type fromAlias(String alias) {
-
-            for (Type type : values()) {
-                if (type.isAlias(alias)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
     private Type avatarType;
 
     public Avatar(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -92,11 +45,59 @@ public class Avatar extends AbstractSkill implements CommandTriggered {
 
         if (avatarType == null) return;
 
-        if (getHolder().hasEffect(avatarType.getEffectClass())) {
-            getHolder().getEffect(avatarType.getEffectClass()).renew();
+        if (getHolder().hasEffect(avatarType.getEffectClass(), this)) {
+            getHolder().getEffect(avatarType.getEffectClass(), this).renew();
         } else {
             getHolder().removeEffectTypes(EffectType.AVATAR);
             addEffect(this, getHolder(), avatarType.getEffectClass());
+        }
+    }
+
+    public enum Type {
+
+        BERSERKER(BerserkerAvatar.class, "berserker"),
+        PALADIN(PaladinAvatar.class, "paladin"),
+        HUNTER(HunterAvatar.class, "hunter"),
+        BLOODMAGE(BloodmageAvatar.class, "bloodmage");
+
+        private final Class<? extends AbstractAvatar> effectClass;
+
+        private final String[] aliases;
+
+        private Type(Class<? extends AbstractAvatar> effectClass, String... aliases) {
+
+            this.effectClass = effectClass;
+            this.aliases = aliases;
+        }
+
+        public static Type fromAlias(String alias) {
+
+            for (Type type : values()) {
+                if (type.isAlias(alias)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public boolean isAlias(String alias) {
+
+            for (String name : aliases) {
+                if (name.equalsIgnoreCase(alias)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Class<? extends AbstractAvatar> getEffectClass() {
+
+            return effectClass;
+        }
+
+        public String[] getAliases() {
+
+            return aliases;
         }
     }
 }

@@ -61,12 +61,12 @@ public class MultishotEffect extends ExpirableEffect<Multishot> implements Trigg
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    protected void renew(CharacterTemplate target) throws CombatException {
 
     }
 
     @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 }

@@ -49,16 +49,6 @@ public class ImpactHeal extends AbstractSkill implements Triggered {
         selfHealPercentage = data.getConfigurationSection("self-heal-percentage");
     }
 
-    public double getHealPercentage() {
-
-        return ConfigUtil.getTotalValue(this, healPercentage);
-    }
-
-    public double getSelfHealPercentage() {
-
-        return ConfigUtil.getTotalValue(this, selfHealPercentage);
-    }
-
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onAttack(AttackTrigger trigger) {
 
@@ -96,5 +86,15 @@ public class ImpactHeal extends AbstractSkill implements Triggered {
         } catch (CombatException ignored) {
 
         }
+    }
+
+    public double getSelfHealPercentage() {
+
+        return ConfigUtil.getTotalValue(this, selfHealPercentage);
+    }
+
+    public double getHealPercentage() {
+
+        return ConfigUtil.getTotalValue(this, healPercentage);
     }
 }

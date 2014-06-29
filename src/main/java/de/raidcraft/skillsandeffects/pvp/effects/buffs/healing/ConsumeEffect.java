@@ -43,13 +43,6 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     }
 
     @Override
-    public void load(ConfigurationSection data) {
-
-        breakCombat = data.getBoolean("break-in-combat", false);
-        breakOnDamage = data.getBoolean("break-on-damage", true);
-    }
-
-    @Override
     public double getPriority() {
 
         return super.getPriority() + resourceGain / getInterval();
@@ -100,12 +93,10 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        this.resourceGain = 0;
-        target.getEntity().removePotionEffect(PotionEffectType.REGENERATION);
-        info((consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName())
-                + " Regeneration beendet.");
+        breakCombat = data.getBoolean("break-in-combat", false);
+        breakOnDamage = data.getBoolean("break-on-damage", true);
     }
 
     @Override
@@ -129,7 +120,16 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
         }
         target.getEntity().addPotionEffect(regainEffect);
         info("Du regenerierst nun langsam " +
-                (consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
+                        (consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
         );
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        this.resourceGain = 0;
+        target.getEntity().removePotionEffect(PotionEffectType.REGENERATION);
+        info((consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName())
+                + " Regeneration beendet.");
     }
 }

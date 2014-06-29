@@ -83,12 +83,6 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.BLINDNESS);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         switch (getSource().getType()) {
@@ -97,5 +91,11 @@ public class CurseEffect extends ExpirableEffect<Curse> implements Triggered {
                 target.getEntity().addPotionEffect(blind);
                 break;
         }
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.BLINDNESS);
     }
 }

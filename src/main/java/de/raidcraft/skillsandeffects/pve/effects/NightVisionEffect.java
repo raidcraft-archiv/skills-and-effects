@@ -35,14 +35,14 @@ public class NightVisionEffect extends ExpirableEffect<NightVision> {
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        target.getEntity().removePotionEffect(PotionEffectType.NIGHT_VISION);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         target.getEntity().addPotionEffect(effect, true);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        target.getEntity().removePotionEffect(PotionEffectType.NIGHT_VISION);
     }
 }

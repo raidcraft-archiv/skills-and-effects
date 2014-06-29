@@ -32,22 +32,16 @@ public class PurificationEffect extends ExpirableEffect<Purification> implements
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        healPercent = data.getConfigurationSection("heal-percent");
-    }
-
-    private double getHealingPercentage() {
-
-        return ConfigUtil.getTotalValue(getSource(), healPercent);
-    }
-
     @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
         int healAmount = (int) (trigger.getAttack().getDamage() * getHealingPercentage());
         getSource().getHolder().getParty().heal(this, healAmount);
+    }
+
+    private double getHealingPercentage() {
+
+        return ConfigUtil.getTotalValue(getSource(), healPercent);
     }
 
     @Override
@@ -56,12 +50,18 @@ public class PurificationEffect extends ExpirableEffect<Purification> implements
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
+        healPercent = data.getConfigurationSection("heal-percent");
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
 
     }
 }

@@ -4,8 +4,8 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Buff;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.effect.Stackable;
+import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.skill.Skill;
@@ -35,13 +35,6 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
         super(source, target, data);
     }
 
-    @Override
-    public void load(ConfigurationSection data) {
-
-        damageIncreasePerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-increase"));
-        attackIncreasePerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("attack-increase"));
-    }
-
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
@@ -52,7 +45,7 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
             return;
         }
         trigger.getAttack().setDamage(newDamage);
-        getSource().getHolder().combatLog(this,"Schaden um " + (int)(increase * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
+        getSource().getHolder().combatLog(this, "Schaden um " + (int) (increase * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
         getSource().getHolder().debug("damaged increased " + oldDamage + "->" + newDamage + " - " + getName());
     }
 
@@ -77,15 +70,22 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
+    public void load(ConfigurationSection data) {
 
-        setStacks(0);
+        damageIncreasePerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("damage-increase"));
+        attackIncreasePerStack = ConfigUtil.getTotalValue(getSource(), data.getConfigurationSection("attack-increase"));
     }
 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         setStacks(getStacks() + 1);
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        setStacks(0);
     }
 
     @Override

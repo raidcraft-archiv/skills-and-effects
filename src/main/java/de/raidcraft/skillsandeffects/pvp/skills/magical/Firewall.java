@@ -43,16 +43,16 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
         width = data.getConfigurationSection("width");
     }
 
-    private int getWidth() {
-
-        return (int) ConfigUtil.getTotalValue(this, width);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
         Block sourceBlock = getTargetBlock().getBlock();
         BlockFace face = LocationUtil.rotateBlockFace(getFacing());
         BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
+    }
+
+    private int getWidth() {
+
+        return (int) ConfigUtil.getTotalValue(this, width);
     }
 }

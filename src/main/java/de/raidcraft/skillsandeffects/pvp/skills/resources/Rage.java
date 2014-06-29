@@ -37,11 +37,6 @@ public class Rage extends AbstractSkill implements Triggered {
         resource = data.getString("resource", "rage");
     }
 
-    public Resource getResource() {
-
-        return getHolder().getResource(this.resource);
-    }
-
     @TriggerHandler
     public void onCombat(CombatTrigger trigger) throws CombatException {
 
@@ -50,9 +45,14 @@ public class Rage extends AbstractSkill implements Triggered {
         }
 
         if (trigger.getEvent().getType() == RCCombatEvent.Type.ENTER) {
-            addEffect(getHolder(), RageEffect.class);
+            addEffect(RageEffect.class);
         } else {
-            getHolder().removeEffect(RageEffect.class);
+            removeEffect(RageEffect.class);
         }
+    }
+
+    public Resource getResource() {
+
+        return getHolder().getResource(this.resource);
     }
 }

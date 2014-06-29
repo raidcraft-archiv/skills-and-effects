@@ -86,14 +86,14 @@ public class Charging extends ExpirableEffect<Skill> implements Triggered {
     }
 
     @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.getEntity().removePotionEffect(PotionEffectType.SPEED);
         task.cancel();
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 }

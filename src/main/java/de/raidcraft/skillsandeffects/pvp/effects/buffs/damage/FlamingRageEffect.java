@@ -4,8 +4,8 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.EffectInformation;
-import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.effect.Stackable;
+import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.pvp.skills.passive.FlamingRage;
@@ -33,14 +33,14 @@ public class FlamingRageEffect extends ExpirableEffect<FlamingRage> implements S
     }
 
     @Override
-    protected void remove(CharacterTemplate target) throws CombatException {
-
-        setStacks(0);
-    }
-
-    @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
         setStacks(getMaxStacks());
+    }
+
+    @Override
+    protected void remove(CharacterTemplate target) throws CombatException {
+
+        setStacks(0);
     }
 }

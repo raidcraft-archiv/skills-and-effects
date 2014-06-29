@@ -30,6 +30,6 @@ public class ShadowDance extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(getHolder(), ShadowDanceEffect.class);
+        addEffect(ShadowDanceEffect.class);
     }
 }

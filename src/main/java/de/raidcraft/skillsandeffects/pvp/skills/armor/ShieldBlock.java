@@ -28,8 +28,8 @@ import org.bukkit.configuration.ConfigurationSection;
         description = "Absorbiert Schaden durch das Tragen eines Schildes.",
         types = {EffectType.HELPFUL, EffectType.ABSORBING, EffectType.PHYSICAL},
         configUsage = {
-            "block-value[baseSection]: damage value that is blocked",
-            "block-chance[baseSection]: chance to block"
+                "block-value[baseSection]: damage value that is blocked",
+                "block-chance[baseSection]: chance to block"
         }
 )
 public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
@@ -47,16 +47,6 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
 
         blockValue = data.getConfigurationSection("block-value");
         blockChance = data.getConfigurationSection("block-chance");
-    }
-
-    private double getBlockValue() {
-
-        return ConfigUtil.getTotalValue(this, blockValue);
-    }
-
-    private double getBlockChance() {
-
-        return ConfigUtil.getTotalValue(this, blockChance);
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
@@ -81,5 +71,15 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
             substractUsageCost(new SkillAction(this));
             getHolder().combatLog(this, "Schaden um " + (oldDamage - newDamage) + "(" + MathUtil.toPercent(blockValue) + "%) verringert.");
         }
+    }
+
+    private double getBlockChance() {
+
+        return ConfigUtil.getTotalValue(this, blockChance);
+    }
+
+    private double getBlockValue() {
+
+        return ConfigUtil.getTotalValue(this, blockValue);
     }
 }

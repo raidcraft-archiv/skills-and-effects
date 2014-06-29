@@ -37,11 +37,6 @@ public class DamageAura extends AbstractAura implements Triggered {
         physicalOnly = data.getBoolean("physical", false);
     }
 
-    private double getDamageIncrease() {
-
-        return ConfigUtil.getTotalValue(getSource(), damageIncrease);
-    }
-
     @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
@@ -52,6 +47,11 @@ public class DamageAura extends AbstractAura implements Triggered {
         double newDamage = oldDamage + oldDamage * getDamageIncrease();
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this,
-                "Schaden um " + (int)(getDamageIncrease() * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
+                "Schaden um " + (int) (getDamageIncrease() * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
+    }
+
+    private double getDamageIncrease() {
+
+        return ConfigUtil.getTotalValue(getSource(), damageIncrease);
     }
 }

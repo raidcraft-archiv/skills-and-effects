@@ -38,14 +38,6 @@ public class HealthIncrease extends AbstractSkill implements Triggered {
         increase = ConfigUtil.getTotalValue(this, data.getConfigurationSection("health-increase"));
     }
 
-    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOW)
-    public void onMaxHealthChange(MaxHealthChangeTrigger trigger) {
-
-        double value = trigger.getEvent().getValue();
-        trigger.getEvent().setValue(value + (value * increase));
-        increaseAmount += value * increase;
-    }
-
     @Override
     public void apply() {
 
@@ -57,5 +49,13 @@ public class HealthIncrease extends AbstractSkill implements Triggered {
     public void remove() {
 
         getHolder().decreaseMaxHealth(increaseAmount);
+    }
+
+    @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOW)
+    public void onMaxHealthChange(MaxHealthChangeTrigger trigger) {
+
+        double value = trigger.getEvent().getValue();
+        trigger.getEvent().setValue(value + (value * increase));
+        increaseAmount += value * increase;
     }
 }

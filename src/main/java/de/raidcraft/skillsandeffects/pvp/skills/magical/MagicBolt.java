@@ -3,9 +3,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.magical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.EntityAttack;
 import de.raidcraft.skills.api.combat.action.HealAction;
-import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.effect.common.SunderingArmor;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -27,8 +25,8 @@ import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.disabling.Pigify;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.util.Vector;
 
 /**
  * @author Silthus
@@ -83,42 +81,41 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
         entityDamageBonus = data.getConfigurationSection("entity-damage-bonus");
     }
 
-    private double getLifeLeechPercentage() {
-
-        return ConfigUtil.getTotalValue(this, lifeLeech);
-    }
-
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        magicalAttack(new EntityAttackCallback() {
-            @Override
-            public void run(EntityAttack attack) throws CombatException {
+        magicalAttack(attack -> {
 
-                if (knockBack) MagicBolt.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
-                if (bleed) MagicBolt.this.addEffect(attack.getTarget(), Bleed.class);
-                if (stun) MagicBolt.this.addEffect(attack.getTarget(), Stun.class);
-                if (sunderArmor) MagicBolt.this.addEffect(attack.getTarget(), SunderingArmor.class);
-                if (disarm) MagicBolt.this.addEffect(attack.getTarget(), Disarm.class);
-                if (slow) MagicBolt.this.addEffect(attack.getTarget(), Slow.class);
-                if (weaken) MagicBolt.this.addEffect(attack.getTarget(), Weakness.class);
-                if (burn) MagicBolt.this.addEffect(attack.getTarget(), Burn.class);
-                if (interrupt) MagicBolt.this.addEffect(attack.getTarget(), Interrupt.class);
-                if (disable) {
-                    MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
-                    attack.setCancelled(true);
-                }
-                if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
-                if (throwUp > 0.0) {
-                    attack.getTarget().getEntity().setVelocity(new Vector(0, throwUp, 0));
-                }
-                if (lifeLeech != null) {
-                    new HealAction<>(MagicBolt.this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
-                }
-                if (!(attack.getTarget() instanceof Hero)) {
-                    attack.setDamage((int) (attack.getDamage() + ConfigUtil.getTotalValue(MagicBolt.this, entityDamageBonus)));
-                }
+            if (knockBack) MagicBolt.this.addEffect(getHolder().getEntity().getLocation(), attack.getTarget(), KnockBack.class);
+            if (bleed) MagicBolt.this.addEffect(attack.getTarget(), Bleed.class);
+            if (stun) MagicBolt.this.addEffect(attack.getTarget(), Stun.class);
+            if (sunderArmor) MagicBolt.this.addEffect(attack.getTarget(), SunderingArmor.class);
+            if (disarm) MagicBolt.this.addEffect(attack.getTarget(), Disarm.class);
+            if (slow) MagicBolt.this.addEffect(attack.getTarget(), Slow.class);
+            if (weaken) MagicBolt.this.addEffect(attack.getTarget(), Weakness.class);
+            if (burn) MagicBolt.this.addEffect(attack.getTarget(), Burn.class);
+            if (interrupt) MagicBolt.this.addEffect(attack.getTarget(), Interrupt.class);
+            if (disable) {
+                MagicBolt.this.addEffect(attack.getTarget(), Pigify.class);
+                attack.setCancelled(true);
+            }
+            if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
+            if (throwUp > 0.0) {
+                Location location = attack.getTarget().getEntity().getLocation();
+                Location newLocation = location.clone().add(0, throwUp, 0);
+                attack.getTarget().getEntity().setVelocity(newLocation.toVector().subtract(location.toVector()));
+            }
+            if (lifeLeech != null) {
+                new HealAction<>(MagicBolt.this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
+            }
+            if (!(attack.getTarget() instanceof Hero)) {
+                attack.setDamage((int) (attack.getDamage() + ConfigUtil.getTotalValue(MagicBolt.this, entityDamageBonus)));
             }
         });
+    }
+
+    private double getLifeLeechPercentage() {
+
+        return ConfigUtil.getTotalValue(this, lifeLeech);
     }
 }

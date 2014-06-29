@@ -63,11 +63,6 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         }
     }
 
-    public double getCleverBrewingChance() {
-
-        return ConfigUtil.getTotalValue(this, cleverBrewingChance);
-    }
-
     @TriggerHandler(ignoreCancelled = true)
     public void onBrew(BrewTrigger trigger) {
 
@@ -84,7 +79,7 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         IngredientSetting ingredientSetting = knownIngredients.get(ingredient.getType());
 
         // unknown ingredient
-        if(ingredientSetting == null) {
+        if (ingredientSetting == null) {
             return;
         }
 
@@ -108,6 +103,11 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         }
     }
 
+    public double getCleverBrewingChance() {
+
+        return ConfigUtil.getTotalValue(this, cleverBrewingChance);
+    }
+
     public class IngredientSetting {
 
         private Material ingredient;
@@ -115,20 +115,24 @@ public class Brewing extends AbstractLevelableSkill implements Triggered {
         private int minLevel;
 
         public IngredientSetting(Material ingredient, int exp, int minLevel) {
+
             this.ingredient = ingredient;
             this.exp = exp;
             this.minLevel = minLevel;
         }
 
         public Material getIngredient() {
+
             return ingredient;
         }
 
         public int getExp() {
+
             return exp;
         }
 
         public int getMinLevel() {
+
             return minLevel;
         }
     }

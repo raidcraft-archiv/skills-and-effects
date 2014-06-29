@@ -55,6 +55,6 @@ public class ShadowCloak extends AbstractSkill implements CommandTriggered {
             getHolder().removeEffectTypes(type);
         }
         // add magic immunity
-        addEffect(getHolder(), MagicImmunity.class);
+        addEffect(MagicImmunity.class);
     }
 }
