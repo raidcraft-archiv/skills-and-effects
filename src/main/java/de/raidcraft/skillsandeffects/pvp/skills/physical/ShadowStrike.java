@@ -2,7 +2,6 @@ package de.raidcraft.skillsandeffects.pvp.skills.physical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -12,7 +11,6 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,13 +42,10 @@ public class ShadowStrike extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
-            @Override
-            public void run(AttackTrigger trigger) throws CombatException {
+        addEffect(QueuedAttack.class).addCallback(trigger -> {
 
-                if (getHolder().hasEffect(Invisibility.class)) {
-                    trigger.getAttack().setDamage(trigger.getAttack().getDamage() + getBonusDamage());
-                }
+            if (hasEffect(Invisibility.class)) {
+                trigger.getAttack().setDamage(trigger.getAttack().getDamage() + getBonusDamage());
             }
         });
     }

@@ -31,7 +31,8 @@ import org.bukkit.potion.PotionEffectType;
 @EffectInformation(
         name = "Invisibility",
         description = "Lässt das Ziel unsichtbar werden",
-        types = {EffectType.BUFF}
+        types = {EffectType.BUFF},
+        global = true
 )
 public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
 
