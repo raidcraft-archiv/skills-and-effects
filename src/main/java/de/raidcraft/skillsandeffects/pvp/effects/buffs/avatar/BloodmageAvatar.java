@@ -37,7 +37,6 @@ public class BloodmageAvatar extends AbstractAvatar implements Triggered {
 
         healthIncrease = (int) (target.getMaxHealth() * healthIncreasePercent);
         target.increaseMaxHealth(healthIncrease);
-        getSource().getHolder().combatLog("Maximale Leben um " + healthIncreasePercent * 100 + "% (" + (healthIncrease) + ") erhöht.");
     }
 
     @Override
@@ -51,7 +50,6 @@ public class BloodmageAvatar extends AbstractAvatar implements Triggered {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.decreaseMaxHealth(healthIncrease);
-        getSource().getHolder().combatLog("Leben um " + healthIncreasePercent * 100 + "% (" + (healthIncrease) + ") verringert.");
         healthIncrease = 20;
     }
 

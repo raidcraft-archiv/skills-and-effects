@@ -40,7 +40,6 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
 
         healthIncreaseAmount = (int) (target.getMaxHealth() * healthIncrease);
         target.increaseMaxHealth(healthIncreaseAmount);
-        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (healthIncreaseAmount) + ") erhöht.");
     }
 
     @Override
@@ -55,7 +54,6 @@ public class PaladinAvatar extends AbstractAvatar implements Triggered {
     protected void remove(CharacterTemplate target) throws CombatException {
 
         target.decreaseMaxHealth(healthIncreaseAmount);
-        getSource().getHolder().combatLog("Leben um " + healthIncrease * 100 + "% (" + (healthIncreaseAmount) + ") verringert.");
         healthIncreaseAmount = 20;
     }
 
