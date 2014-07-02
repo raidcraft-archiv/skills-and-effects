@@ -31,7 +31,7 @@ public class AreaSlow extends AbstractLevelableSkill implements CommandTriggered
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (CharacterTemplate target : getSafeNearbyTargets()) {
+        for (CharacterTemplate target : getSafeNearbyTargets(false)) {
             addEffect(target, Slow.class);
         }
     }
