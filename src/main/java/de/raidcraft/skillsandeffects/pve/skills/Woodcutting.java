@@ -24,7 +24,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 
 /**
- * @author IDragonfire, Silthus
+ * @author Dragonfire, Silthus
  */
 @SkillInformation(name = "Woodcutting", description = "Fällt direkt einen Baum.", types = {EffectType.HELPFUL})
 public class Woodcutting extends AbstractLevelableSkill implements Triggered {
