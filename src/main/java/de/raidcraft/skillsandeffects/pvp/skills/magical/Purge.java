@@ -1,9 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.effect.Effect;
@@ -15,6 +13,7 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.HeroUtil;
 import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,7 +51,7 @@ public class Purge extends AbstractSkill implements CommandTriggered {
             target = getHolder();
         } else if (args.argsLength() > 0) {
             try {
-                Hero hero = RaidCraft.getComponent(SkillsPlugin.class).getCharacterManager().getHero(args.getString(0));
+                Hero hero = HeroUtil.getHeroFromName(args.getString(0));
                 if (!LocationUtil.isWithinRadius(getHolder().getPlayer().getLocation(), hero.getPlayer().getLocation(), getTotalRange())) {
                     throw new CombatException(CombatException.Type.OUT_OF_RANGE);
                 }
