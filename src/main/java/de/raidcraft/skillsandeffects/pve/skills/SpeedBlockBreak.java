@@ -81,7 +81,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
             public void run(PlayerInteractTrigger trigger) throws CombatException {
 
                 if (trigger.getEvent().getAction() != Action.LEFT_CLICK_BLOCK
-                        || !isValidTool(event)) {
+                        || !isValidTool(trigger.getEvent())) {
                     return;
                 }
 
