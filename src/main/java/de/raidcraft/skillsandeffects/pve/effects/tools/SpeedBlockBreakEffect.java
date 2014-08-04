@@ -10,7 +10,6 @@ import de.raidcraft.skills.api.trigger.TriggerHandler;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.pve.skills.SpeedBlockBreak;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,13 +29,29 @@ public class SpeedBlockBreakEffect extends ExpirableEffect<SpeedBlockBreak> impl
         super(source, target, data);
     }
 
-    @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
 
+    @TriggerHandler(ignoreCancelled = true)
+    public void onInteract(PlayerInteractTrigger trigger) throws CombatException {
+
+        PlayerInteractEvent event = trigger.getEvent();
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK
+                || !getSource().isValidTool(event)
+                || !getSource().isValidBlock(event)) {
+            return;
+        }
+
+        BlockBreakEvent blockBreakEvent = new BlockBreakEvent(event.getClickedBlock(), event.getPlayer());
+        RaidCraft.callEvent(blockBreakEvent);
+
+        if (blockBreakEvent.isCancelled()) {
+            return;
+        }
+        blockBreakEvent.getBlock().breakNaturally(blockBreakEvent.getPlayer().getItemInHand());
+        event.setCancelled(true);
     }
 
     @Override
-    public void load(ConfigurationSection data) {
+    protected void apply(CharacterTemplate target) throws CombatException {
 
     }
 
@@ -48,22 +63,5 @@ public class SpeedBlockBreakEffect extends ExpirableEffect<SpeedBlockBreak> impl
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-    }
-
-    @TriggerHandler(ignoreCancelled = true)
-    public void onInteract(PlayerInteractTrigger trigger) throws CombatException {
-
-        PlayerInteractEvent event = trigger.getEvent();
-        if (event.getAction() != Action.LEFT_CLICK_BLOCK || !getSource().isValid(trigger)) {
-            return;
-        }
-
-        BlockBreakEvent blockBreakEvent = new BlockBreakEvent(event.getClickedBlock(), event.getPlayer());
-        RaidCraft.callEvent(blockBreakEvent);
-
-        if (!blockBreakEvent.isCancelled()) {
-            blockBreakEvent.getBlock().breakNaturally(blockBreakEvent.getPlayer().getItemInHand());
-            event.setCancelled(true);
-        }
     }
 }

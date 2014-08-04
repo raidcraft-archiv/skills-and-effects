@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
@@ -17,10 +16,11 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skillsandeffects.pve.effects.tools.SpeedBlockBreakEffect;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,9 @@ import java.util.Set;
 )
 public class SpeedBlockBreak extends AbstractSkill implements Triggered {
 
-    private final Set<ItemStack> allowedTools = new HashSet<>();
+    @Getter
+    private final Set<Material> allowedTools = new HashSet<>();
+    @Getter
     private final Set<Material> allowedBlocks = new HashSet<>();
 
     public SpeedBlockBreak(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -46,7 +48,7 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        for (String key : data.getStringList("blocks")) {
+        for (String key : data.getStringList("allowed-blocks")) {
             Material material = Material.matchMaterial(key);
             if (material != null) {
                 allowedBlocks.add(material);
@@ -55,24 +57,21 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
             }
         }
         for (String entry : data.getStringList("tools")) {
-            try {
-                ItemStack item = RaidCraft.getItem(entry);
-                allowedTools.add(item);
-            } catch (CustomItemException e) {
-                warn(e);
+            Material material = Material.matchMaterial(entry);
+            if (material != null) {
+                allowedTools.add(material);
+            } else {
+                RaidCraft.LOGGER.warning("Wrong material in skill config of " + getName() + ": " + entry);
             }
         }
-    }
-
-    public Set<ItemStack> getAllowedTools() {
-
-        return allowedTools;
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractTrigger trigger) throws CombatException {
 
-        if (trigger.getEvent().getAction() != Action.RIGHT_CLICK_BLOCK || !isValid(trigger)) {
+        final PlayerInteractEvent event = trigger.getEvent();
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK
+                || !isValidTool(event)) {
             return;
         }
         checkUsage(new SkillAction(this));
@@ -81,7 +80,8 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
             @Override
             public void run(PlayerInteractTrigger trigger) throws CombatException {
 
-                if (trigger.getEvent().getAction() != Action.LEFT_CLICK_BLOCK || !isValid(trigger)) {
+                if (trigger.getEvent().getAction() != Action.LEFT_CLICK_BLOCK
+                        || !isValidTool(event)) {
                     return;
                 }
 
@@ -91,19 +91,15 @@ public class SpeedBlockBreak extends AbstractSkill implements Triggered {
         }, Action.LEFT_CLICK_BLOCK);
     }
 
-    public boolean isValid(PlayerInteractTrigger trigger) {
+    public boolean isValidTool(PlayerInteractEvent event) {
 
-        return allowedBlocks.contains(trigger.getEvent().getClickedBlock().getType())
-                && trigger.getEvent().getItem() != null && isAllowedTool(trigger.getEvent().getItem());
+        return event.getItem() != null
+                && allowedTools.contains(event.getItem().getType());
     }
 
-    public boolean isAllowedTool(ItemStack itemStack) {
+    public boolean isValidBlock(PlayerInteractEvent event) {
 
-        for (ItemStack tool : allowedTools) {
-            if (tool.isSimilar(itemStack)) {
-                return true;
-            }
-        }
-        return false;
+        return event.getClickedBlock() != null
+                && allowedBlocks.contains(event.getClickedBlock().getType());
     }
 }
