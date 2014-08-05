@@ -75,11 +75,21 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 return;
             }
 
-            Location top = targetLocation.clone().add(MathUtil.RANDOM.nextInt(7) - 3,
-                    MathUtil.RANDOM.nextInt(3) + 3,
-                    MathUtil.RANDOM.nextInt(7) - 3);
-            org.bukkit.entity.Fireball fb = (org.bukkit.entity.Fireball) top.getWorld().spawnEntity(top, EntityType.FIREBALL);
-            fb.setVelocity(new Vector(0, -0.8, 0));
+            Location top = targetLocation.clone();
+            // frst Meteor hits exactly
+            if (firedMeteors == 0) {
+                top = top.clone().add(0.5, MathUtil.RANDOM.nextInt(3) + 3, 0.5);
+            } else {
+                top = top.add(MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble(),
+                        MathUtil.RANDOM.nextInt(3) + 3,
+                        MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble());
+            }
+            // TODO: set custom damage
+            org.bukkit.entity.Fireball fb = (org.bukkit.entity.Fireball) top.getWorld()
+                    .spawnEntity(top, EntityType.FIREBALL);
+            // velocity is bugged ... cannot change the speed
+            // fb.setVelocity(new Vector(0, -ß.8, 0));
+            fb.setDirection(new Vector(0, -1, 0));
             fb.setIsIncendiary(false);
 
             firedMeteors++;
