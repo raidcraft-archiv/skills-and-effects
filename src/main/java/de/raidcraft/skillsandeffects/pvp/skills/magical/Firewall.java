@@ -1,6 +1,10 @@
 package de.raidcraft.skillsandeffects.pvp.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -14,6 +18,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.LocationUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -30,11 +35,14 @@ import org.bukkit.configuration.ConfigurationSection;
 )
 public class Firewall extends AbstractLevelableSkill implements CommandTriggered {
 
+    private WorldGuardPlugin wg = null;
+
     private ConfigurationSection width;
 
     public Firewall(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+        wg = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
     }
 
     @Override
@@ -48,6 +56,15 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
 
         Block sourceBlock = getTargetBlock().getBlock();
         BlockFace face = LocationUtil.rotateBlockFace(getFacing());
+
+        // TODO: integrate into AbstractSkill
+        ApplicableRegionSet set = wg.getRegionManager(sourceBlock.getWorld()).getApplicableRegions(sourceBlock.getLocation());
+        if (set.getFlag(DefaultFlag.PVP) != null) {
+            if (set.getFlag(DefaultFlag.PVP).equals(StateFlag.State.DENY)) {
+                throw new CombatException("PVP Flag Deny - PvP ist hier nicht erlaubt");
+            }
+        }
+
         BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
     }
 

@@ -91,7 +91,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             org.bukkit.entity.Fireball fb = (org.bukkit.entity.Fireball) top.getWorld()
                     .spawnEntity(top, EntityType.FIREBALL);
             // velocity is bugged ... cannot change the speed
-            // fb.setVelocity(new Vector(0, -ß.8, 0));
+            // fb.setVelocity(new Vector(0, -0.8, 0));
             fb.setDirection(new Vector(0, -1, 0));
             fb.setIsIncendiary(false);
 
