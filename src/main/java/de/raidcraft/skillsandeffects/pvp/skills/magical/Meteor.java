@@ -52,6 +52,9 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         amount = (int) ConfigUtil.getTotalValue(this, data.getConfigurationSection("amount"));
+        if (amount < 1) {
+            amount = 1;
+        }
         speed = data.getDouble("speed", 1.0);
         interval = TimeUtil.secondsToTicks(data.getDouble("interval", 0.3));
         delay = TimeUtil.secondsToTicks(data.getDouble("delay", 1.0));
