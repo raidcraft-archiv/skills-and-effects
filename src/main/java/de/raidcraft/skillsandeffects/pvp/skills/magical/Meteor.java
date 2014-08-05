@@ -76,7 +76,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             }
 
             Location top = targetLocation.clone().add(MathUtil.RANDOM.nextInt(7) - 3,
-                    MathUtil.RANDOM.nextInt(10) + 5,
+                    MathUtil.RANDOM.nextInt(3) + 3,
                     MathUtil.RANDOM.nextInt(7) - 3);
             org.bukkit.entity.Fireball fb = (org.bukkit.entity.Fireball) top.getWorld().spawnEntity(top, EntityType.FIREBALL);
             fb.setVelocity(new Vector(0, -0.8, 0));
