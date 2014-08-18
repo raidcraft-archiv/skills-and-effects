@@ -8,10 +8,7 @@ import de.raidcraft.skills.api.effect.types.PeriodicEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skillsandeffects.pve.skills.OreFinder;
-import de.raidcraft.util.BlockUtil;
 import org.bukkit.block.Block;
-
-import java.util.Set;
 
 /**
  * @author Silthus
@@ -22,7 +19,7 @@ import java.util.Set;
         types = {EffectType.BUFF, EffectType.HELPFUL}
 )
 public class OreFinderEffect extends PeriodicEffect<OreFinder> {
-
+    private int count;
     public OreFinderEffect(OreFinder source, CharacterTemplate target, EffectData data) {
 
         super(source, target, data);
@@ -30,17 +27,34 @@ public class OreFinderEffect extends PeriodicEffect<OreFinder> {
 
     @Override
     protected void tick(CharacterTemplate target) throws CombatException {
-
-        if (!getSource().canUseAbility()) {
-            return;
+        if(count > getSource().getMaxTime()) {
+            info("Petrologie ist am Ende seiner Kraft");
+            remove();
         }
-        Set<Block> blocks = BlockUtil.getBlocks(target.getEntity().getLocation().getBlock(),
-                getSource().getTotalRange(), getSource().getBlockIds());
-        if (blocks.isEmpty()) {
+        count++;
+        int range = getSource().getTotalRange();
+        if (!hasOre(getSource().getTotalRange(), target.getEntity().getLocation().getBlock())) {
             return;
         }
         info(getSource().getFindMessage());
+        info("Petrologie ist am Ende seiner Kraft");
         getSource().substractUsageCost(new SkillAction(getSource()));
+        remove();
+    }
+
+    private boolean hasOre(int range, final Block startBlock) {
+
+        for (int x = -range; x <= range; x++) {
+            for (int y = -range; y <= range; y++) {
+                for (int z = -range; z <= range; z++) {
+                    if (getSource().getMatBlocks()
+                            .contains(startBlock.getRelative(x, y, z).getType())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

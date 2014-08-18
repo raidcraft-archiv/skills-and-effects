@@ -41,14 +41,9 @@ public class RecursiveBlockBreakEffect extends ExpirableEffect<RecursiveBlockBre
 
         PlayerInteractEvent event = trigger.getEvent();
 
-        if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
-            return;
-        }
-
-        // check if correct tool in use
-        if (!getSource().isValid(trigger)) {
-            warn(Translator.tr(SkillsPlugin.class, event.getPlayer(),
-                    "skills.recursive-block-break.wrong-tool", "You have the wrong tool equiped for this skill!"));
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK
+                || !getSource().isValidTool(event)
+                || !getSource().isValidBlock(event)) {
             return;
         }
 

@@ -16,11 +16,12 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>skills-and-effects</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.3.5-develop-SNAPSHOT</version>
     <name>SkillsAndEffects</name>
 
     <parent>
@@ -44,8 +45,13 @@
     <dependencies>
         <dependency>
             <groupId>de.raidcraft</groupId>
+            <artifactId>raidcraft-api</artifactId>
+            <version>1.4.9-develop-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.raidcraft</groupId>
             <artifactId>skills</artifactId>
-            <version>${rc.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

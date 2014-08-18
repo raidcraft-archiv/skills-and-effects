@@ -11,8 +11,9 @@ import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
+import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pve.effects.OreFinderEffect;
-import de.raidcraft.util.ItemUtils;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -28,8 +29,12 @@ import java.util.HashSet;
 )
 public class OreFinder extends AbstractLevelableSkill implements CommandTriggered {
 
-    private HashSet<Integer> blockIds = new HashSet<>();
+    @Getter
+    private HashSet<Material> matBlocks = new HashSet<>();
+    @Getter
     private String findMessage;
+    @Getter
+    private int maxTime;
 
     public OreFinder(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -39,25 +44,19 @@ public class OreFinder extends AbstractLevelableSkill implements CommandTriggere
     @Override
     public void load(ConfigurationSection data) {
 
+        maxTime = (int) ConfigUtil.getTotalValue(this, data.getConfigurationSection("max-active-time"));
+        if (maxTime > 3600) {
+            maxTime = 3600;
+        }
         findMessage = data.getString("find-message", "Es liegt ein Hauch von Metalldunst in der Luft...");
         for (String key : data.getStringList("blocks")) {
-            Material item = ItemUtils.getItem(key);
-            if (item == null) {
-                RaidCraft.LOGGER.warning("Unknwon item defined " + key + " in config " + getName());
-                continue;
+            Material material = Material.matchMaterial(key);
+            if (material != null) {
+                matBlocks.add(material);
+            } else {
+                RaidCraft.LOGGER.warning("Unknown material in skill config of: " + getName() + ".yml");
             }
-            blockIds.add(item.getId());
         }
-    }
-
-    public String getFindMessage() {
-
-        return findMessage;
-    }
-
-    public HashSet<Integer> getBlockIds() {
-
-        return blockIds;
     }
 
     @Override
