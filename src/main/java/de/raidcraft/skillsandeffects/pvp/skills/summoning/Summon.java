@@ -232,7 +232,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
             this.friendlyName = config.getString("name", name);
             this.resourceCost = config.getConfigurationSection("resource-cost");
 
-            this.entityType = EntityType.fromName(config.getString("type"));
+            this.entityType = EntityType.valueOf(config.getString("type"));
             if (entityType == null) {
                 throw new InvalidConfigurationException("No Entity with the type " + config.getString("type") + " found!");
             }
