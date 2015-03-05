@@ -98,7 +98,7 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
         if (args.argsLength() < 1) {
             throw new CombatException(
-                    "Du musst mindestens eine Kreatur zum beschwören angeben: /cast " + getFriendlyName() + " <kreatur> [anzahl]\n" +
+                    "Du musst mindestens eine Kreatur zum beschwören angeben: /cast " + getFriendlyName() + " <anzahl> <kreatur>\n" +
                             StringUtil.joinString(creatureConfigs.keySet(), ", ", 0)
             );
         }
