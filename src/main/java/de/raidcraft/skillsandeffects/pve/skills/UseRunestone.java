@@ -98,7 +98,7 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (this.runestone == null || !getHolder().getPlayer().getItemInHand().equals(this.runestone)) {
+        if (this.runestone == null) {
             throw new CombatException("Bitte halte den Runenstein bis zum Ende der Teleportation in deiner Hand.");
         }
         Optional<TRunestone> entry = TRunestone.getRunestone(this.runestone);
