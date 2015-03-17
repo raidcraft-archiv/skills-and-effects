@@ -30,8 +30,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.Optional;
-
 /**
  * @author Silthus
  */
@@ -101,24 +99,23 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
         if (this.runestone == null) {
             throw new CombatException("Bitte halte den Runenstein bis zum Ende der Teleportation in deiner Hand.");
         }
-        Optional<TRunestone> entry = TRunestone.getRunestone(this.runestone);
-        if (!entry.isPresent()) {
+        TRunestone runestone = TRunestone.getRunestone(this.runestone);
+        if (runestone == null) {
             throw new CombatException("No valid runestone with the id " + this.runestone.getMetaDataId() + " found in the database!");
         }
-        TRunestone runestone = entry.get();
         World world = Bukkit.getWorld(runestone.getWorld());
         if (world == null) {
             throw new CombatException("Die Zielwelt (" + runestone.getWorld() + ") des Runensteins existiert nicht!");
         }
         Location location = new Location(world, runestone.getX(), runestone.getY(), runestone.getZ(), runestone.getYaw(), runestone.getPitch());
         if (runestone.getRemainingUses() > 1) {
-            TRunestone.updateRunestone(this.runestone, runestone.getRemainingUses() - 1);
+            TRunestone.updateRunestone(runestone, runestone.getRemainingUses() - 1);
         } else if (runestone.getRemainingUses() == 1) {
-            TRunestone.deleteRunestone(this.runestone);
+            TRunestone.deleteRunestone(runestone);
             getHolder().getPlayer().getInventory().remove(this.runestone);
             getHolder().sendMessage(ChatColor.RED + "Die Energie des Runensteins ist erloschen und er wurde zerstört.");
         } else {
-            TRunestone.deleteRunestone(this.runestone);
+            TRunestone.deleteRunestone(runestone);
             getHolder().getPlayer().getInventory().remove(this.runestone);
             throw new CombatException("Es wurden bereits alle Aufladungen des Runensteins aufgebraucht! Der Runenstein ist beim Benutzen zerbrochen...");
         }
