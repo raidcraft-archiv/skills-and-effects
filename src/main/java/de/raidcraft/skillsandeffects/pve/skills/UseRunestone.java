@@ -112,13 +112,13 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
         }
         Location location = new Location(world, runestone.getX(), runestone.getY(), runestone.getZ(), runestone.getYaw(), runestone.getPitch());
         if (runestone.getRemainingUses() > 1) {
-            TRunestone.updateRunestone(runestone, runestone.getRemainingUses() - 1);
+            TRunestone.updateRunestone(this.runestone, runestone.getRemainingUses() - 1);
         } else if (runestone.getRemainingUses() == 1) {
-            TRunestone.deleteRunestone(runestone);
+            TRunestone.deleteRunestone(this.runestone);
             getHolder().getPlayer().getInventory().remove(this.runestone);
             getHolder().sendMessage(ChatColor.RED + "Die Energie des Runensteins ist erloschen und er wurde zerstört.");
         } else {
-            TRunestone.deleteRunestone(runestone);
+            TRunestone.deleteRunestone(this.runestone);
             getHolder().getPlayer().getInventory().remove(this.runestone);
             throw new CombatException("Es wurden bereits alle Aufladungen des Runensteins aufgebraucht! Der Runenstein ist beim Benutzen zerbrochen...");
         }
