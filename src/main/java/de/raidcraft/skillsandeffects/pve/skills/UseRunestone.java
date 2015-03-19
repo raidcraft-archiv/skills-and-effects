@@ -119,9 +119,9 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
             throw new CombatException("Es wurden bereits alle Aufladungen des Runensteins aufgebraucht! Der Runenstein ist beim Benutzen zerbrochen...");
         }
         Location location = new Location(world,
-                (double) runestone.getX(),
-                (double) runestone.getY(),
-                (double) runestone.getZ(),
+                runestone.getX(),
+                runestone.getY(),
+                runestone.getZ(),
                 runestone.getYaw(),
                 runestone.getPitch());
         getHolder().getPlayer().teleport(location);
