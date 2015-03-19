@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
@@ -96,12 +97,15 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (this.runestone == null) {
+        CustomItemStack itemInHand = RaidCraft.getCustomItem(getHolder().getPlayer().getItemInHand());
+        if (this.runestone == null || !this.runestone.equals(itemInHand)) {
             throw new CombatException("Bitte halte den Runenstein bis zum Ende der Teleportation in deiner Hand.");
         }
         TRunestone runestone = TRunestone.getRunestone(this.runestone);
+        this.runestone = null;
         if (runestone == null) {
-            throw new CombatException("No valid runestone with the id " + this.runestone.getMetaDataId() + " found in the database!");
+            getHolder().getPlayer().getInventory().remove(getHolder().getPlayer().getItemInHand());
+            throw new CombatException("Der Runenstein in deiner Hand hat bereits seine Wirkung verloren und wurde zerstört.");
         }
         World world = Bukkit.getWorld(runestone.getWorld());
         if (world == null) {
@@ -111,11 +115,11 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
             TRunestone.updateRunestone(runestone, runestone.getRemainingUses() - 1);
         } else if (runestone.getRemainingUses() == 1) {
             TRunestone.deleteRunestone(runestone);
-            getHolder().getPlayer().getInventory().remove(this.runestone);
+            getHolder().getPlayer().getInventory().remove(getHolder().getPlayer().getItemInHand());
             getHolder().sendMessage(ChatColor.RED + "Die Energie des Runensteins ist erloschen und er wurde zerstört.");
         } else {
             TRunestone.deleteRunestone(runestone);
-            getHolder().getPlayer().getInventory().remove(this.runestone);
+            getHolder().getPlayer().getInventory().remove(getHolder().getPlayer().getItemInHand());
             throw new CombatException("Es wurden bereits alle Aufladungen des Runensteins aufgebraucht! Der Runenstein ist beim Benutzen zerbrochen...");
         }
         Location location = new Location(world,
