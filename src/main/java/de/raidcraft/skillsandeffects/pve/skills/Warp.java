@@ -77,6 +77,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         float yaw = (float) data.getDouble("yaw");
         float pitch = (float) data.getDouble("pitch");
         destination = new Location(Bukkit.getWorld(data.getString("world")), x, y, z, yaw, pitch);
+        if (destination.getWorld() == null) destination = Bukkit.getWorlds().get(0).getSpawnLocation();
     }
 
     @Override
