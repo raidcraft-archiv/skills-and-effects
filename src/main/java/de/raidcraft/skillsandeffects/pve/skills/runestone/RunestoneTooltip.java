@@ -17,7 +17,7 @@ public class RunestoneTooltip extends FixedMultilineTooltip {
         if (maxUses > 2 && uses < 3) color = ChatColor.GOLD;
         if (uses < 2) color = ChatColor.RED;
         setTooltip(
-                ChatColor.GREEN + "Aufladungen: " + ChatColor.AQUA + uses + ChatColor.GREEN + "/" + ChatColor.AQUA + maxUses,
+                ChatColor.GREEN + "Aufladungen: " + color + uses + ChatColor.GREEN + "/" + ChatColor.AQUA + maxUses,
                 ChatColor.GREEN + "Ort: " + ChatColor.GOLD + location
         );
     }
