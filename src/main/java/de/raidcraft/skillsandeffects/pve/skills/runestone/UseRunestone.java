@@ -119,6 +119,7 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
                 Tooltip tooltip = itemInHand.getTooltip(TooltipSlot.MISC);
                 itemInHand.setTooltip(new RunestoneTooltip(runestone.getRemainingUses(), runestone.getMaxUses(), tooltip.getTooltip()[1]));
                 itemInHand.rebuild(getHolder().getPlayer());
+                getHolder().getPlayer().getInventory().setItemInHand(itemInHand);
             } catch (CustomItemException ignored) {
             }
 
