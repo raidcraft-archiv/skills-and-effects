@@ -1,4 +1,4 @@
-package de.raidcraft.skillsandeffects.pve.skills;
+package de.raidcraft.skillsandeffects.pve.skills.runestone;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
@@ -6,6 +6,8 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.attachments.ItemAttachmentException;
 import de.raidcraft.api.items.attachments.UseableItemAttachment;
+import de.raidcraft.api.items.tooltip.Tooltip;
+import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.effect.common.CastTime;
@@ -112,7 +114,14 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
             throw new CombatException("Die Zielwelt (" + runestone.getWorld() + ") des Runensteins existiert nicht!");
         }
         if (runestone.getRemainingUses() > 1) {
-            TRunestone.updateRunestone(runestone, runestone.getRemainingUses() - 1);
+            try {
+                TRunestone.updateRunestone(runestone, runestone.getRemainingUses() - 1);
+                Tooltip tooltip = itemInHand.getTooltip(TooltipSlot.MISC);
+                itemInHand.setTooltip(new RunestoneTooltip(runestone.getRemainingUses(), runestone.getMaxUses(), tooltip.getTooltip()[1]));
+                itemInHand.rebuild(getHolder().getPlayer());
+            } catch (CustomItemException ignored) {
+            }
+
         } else if (runestone.getRemainingUses() == 1) {
             TRunestone.deleteRunestone(runestone);
             getHolder().getPlayer().getInventory().remove(getHolder().getPlayer().getItemInHand());

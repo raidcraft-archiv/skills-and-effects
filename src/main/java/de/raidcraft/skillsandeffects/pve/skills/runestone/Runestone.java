@@ -1,11 +1,11 @@
-package de.raidcraft.skillsandeffects.pve.skills;
+package de.raidcraft.skillsandeffects.pve.skills.runestone;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.items.CustomItemStack;
-import de.raidcraft.api.items.tooltip.SingleLineTooltip;
+import de.raidcraft.api.items.tooltip.FixedMultilineTooltip;
 import de.raidcraft.api.items.tooltip.TooltipSlot;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -17,6 +17,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TRunestone;
 import de.raidcraft.util.InventoryUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -49,17 +50,20 @@ public class Runestone extends AbstractSkill implements CommandTriggered {
     }
 
     @Override
-    public void runCommand(CommandContext commandContext) throws CombatException {
+    public void runCommand(CommandContext args) throws CombatException {
 
         if (this.runestone == null) {
             throw new CombatException("Invalid custom item defined in " + getName());
         }
         Location location = getHolder().getPlayer().getLocation();
+        String locString = location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + " (" + location.getWorld().getName() + ")";
+        if (args.argsLength() > 0) {
+            locString = args.getJoinedStrings(0);
+        }
         CustomItemStack runestone = this.runestone.createNewItem();
-        runestone.setTooltip(new SingleLineTooltip(TooltipSlot.MISC, "Welt: " + location.getWorld().getName() + " " +
-                "- x: " + location.getBlockX() +
-                "- y: " + location.getBlockY() +
-                "- z: " + location.getBlockZ()
+        runestone.setTooltip(new FixedMultilineTooltip(TooltipSlot.MISC,
+                ChatColor.GREEN + "Aufladungen: " + ChatColor.AQUA + uses + ChatColor.GREEN + "/" + ChatColor.AQUA + uses,
+                ChatColor.GREEN + "Ort: " + ChatColor.GOLD + locString
         ));
         TRunestone.createRunestone(runestone, uses, uses, location);
         InventoryUtils.addOrDropItems(getHolder().getPlayer(), runestone);
