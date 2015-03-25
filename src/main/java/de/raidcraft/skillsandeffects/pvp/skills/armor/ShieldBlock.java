@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.armor;
 
 import de.raidcraft.api.items.ArmorType;
 import de.raidcraft.api.items.CustomArmor;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.api.combat.AttackSource;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -58,8 +59,8 @@ public class ShieldBlock extends AbstractLevelableSkill implements Triggered {
             return;
         }
         // check if the player is wearing a shield
-        CustomArmor armor = getHolder().getArmor(EquipmentSlot.SHIELD_HAND);
-        if (armor == null || armor.getArmorType() != ArmorType.SHIELD) {
+        CustomItemStack armor = getHolder().getArmor(EquipmentSlot.SHIELD_HAND);
+        if (armor == null || !(armor.getItem() instanceof CustomArmor) || ((CustomArmor) armor.getItem()).getArmorType() != ArmorType.SHIELD) {
             return;
         }
         if (Math.random() < getBlockChance()) {

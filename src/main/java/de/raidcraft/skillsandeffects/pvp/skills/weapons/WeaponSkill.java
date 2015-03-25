@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.weapons;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -51,10 +52,12 @@ public class WeaponSkill extends AbstractLevelableSkill implements Triggered {
                 || weaponType == null) {
             return;
         }
-        Collection<CustomWeapon> weapons = trigger.getSource().getWeapons();
-        for (CustomWeapon weapon : weapons) {
-            if (weapon.getWeaponType() == weaponType) {
-                getAttachedLevel().addExp(getUseExp());
+        Collection<CustomItemStack> weapons = trigger.getSource().getWeapons();
+        for (CustomItemStack weapon : weapons) {
+            if (weapon.getItem() instanceof CustomWeapon) {
+                if (((CustomWeapon) weapon.getItem()).getWeaponType() == weaponType) {
+                    getAttachedLevel().addExp(getUseExp());
+                }
             }
         }
     }
