@@ -91,9 +91,6 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
                 removeEffect(Immobilize.class);
             } else {
                 if (destroyOnUse) {
-                    if (!player.getInventory().getItemInHand().equals(item)) {
-                        throw new ItemAttachmentException("Du musst das Item in der Hand halten");
-                    }
                     player.getInventory().setItemInHand(null);
                 }
                 new SkillAction(this).run();
