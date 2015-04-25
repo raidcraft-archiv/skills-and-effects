@@ -13,8 +13,10 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.util.EffectUtil;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,7 +39,7 @@ public class Blink extends AbstractSkill implements CommandTriggered {
 
         Location loc = getTargetBlock().add(0, 1, 0);
         Location oldLoc = getHolder().getEntity().getLocation();
-        List<Block> lineOfSight = getHolder().getEntity().getLineOfSight(null, getTotalRange());
+        List<Block> lineOfSight = getHolder().getEntity().getLineOfSight(new HashSet<Material>(), getTotalRange());
 
         loc.setPitch(oldLoc.getPitch());
         loc.setYaw(oldLoc.getYaw());
