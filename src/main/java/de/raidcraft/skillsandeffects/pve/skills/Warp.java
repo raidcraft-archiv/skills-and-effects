@@ -40,6 +40,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
     private boolean cancelOnDamage;
     private boolean cancelOnAttack;
     private boolean bedSpawn;
+    private boolean destroyOnUse;
     private Location destination;
 
     public Warp(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -71,6 +72,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         cancelOnDamage = data.getBoolean("cancel-on-damage", true);
         cancelOnAttack = data.getBoolean("cancel-on-attack", true);
         bedSpawn = data.getBoolean("bed-spawn", false);
+        destroyOnUse = data.getBoolean("destroy-on-use", false);
         int x = data.getInt("x");
         int y = data.getInt("y");
         int z = data.getInt("z");
@@ -88,6 +90,12 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
                 getHolder().removeEffect(CastTime.class);
                 removeEffect(Immobilize.class);
             } else {
+                if (destroyOnUse) {
+                    if (!player.getInventory().getItemInHand().equals(item)) {
+                        throw new ItemAttachmentException("Du musst das Item in der Hand halten");
+                    }
+                    player.getInventory().setItemInHand(null);
+                }
                 new SkillAction(this).run();
                 // also apply the lock down effect
                 addEffect(Immobilize.class);
