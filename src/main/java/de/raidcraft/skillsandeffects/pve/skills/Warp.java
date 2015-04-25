@@ -90,12 +90,12 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
                 getHolder().removeEffect(CastTime.class);
                 removeEffect(Immobilize.class);
             } else {
-                if (destroyOnUse) {
-                    player.getInventory().setItemInHand(null);
-                }
                 new SkillAction(this).run();
                 // also apply the lock down effect
                 addEffect(Immobilize.class);
+                if (destroyOnUse) {
+                    player.getInventory().setItemInHand(null);
+                }
             }
         } catch (CombatException e) {
             throw new ItemAttachmentException(e.getMessage());
