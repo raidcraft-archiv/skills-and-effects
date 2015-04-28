@@ -46,7 +46,6 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
         }
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this, "Schaden um " + (int) (increase * 100) + "% (" + (newDamage - oldDamage) + ") erhöht.");
-        getSource().getHolder().debug("damaged increased " + oldDamage + "->" + newDamage + " - " + getName());
     }
 
     @TriggerHandler
@@ -60,7 +59,6 @@ public class BloodlustEffect extends ExpirableEffect<Skill> implements Stackable
         }
         trigger.getAttack().setDamage(newDamage);
         getSource().getHolder().combatLog(this, "Erlittener Schaden um " + increase * 100 + "% (" + (newDamage - oldDamage) + ") erhöht.");
-        getSource().getHolder().debug("taken damaged increased " + oldDamage + "->" + newDamage + " - " + getName());
     }
 
     @Override
