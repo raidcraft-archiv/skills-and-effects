@@ -3,9 +3,10 @@ package de.raidcraft.skillsandeffects.pvp.skills.summoning;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.util.StringUtil;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.api.requirement.RequirementManager;
-import de.raidcraft.api.requirement.RequirementResolver;
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
+import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.CharacterManager;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
@@ -31,6 +32,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -81,8 +83,8 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         super.onLevelGain();
         boolean match = true;
         for (SummonedCreatureConfig config : creatureConfigs.values()) {
-            for (Requirement<Hero> requirement : config.requirements) {
-                if (!requirement.isMet(holder)) {
+            for (Requirement<Player> requirement : config.requirements) {
+                if (!requirement.test(holder.getPlayer())) {
                     match = false;
                     break;
                 }
@@ -105,8 +107,8 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
         SummonedCreatureConfig config = findMatchingCreature(args.getString(0));
 
-        if (!config.isMeetingAllRequirements(holder)) {
-            throw new CombatException(config.getResolveReason(holder));
+        if (!config.isMeetingAllRequirements(holder.getPlayer())) {
+            throw new CombatException(config.getResolveReason(holder.getPlayer()));
         }
 
         int amount = args.getInteger(1, 1);
@@ -205,14 +207,14 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
     }
 
-    public class SummonedCreatureConfig implements RequirementResolver<Hero> {
+    public class SummonedCreatureConfig implements RequirementResolver<Player> {
 
         private final String name;
         private final Summon skill;
         private String friendlyName;
         private EntityType entityType;
         private int expForSummon;
-        private List<Requirement<Hero>> requirements = new ArrayList<>();
+        private List<Requirement<Player>> requirements = new ArrayList<>();
         private ConfigurationSection resourceCost;
         private ConfigurationSection amount;
         private ConfigurationSection minDamage;
@@ -239,14 +241,16 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
 
             expForSummon = config.getInt("exp", 0);
 
-            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-                @Override
-                public void run() {
+            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), () -> {
 
-                    requirements.addAll(RequirementManager.createRequirements(
-                            SummonedCreatureConfig.this,
-                            config.getConfigurationSection("requirements")
+                try {
+                    requirements.addAll(RequirementFactory.getInstance().createRequirements(getName(),
+                            config.getConfigurationSection("requirements"),
+                            Player.class
                     ));
+                } catch (RequirementException e) {
+                    RaidCraft.LOGGER.warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(config));
+                    requirements.clear();
                 }
             }, 1L);
 
@@ -281,37 +285,9 @@ public class Summon extends AbstractLevelableSkill implements CommandTriggered {
         }
 
         @Override
-        public Hero getObject() {
-
-            return getHolder();
-        }
-
-        @Override
-        public List<Requirement<Hero>> getRequirements() {
+        public List<Requirement<Player>> getRequirements() {
 
             return requirements;
-        }
-
-        @Override
-        public boolean isMeetingAllRequirements(Hero object) {
-
-            for (Requirement<Hero> requirement : requirements) {
-                if (!requirement.isMet(object)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public String getResolveReason(Hero object) {
-
-            for (Requirement<Hero> requirement : requirements) {
-                if (!requirement.isMet(object)) {
-                    return requirement.getLongReason();
-                }
-            }
-            return getFriendlyName() + " kann freigeschaltet werden.";
         }
 
         public String getFriendlyName() {

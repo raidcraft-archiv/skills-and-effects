@@ -1,9 +1,10 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.api.requirement.RequirementManager;
-import de.raidcraft.api.requirement.RequirementResolver;
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
+import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -25,6 +26,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -93,7 +95,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
                         ConfigurationSection section = config.getConfigurationSection(key + ".drops." + dropKey);
                         Drop drop = new Drop(getHolder(), droppedConfigItem);
                         drop.setData((byte) ItemUtils.getItemData(dropKey));
-                        drop.setRequirements(RequirementManager.createRequirements(drop, section.getConfigurationSection("requirements")));
+                        drop.setRequirements(config.getConfigurationSection("requirements"));
                         drop.setMinAmount(section.getConfigurationSection("min-amount"));
                         drop.setMinAmount(section.getConfigurationSection("max-amount"));
                         drop.setChance(section.getConfigurationSection("chance"));
@@ -165,7 +167,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         dropItems(specialCraftingDrops.get(itemType), trigger.getEvent().getWhoClicked().getLocation());
     }
 
-    public class Drop implements RequirementResolver<Hero> {
+    public class Drop implements RequirementResolver<Player> {
 
         private final Hero hero;
         private final Material material;
@@ -173,7 +175,7 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         private int exp;
         private ConfigurationSection minAmount;
         private ConfigurationSection maxAmount;
-        private List<Requirement<Hero>> requirements = new ArrayList<>();
+        private List<Requirement<Player>> requirements = new ArrayList<>();
         private ConfigurationSection chance;
 
         public Drop(Hero hero, Material material) {
@@ -199,8 +201,8 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         public ItemStack getDrops(Skill skill) {
 
-            for (Requirement<Hero> requirement : getRequirements()) {
-                if (!requirement.isMet(skill.getHolder())) {
+            for (Requirement<Player> requirement : getRequirements()) {
+                if (!requirement.test(skill.getHolder().getPlayer())) {
                     return null;
                 }
             }
@@ -263,43 +265,19 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
         }
 
         @Override
-        public Hero getObject() {
-
-            return hero;
-        }
-
-        @Override
-        public List<Requirement<Hero>> getRequirements() {
+        public List<Requirement<Player>> getRequirements() {
 
             return requirements;
         }
 
-        public void setRequirements(List<Requirement<Hero>> requirements) {
+        public void setRequirements(ConfigurationSection config) {
 
-            this.requirements.clear();
-            this.requirements.addAll(requirements);
-        }
-
-        @Override
-        public boolean isMeetingAllRequirements(Hero object) {
-
-            for (Requirement<Hero> requirement : requirements) {
-                if (!requirement.isMet(object)) {
-                    return false;
-                }
+            try {
+                this.requirements.clear();
+                this.requirements.addAll(RequirementFactory.getInstance().createRequirements(getName(), config, Player.class));
+            } catch (RequirementException e) {
+                RaidCraft.LOGGER.warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(config));
             }
-            return true;
-        }
-
-        @Override
-        public String getResolveReason(Hero object) {
-
-            for (Requirement<Hero> requirement : requirements) {
-                if (!requirement.isMet(hero)) {
-                    return requirement.getLongReason();
-                }
-            }
-            return "Alle Vorraussetzungen sind erfüllt.";
         }
     }
 }

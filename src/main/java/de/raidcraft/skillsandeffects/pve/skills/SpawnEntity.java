@@ -2,9 +2,10 @@ package de.raidcraft.skillsandeffects.pve.skills;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.requirement.Requirement;
-import de.raidcraft.api.requirement.RequirementManager;
-import de.raidcraft.api.requirement.RequirementResolver;
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
+import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -18,7 +19,9 @@ import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -51,7 +54,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
                 if (type != null) {
                     int amount = section.getInt("amount", 1);
                     EntitySpawner spawner = new EntitySpawner(type, amount, section.getConfigurationSection("chance"), getHolder());
-                    spawner.setRequirements(RequirementManager.createRequirements(spawner, section.getConfigurationSection("requirements")));
+                    spawner.setRequirements(section.getConfigurationSection("requirements"));
                     spawnChance.put(priority, spawner);
                 } else {
                     RaidCraft.LOGGER.warning("Entity Type " + section.getString("entity") + " unknown in " + getName() + ".yml");
@@ -68,7 +71,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         Location location = getHolder().getEntity().getLocation();
         for (EntitySpawner spawner : spawnChance.descendingMap().values()) {
 
-            if (!spawner.isMeetingAllRequirements(getHolder())) {
+            if (!spawner.isMeetingAllRequirements(getHolder().getPlayer())) {
                 continue;
             }
 
@@ -81,13 +84,13 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
     }
 
-    public static class EntitySpawner implements RequirementResolver<Hero> {
+    public static class EntitySpawner implements RequirementResolver<Player> {
 
         private final Hero hero;
         private final EntityType type;
         private final int amount;
         private final ConfigurationSection chance;
-        private List<Requirement<Hero>> requirements;
+        private List<Requirement<Player>> requirements;
 
         public EntitySpawner(EntityType type, int amount, ConfigurationSection chance, Hero hero) {
 
@@ -113,42 +116,19 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
         }
 
         @Override
-        public Hero getObject() {
-
-            return hero;
-        }
-
-        @Override
-        public List<Requirement<Hero>> getRequirements() {
+        public List<Requirement<Player>> getRequirements() {
 
             return requirements;
         }
 
-        @Override
-        public boolean isMeetingAllRequirements(Hero object) {
+        public void setRequirements(ConfigurationSection config) {
 
-            for (Requirement<Hero> requirement : requirements) {
-                if (!requirement.isMet(object)) {
-                    return false;
-                }
+            try {
+                this.requirements = RequirementFactory.getInstance().createRequirements(type.name(), config, Player.class);
+            } catch (RequirementException e) {
+                RaidCraft.LOGGER.warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(config));
+                this.requirements = new ArrayList<>();
             }
-            return true;
-        }
-
-        @Override
-        public String getResolveReason(Hero object) {
-
-            for (Requirement<Hero> requirement : requirements) {
-                if (!requirement.isMet(object)) {
-                    return requirement.getLongReason();
-                }
-            }
-            return "Erfüllt alle Vorraussetzungen.";
-        }
-
-        public void setRequirements(List<Requirement<Hero>> requirements) {
-
-            this.requirements = requirements;
         }
     }
 }
