@@ -40,17 +40,6 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
     }
 
     @Override
-    protected void apply(CharacterTemplate target) throws CombatException {
-
-        // set the rage regen
-        RageEffect effect = getSource().addEffect(RageEffect.class);
-        oldRagePerAttack = effect.getRagePerAttackDamage();
-        oldRagePerDamage = effect.getRagePerDamage();
-        effect.setRagePerAttackDamage(oldRagePerAttack + rageRegenIncrease * oldRagePerAttack);
-        effect.setRagePerDamage(oldRagePerDamage + rageRegenIncrease * oldRagePerDamage);
-    }
-
-    @Override
     public void load(ConfigurationSection data) {
 
         attackIncrease = data.getDouble("attack-increase", 0.25);
@@ -60,12 +49,27 @@ public class BerserkerAvatar extends AbstractAvatar implements Triggered {
     }
 
     @Override
+    protected void apply(CharacterTemplate target) throws CombatException {
+
+        // set the rage regen
+        if (getSource().hasEffect(RageEffect.class)) {
+            RageEffect effect = getSource().getEffect(RageEffect.class);
+            oldRagePerAttack = effect.getRagePerAttackDamage();
+            oldRagePerDamage = effect.getRagePerDamage();
+            effect.setRagePerAttackDamage(oldRagePerAttack + rageRegenIncrease * oldRagePerAttack);
+            effect.setRagePerDamage(oldRagePerDamage + rageRegenIncrease * oldRagePerDamage);
+        }
+    }
+
+    @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
         // reset the rage regen
-        RageEffect effect = getSource().addEffect(RageEffect.class);
-        effect.setRagePerAttackDamage(oldRagePerAttack);
-        effect.setRagePerDamage(oldRagePerDamage);
+        if (getSource().hasEffect(RageEffect.class)) {
+            RageEffect effect = getSource().getEffect(RageEffect.class);
+            effect.setRagePerAttackDamage(oldRagePerAttack);
+            effect.setRagePerDamage(oldRagePerDamage);
+        }
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.HIGHEST)
