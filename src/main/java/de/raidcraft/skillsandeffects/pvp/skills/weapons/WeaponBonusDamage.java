@@ -1,6 +1,8 @@
 package de.raidcraft.skillsandeffects.pvp.skills.weapons;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.WeaponAttack;
@@ -15,6 +17,7 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.CustomItemUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -90,14 +93,16 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
             return;
         }
         WeaponAttack attack = (WeaponAttack) trigger.getAttack();
-        if (!bonusDamage.containsKey(attack.getWeapon().getWeaponType())) {
-            return;
+        for (CustomItemStack customItemStack : attack.getWeapons()) {
+            CustomWeapon weapon = CustomItemUtil.getWeapon(customItemStack);
+            if (bonusDamage.containsKey(weapon.getWeaponType())) {
+                double oldDamage = attack.getDamage();
+                double bonusDamage = getBonusDamage(weapon.getWeaponType());
+                double newDamage = oldDamage + oldDamage * bonusDamage;
+                attack.combatLog(this, "Waffenschaden um " + (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
+                attack.setDamage(newDamage);
+                getAttachedLevel().addExp((int) (newDamage * expPerDamage) + getUseExp());
+            }
         }
-        double oldDamage = attack.getDamage();
-        double bonusDamage = getBonusDamage(attack.getWeapon().getWeaponType());
-        double newDamage = oldDamage + oldDamage * bonusDamage;
-        attack.combatLog(this, "Waffenschaden um " + (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
-        attack.setDamage(newDamage);
-        getAttachedLevel().addExp((int) (newDamage * expPerDamage) + getUseExp());
     }
 }
