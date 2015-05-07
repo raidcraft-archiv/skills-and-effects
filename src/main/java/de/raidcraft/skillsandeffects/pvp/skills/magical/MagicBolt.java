@@ -25,8 +25,8 @@ import de.raidcraft.skills.effects.disabling.Stun;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.skillsandeffects.pvp.effects.disabling.Pigify;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.Vector;
 
 /**
  * @author Silthus
@@ -76,7 +76,7 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
         interrupt = data.getBoolean("interrupt", false);
         disable = data.getBoolean("disable", false);
         poison = data.getBoolean("poison", false);
-        throwUp = data.getDouble("throw-up", 0.0);
+        throwUp = ConfigUtil.getTotalValue(this, data.getConfigurationSection("throw-up"));
         lifeLeech = data.getConfigurationSection("life-leech");
         entityDamageBonus = data.getConfigurationSection("entity-damage-bonus");
     }
@@ -101,9 +101,8 @@ public class MagicBolt extends AbstractSkill implements CommandTriggered, Trigge
             }
             if (poison) MagicBolt.this.addEffect(attack.getTarget(), Poison.class);
             if (throwUp > 0.0) {
-                Location location = attack.getTarget().getEntity().getLocation();
-                Location newLocation = location.clone().add(0, throwUp, 0);
-                attack.getTarget().getEntity().setVelocity(newLocation.toVector().subtract(location.toVector()));
+                Vector vector = attack.getTarget().getEntity().getVelocity().clone().add(new Vector(0, throwUp, 0));
+                attack.getTarget().getEntity().setVelocity(vector);
             }
             if (lifeLeech != null) {
                 new HealAction<>(MagicBolt.this, getHolder(), (int) (attack.getDamage() * getLifeLeechPercentage())).run();
