@@ -2,7 +2,6 @@ package de.raidcraft.skillsandeffects.pvp.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -55,8 +54,8 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
         Block sourceBlock = getTargetBlock().getBlock();
         BlockFace face = LocationUtil.rotateBlockFace(getFacing());
 
-        if (!RaidCraft.isPvPAllowed(getHolder().getPlayer(), sourceBlock.getLocation())) {
-            throw new CombatException("PvP ist hier nicht erlaubt");
+        if (LocationUtil.isSafeZone(getHolder().getPlayer(), sourceBlock.getLocation())) {
+            throw new CombatException(CombatException.Type.PVP);
         }
         BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
     }

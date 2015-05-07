@@ -5,7 +5,6 @@ import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
-import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -55,16 +54,10 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                if (LocationUtil.isSafeZone(getHolder().getPlayer(), target.getEntity().getLocation())) {
                     throw new CombatException(CombatException.Type.INVALID_TARGET);
                 }
-                addEffect(target, SoulleecherEffect.class).setDeathCallback(new Callback<CharacterTemplate>() {
-                    @Override
-                    public void run(CharacterTemplate target) throws CombatException {
-
-                        resource.setCurrent(resource.getCurrent() + 1);
-                    }
-                });
+                addEffect(target, SoulleecherEffect.class).setDeathCallback(target1 -> resource.setCurrent(resource.getCurrent() + 1));
             }
         });
     }

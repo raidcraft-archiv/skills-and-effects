@@ -50,7 +50,7 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                if (LocationUtil.isSafeZone(getHolder().getPlayer(), target.getEntity().getLocation())) {
                     throw new CombatException(CombatException.Type.INVALID_TARGET);
                 }
                 if (hasEffect(target, FlamestrikeEffect.class)) {

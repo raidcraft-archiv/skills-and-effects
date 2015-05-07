@@ -41,7 +41,7 @@ public class Pull extends AbstractSkill implements CommandTriggered {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
-                if (LocationUtil.isSafeZone(target.getEntity().getLocation())) {
+                if (LocationUtil.isSafeZone(getHolder().getPlayer(), target.getEntity().getLocation())) {
                     throw new CombatException(CombatException.Type.INVALID_TARGET);
                 }
                 // calculate the velocity and pull the target towards the caster

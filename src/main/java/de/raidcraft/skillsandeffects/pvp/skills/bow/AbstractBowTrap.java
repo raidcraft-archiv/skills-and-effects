@@ -2,7 +2,6 @@ package de.raidcraft.skillsandeffects.pvp.skills.bow;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.ProjectileType;
-import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.effect.common.QueuedProjectile;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -43,14 +42,12 @@ public abstract class AbstractBowTrap extends AbstractSkill implements CommandTr
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(QueuedProjectile.class).addCallback(new LocationCallback() {
-            @Override
-            public void run(Location location) throws CombatException {
+        addEffect(QueuedProjectile.class).addCallback(location -> {
 
-                if (!LocationUtil.isSafeZone(location)) {
-                    runTrap(location);
-                }
+            if (LocationUtil.isSafeZone(getHolder().getPlayer(), location)) {
+                throw new CombatException(CombatException.Type.PVP);
             }
+            runTrap(location);
         }, ProjectileType.ARROW);
     }
 
