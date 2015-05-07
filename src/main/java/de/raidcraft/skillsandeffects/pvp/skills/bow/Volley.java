@@ -4,7 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
 import de.raidcraft.skills.api.combat.action.RangedAttack;
-import de.raidcraft.skills.api.combat.callback.ProjectileCallback;
+import de.raidcraft.skills.api.combat.callback.LocationCallback;
 import de.raidcraft.skills.api.effect.common.QueuedProjectile;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -15,6 +15,8 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.util.LocationUtil;
+import de.raidcraft.util.MathUtil;
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,12 +54,23 @@ public class Volley extends AbstractLevelableSkill implements CommandTriggered {
         addEffect(QueuedProjectile.class).addCallback(location -> {
 
 
-            for (int i = 1; i < getAmount(); i++) {
-                RangedAttack<ProjectileCallback> attack = rangedAttack(ProjectileType.ARROW, getTotalDamage());
-                Vector velocity = calculateDirection(attack.getSource().getEntity().getLocation(), attack.getSource().getEntity().getEyeLocation().toVector());
-                velocity.multiply(attack.getForce());
-                attack.setVelocity(velocity);
-                attack.run();
+            for (int i = 0; i < getAmount(); i++) {
+                Location top = location.clone();
+                // frst Meteor hits exactly
+                if (i == 0) {
+                    top = top.clone().add(0.5, MathUtil.RANDOM.nextInt(3) + 3, 0.5);
+                } else {
+                    top = top.add(MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble(),
+                            MathUtil.RANDOM.nextInt(3) + 3,
+                            MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble());
+                }
+                try {
+                    RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.ARROW);
+                    attack.setSpawnLocation(top);
+                    attack.setVelocity(LocationUtil.getDirection(top, location));
+                    attack.run();
+                } catch (CombatException ignored) {
+                }
             }
         });
     }
