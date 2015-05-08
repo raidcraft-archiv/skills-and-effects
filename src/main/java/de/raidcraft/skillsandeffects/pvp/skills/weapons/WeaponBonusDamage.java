@@ -4,8 +4,9 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.CustomWeapon;
 import de.raidcraft.api.items.WeaponType;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.WeaponAttack;
+import de.raidcraft.skills.api.combat.action.Attack;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -86,13 +87,13 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onAttack(AttackTrigger trigger) {
 
-        if (!allAttacks && !trigger.getAttack().isOfAttackType(EffectType.DEFAULT_ATTACK)) {
+        Attack<?, CharacterTemplate> attack = trigger.getAttack();
+        if (!allAttacks && !attack.isOfAttackType(EffectType.DEFAULT_ATTACK)) {
             return;
         }
-        if (!(trigger.getAttack() instanceof WeaponAttack)) {
+        if (attack.getWeapons().isEmpty()) {
             return;
         }
-        WeaponAttack attack = (WeaponAttack) trigger.getAttack();
         for (CustomItemStack customItemStack : attack.getWeapons()) {
             CustomWeapon weapon = CustomItemUtil.getWeapon(customItemStack);
             if (bonusDamage.containsKey(weapon.getWeaponType())) {
