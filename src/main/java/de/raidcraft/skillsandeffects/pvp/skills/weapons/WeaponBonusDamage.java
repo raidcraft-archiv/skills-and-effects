@@ -70,7 +70,7 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GRAY).append("Erhöht den Schaden mit folgenden Waffen: ");
         for (WeaponType weaponType : bonusDamage.keySet()) {
-            sb.append(ChatColor.YELLOW).append("\n\t- ").append(ChatColor.AQUA).append(weaponType.getGermanName()).append(ChatColor.RED);
+            sb.append(ChatColor.YELLOW).append("\n\t- ").append(ChatColor.AQUA).append(weaponType.getGermanName()).append(": ").append(ChatColor.RED);
             sb.append((int) getBonusDamage(weaponType) * 100).append("%");
         }
         return sb.toString();
