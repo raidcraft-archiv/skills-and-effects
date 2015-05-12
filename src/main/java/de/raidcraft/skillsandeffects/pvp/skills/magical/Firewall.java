@@ -8,6 +8,7 @@ import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
+import de.raidcraft.skills.api.skill.AbilityEffectStage;
 import de.raidcraft.skills.api.skill.AbstractLevelableSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
@@ -58,6 +59,7 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
             throw new CombatException(CombatException.Type.PVP);
         }
         BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
+        getAmbientEffects(AbilityEffectStage.IMPACT, sourceBlock.getLocation()).forEach(ambientEffect -> ambientEffect.run(sourceBlock.getLocation()));
     }
 
     private int getWidth() {
