@@ -3,7 +3,7 @@ package de.raidcraft.skillsandeffects.pve.skills;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;

@@ -4,7 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
