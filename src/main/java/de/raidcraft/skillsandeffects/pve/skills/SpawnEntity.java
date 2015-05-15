@@ -2,9 +2,8 @@ package de.raidcraft.skillsandeffects.pve.skills;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -21,7 +20,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -123,12 +121,7 @@ public class SpawnEntity extends AbstractSkill implements CommandTriggered {
 
         public void setRequirements(ConfigurationSection config) {
 
-            try {
-                this.requirements = RequirementFactory.getInstance().createRequirements(type.name(), config, Player.class);
-            } catch (RequirementException e) {
-                RaidCraft.LOGGER.warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(config));
-                this.requirements = new ArrayList<>();
-            }
+            this.requirements = ActionAPI.createRequirements(type.name(), config, Player.class);
         }
     }
 }
