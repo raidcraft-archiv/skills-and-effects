@@ -1,9 +1,8 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.RequirementFactory;
 import de.raidcraft.api.action.requirement.RequirementResolver;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -272,12 +271,8 @@ public class SpecialDrop extends AbstractSkill implements Triggered {
 
         public void setRequirements(ConfigurationSection config) {
 
-            try {
-                this.requirements.clear();
-                this.requirements.addAll(RequirementFactory.getInstance().createRequirements(getName(), config, Player.class));
-            } catch (RequirementException e) {
-                RaidCraft.LOGGER.warning(e.getMessage() + " in " + de.raidcraft.util.ConfigUtil.getFileName(config));
-            }
+            this.requirements.clear();
+            this.requirements.addAll(ActionAPI.createRequirements(getName(), config, Player.class));
         }
     }
 }
