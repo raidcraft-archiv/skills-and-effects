@@ -71,7 +71,7 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
         sb.append(ChatColor.GRAY).append("Erhöht den Schaden mit folgenden Waffen: ");
         for (WeaponType weaponType : bonusDamage.keySet()) {
             sb.append(ChatColor.YELLOW).append("\n\t- ").append(ChatColor.AQUA).append(weaponType.getGermanName()).append(": ").append(ChatColor.RED);
-            sb.append((int) getBonusDamage(weaponType) * 100).append("%");
+            sb.append((int) (getBonusDamage(weaponType) * 100)).append("%");
         }
         return sb.toString();
     }
@@ -100,7 +100,7 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
                 double oldDamage = attack.getDamage();
                 double bonusDamage = getBonusDamage(weapon.getWeaponType());
                 double newDamage = oldDamage + oldDamage * bonusDamage;
-                attack.combatLog(this, "Waffenschaden um " + (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
+                attack.combatLog(this, "Waffenschaden um " + (int) (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
                 attack.setDamage(newDamage);
                 getAttachedLevel().addExp((int) (newDamage * expPerDamage) + getUseExp());
             }
