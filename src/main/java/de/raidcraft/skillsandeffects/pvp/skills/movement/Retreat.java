@@ -52,7 +52,7 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         Vector direction = LocationUtil.getRevertedViewDirection(getHolder().getEntity().getLocation());
-        direction.normalize().multiply(force).clone().subtract(getHolder().getPlayer().getLocation().toVector()).add(new Vector(0, height, 0));
+        direction = direction.multiply(force).add(new Vector(0, height, 0));
         getHolder().getEntity().setVelocity(direction);
         // also remove the combat effect
         if (removeCombat) {
