@@ -28,6 +28,7 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
 
     private boolean removeCombat = false;
     private double force = 2.0;
+    private double height = 3.0;
 
     public Retreat(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -39,6 +40,7 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
 
         removeCombat = data.getBoolean("remove-combat", false);
         force = data.getDouble("force", 2.0);
+        height = data.getDouble("height", 3.0);
     }
 
     public boolean isRemovingCombat() {
@@ -50,7 +52,7 @@ public class Retreat extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         Vector direction = LocationUtil.getRevertedViewDirection(getHolder().getEntity().getLocation());
-        direction.normalize().add(new Vector(0, 3, 0)).multiply(force);
+        direction.multiply(force).add(new Vector(0, height, 0));
         getHolder().getEntity().setVelocity(direction);
         // also remove the combat effect
         if (removeCombat) {
