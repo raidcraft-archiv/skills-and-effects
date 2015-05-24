@@ -1,8 +1,9 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.language.Translator;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.action.SkillAction;
-import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -16,12 +17,16 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.skillsandeffects.pve.effects.tools.RecursiveBlockBreakEffect;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -79,18 +84,18 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
         }
         checkUsage(new SkillAction(this));
 
-        addEffect(QueuedInteract.class).addCallback(new Callback<PlayerInteractTrigger>() {
-            @Override
-            public void run(PlayerInteractTrigger trigger) throws CombatException {
+        addEffect(QueuedInteract.class).addCallback(callback -> {
 
-                if (trigger.getEvent().getAction() != Action.LEFT_CLICK_BLOCK
-                        || !isValidTool(event)) {
-                    return;
-                }
-
-                addEffect(RecursiveBlockBreakEffect.class);
-                substractUsageCost(new SkillAction(RecursiveBlockBreak.this));
+            if (callback.getEvent().getAction() != Action.LEFT_CLICK_BLOCK
+                    || !isValidTool(event)
+                    || !isValidBlock(callback.getEvent())) {
+                return;
             }
+
+            substractUsageCost(new SkillAction(RecursiveBlockBreak.this));
+            int amount = breakRecursive(event.getPlayer(), event.getItem(), event.getClickedBlock(), 0, getMaxAmount());
+            info(Translator.tr(SkillsPlugin.class, event.getPlayer(),
+                    "skills.recursive-block-break.break-amount", "You have destroyed {0} blocks with {1}.", amount, getFriendlyName()));
         }, Action.LEFT_CLICK_BLOCK);
     }
 
@@ -104,5 +109,28 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
 
         return event.getClickedBlock() != null
                 && allowedBlocks.contains(event.getClickedBlock().getType());
+    }
+
+    public int breakRecursive(Player player, ItemStack tool, Block block, int currentAmount, int maxAmount) {
+
+        if (currentAmount < maxAmount && getAllowedBlocks().contains(block.getType())) {
+            BlockBreakEvent event = new BlockBreakEvent(block, player);
+            RaidCraft.callEvent(event);
+            if (event.isCancelled()) {
+                return currentAmount;
+            }
+            block.breakNaturally(tool);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.DOWN), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.NORTH), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.NORTH_EAST), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.EAST), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.SOUTH_EAST), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.SOUTH), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.SOUTH_WEST), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.WEST), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.NORTH_WEST), currentAmount + 1, maxAmount);
+            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.UP), currentAmount + 1, maxAmount);
+        }
+        return currentAmount;
     }
 }
