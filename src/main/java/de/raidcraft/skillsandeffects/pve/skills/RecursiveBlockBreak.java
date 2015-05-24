@@ -129,7 +129,7 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
         if (treeFellerReachedThreshold) {
             treeFellerReachedThreshold = false;
 
-            warn("Zu viele Blöcke!");
+            warn("Du kannst maximal " + getMaxAmount() + " Blöcke abbauen (" + treeFellerBlocks.size() + ")!");
             return;
         }
 
