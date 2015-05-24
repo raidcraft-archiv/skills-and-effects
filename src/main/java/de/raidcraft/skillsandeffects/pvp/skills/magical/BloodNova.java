@@ -51,7 +51,7 @@ public class BloodNova extends AbstractSkill implements CommandTriggered {
         for (CharacterTemplate target : targets) {
             try {
                 double damage = getTotalDamage() + LocationUtil.getBlockDistance(center, target.getEntity().getLocation()) * getDamagePerBlock();
-                magicalAttack(target, damage);
+                magicalAttack(target, damage).run();
             } catch (CombatException ignored) {
             }
         }

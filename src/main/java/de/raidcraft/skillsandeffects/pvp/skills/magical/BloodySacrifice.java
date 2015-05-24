@@ -41,7 +41,7 @@ public class BloodySacrifice extends AbstractSkill implements CommandTriggered {
                 if (target.isFriendly(getHolder())) {
                     new HealAction<>(this, target, getTotalDamage()).run();
                 } else {
-                    magicalAttack(target, getTotalDamage());
+                    magicalAttack(target, getTotalDamage()).run();
                 }
             } catch (CombatException ignored) {
             }

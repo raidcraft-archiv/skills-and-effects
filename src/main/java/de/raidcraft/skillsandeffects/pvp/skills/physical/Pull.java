@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
+import de.raidcraft.skills.api.combat.action.RangedAttack;
 import de.raidcraft.skills.api.combat.callback.RangedCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -37,7 +38,7 @@ public class Pull extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        Projectile projectile = rangedAttack(ProjectileType.FISH, new RangedCallback() {
+        RangedAttack<RangedCallback> attack = rangedAttack(ProjectileType.FISH, new RangedCallback() {
             @Override
             public void run(CharacterTemplate target) throws CombatException {
 
@@ -59,7 +60,9 @@ public class Pull extends AbstractSkill implements CommandTriggered {
 
                 target.getEntity().setVelocity(direction);
             }
-        }).getProjectile();
+        });
+        Projectile projectile = attack.getProjectile();
         projectile.setVelocity(projectile.getVelocity().multiply(5.0));
+        attack.run();
     }
 }

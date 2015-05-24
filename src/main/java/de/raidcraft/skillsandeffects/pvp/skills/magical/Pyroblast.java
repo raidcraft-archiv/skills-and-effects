@@ -55,11 +55,11 @@ public class Pyroblast extends AbstractSkill implements CommandTriggered {
                 }
                 if (hasEffect(target, FlamestrikeEffect.class)) {
                     int stacks = getEffect(target, FlamestrikeEffect.class).getStacks();
-                    magicalAttack(target, (int) (stacks * getStackDamage()));
+                    magicalAttack(target, (int) (stacks * getStackDamage())).run();
                     removeEffect(target, FlamestrikeEffect.class);
                 }
             }
-        });
+        }).run();
     }
 
     public double getStackDamage() {

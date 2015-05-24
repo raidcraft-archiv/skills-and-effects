@@ -59,6 +59,6 @@ public class Soulleecher extends AbstractSkill implements CommandTriggered {
                 }
                 addEffect(target, SoulleecherEffect.class).setDeathCallback(target1 -> resource.setCurrent(resource.getCurrent() + 1));
             }
-        });
+        }).run();
     }
 }

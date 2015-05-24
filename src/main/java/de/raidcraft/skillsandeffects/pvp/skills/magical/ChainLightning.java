@@ -106,6 +106,6 @@ public class ChainLightning extends AbstractSkill implements CommandTriggered {
                     }
                 }
             }
-        });
+        }).run();
     }
 }
