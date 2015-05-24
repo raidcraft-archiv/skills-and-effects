@@ -333,7 +333,7 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
         int amount = 0;
         for (Block block1 : blocks) {
             block1.breakNaturally(player.getItemInHand());
-            popLeaves(block1);
+            // popLeaves(block1);
             amount++;
             if (amount >= maxAmount) {
                 return amount;
@@ -385,7 +385,7 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
             player.getInventory().clear(player.getInventory().getHeldItemSlot());
         }
 
-        moveLeavesDown(blocks);
+        //moveLeavesDown(blocks);
         if (TREES.containsKey(player)) {
             TREES.remove(player);
         }
