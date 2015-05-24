@@ -51,7 +51,7 @@ public class ShieldBash extends AbstractLevelableSkill implements CommandTrigger
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (!CustomItemUtil.isShield(getHolder().getArmor(EquipmentSlot.SHIELD_HAND)) || !CustomItemUtil.isShield(getHolder().getWeapon(EquipmentSlot.SHIELD_HAND))) {
+        if (!CustomItemUtil.isShield(getHolder().getArmor(EquipmentSlot.SHIELD_HAND)) && !CustomItemUtil.isShield(getHolder().getWeapon(EquipmentSlot.SHIELD_HAND))) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
 

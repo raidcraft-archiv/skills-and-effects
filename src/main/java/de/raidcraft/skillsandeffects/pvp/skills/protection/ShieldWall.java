@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.protection;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.EquipmentSlot;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -33,8 +32,7 @@ public class ShieldWall extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        CustomItemStack armor = getHolder().getArmor(EquipmentSlot.SHIELD_HAND);
-        if (!CustomItemUtil.isShield(armor)) {
+        if (!CustomItemUtil.isShield(getHolder().getArmor(EquipmentSlot.SHIELD_HAND)) && !CustomItemUtil.isShield(getHolder().getWeapon(EquipmentSlot.SHIELD_HAND))) {
             throw new CombatException("Du musst für diesen Skill einen Schild tragen.");
         }
         addEffect(ShieldWallEffect.class);
