@@ -3,8 +3,6 @@ package de.raidcraft.skillsandeffects.pvp.skills.magical;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.EntityAttack;
-import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -34,12 +32,9 @@ public class LivingBomb extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        magicalAttack(new EntityAttackCallback() {
-            @Override
-            public void run(EntityAttack attack) throws CombatException {
+        magicalAttack(attack -> {
 
-                LivingBomb.this.addEffect(attack.getTarget(), LivingBombEffect.class);
-            }
-        });
+            LivingBomb.this.addEffect(attack.getTarget(), LivingBombEffect.class);
+        }).run();
     }
 }

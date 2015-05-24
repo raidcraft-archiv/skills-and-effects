@@ -75,7 +75,7 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
                                 continue;
                             }
                             try {
-                                magicalAttack(character, getTotalDamage());
+                                magicalAttack(character, getTotalDamage()).run();
                                 EffectUtil.strikeLightning(entity.getLocation());
                             } catch (CombatException e) {
                                 getHolder().sendMessage(ChatColor.RED + e.getMessage());

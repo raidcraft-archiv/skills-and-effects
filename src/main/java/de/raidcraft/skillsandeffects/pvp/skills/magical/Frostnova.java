@@ -4,8 +4,6 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.EntityAttack;
-import de.raidcraft.skills.api.combat.callback.EntityAttackCallback;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -37,13 +35,10 @@ public class Frostnova extends AbstractSkill implements CommandTriggered {
 
         for (CharacterTemplate target : getSafeNearbyTargets(false)) {
             try {
-                magicalAttack(target, new EntityAttackCallback() {
-                    @Override
-                    public void run(EntityAttack attack) throws CombatException {
+                magicalAttack(target, attack -> {
 
-                        Frostnova.this.addEffect(attack.getTarget(), Immobilize.class);
-                    }
-                });
+                    Frostnova.this.addEffect(attack.getTarget(), Immobilize.class);
+                }).run();
             } catch (CombatException ignored) {
             }
         }

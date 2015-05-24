@@ -65,7 +65,7 @@ public class Charge extends AbstractSkill implements CommandTriggered {
             Charge.this.addEffect(target, Slow.class);
         }
         if (getTotalDamage() > 0) {
-            attack(target);
+            attack(target).run();
         }
     }
 }

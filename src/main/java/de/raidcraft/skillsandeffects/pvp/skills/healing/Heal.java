@@ -51,9 +51,9 @@ public class Heal extends AbstractSkill implements CommandTriggered {
         if (target.isFriendly(getHolder())) {
             new HealAction<>(this, target, getTotalDamage()).run();
         } else if (target instanceof Hero) {
-            if (damageHero) magicalAttack(target, getTotalDamage());
+            if (damageHero) magicalAttack(target, getTotalDamage()).run();
         } else if (damageMonster) {
-            magicalAttack(target, getTotalDamage());
+            magicalAttack(target, getTotalDamage()).run();
         }
     }
 }

@@ -17,7 +17,6 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.util.BukkitUtil;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -93,13 +92,7 @@ public class SmokeBomb extends AbstractLevelableSkill implements CommandTriggere
         // now lets cancel the interact event and spawn our own splash potion
         event.setCancelled(true);
         final RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.SPLASH_POTION);
-        attack.addCallback(new LocationCallback() {
-            @Override
-            public void run(Location location) throws CombatException {
-
-                BukkitUtil.getNearbyEntities(attack.getProjectile(), getTotalRange());
-            }
-        });
+        attack.addCallback(location -> BukkitUtil.getNearbyEntities(attack.getProjectile(), getTotalRange()));
         attack.run();
     }
 }

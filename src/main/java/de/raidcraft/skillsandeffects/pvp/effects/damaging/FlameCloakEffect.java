@@ -32,7 +32,7 @@ public class FlameCloakEffect extends PeriodicEffect<FlameCloak> {
         for (CharacterTemplate target : getSource().getSafeNearbyTargets(false)) {
             if (target.equals(t)) continue;
             try {
-                getSource().magicalAttack(target, getDamage());
+                getSource().magicalAttack(target, getDamage()).run();
             } catch (CombatException ignored) {
             }
         }

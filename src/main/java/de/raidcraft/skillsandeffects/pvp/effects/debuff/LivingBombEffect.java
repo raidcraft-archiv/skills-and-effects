@@ -57,7 +57,7 @@ public class LivingBombEffect extends ExpirableEffect<LivingBomb> {
         for (final CharacterTemplate victim : target.getNearbyTargets(blastRadius)) {
 
             if (!victim.equals(target)) {
-                getSource().magicalAttack(victim, getDamage());
+                getSource().magicalAttack(victim, getDamage()).run();
                 hit++;
             }
         }

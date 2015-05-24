@@ -54,6 +54,7 @@ public class Whirlwind extends AbstractSkill implements CommandTriggered {
                     break;
                 }
                 Attack<CharacterTemplate, CharacterTemplate> attack = attack(target);
+                attack.run();
                 if (!attack.isCancelled() && knockBack) {
                     addEffect(getHolder().getPlayer().getLocation(), target, KnockBack.class);
                 }
