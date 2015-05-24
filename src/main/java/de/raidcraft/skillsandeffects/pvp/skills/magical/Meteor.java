@@ -37,6 +37,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
 
     @Getter
     private int amount;
+    private long delay;
 
     public Meteor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -50,6 +51,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
         if (amount < 1) {
             amount = 1;
         }
+        delay = data.getLong("delay", 40);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                     } catch (CombatException e) {
                         e.printStackTrace();
                     }
-                }, 10L);
+                }, delay);
             } catch (CombatException ignored) {
             }
         }
