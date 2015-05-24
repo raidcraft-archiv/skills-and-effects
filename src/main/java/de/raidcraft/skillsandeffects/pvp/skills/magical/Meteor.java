@@ -71,10 +71,9 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
     public void dropMeteors(final Location targetLocation) throws CombatException {
 
         // lets start a repeating task to not spawn all meteors at once
-        final int amount = getAmount();
         firedMeteors = 0;
         meteorTask = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), () -> {
-            if (firedMeteors >= amount) {
+            if (firedMeteors >= getAmount()) {
                 // cancel the task
                 meteorTask.cancel();
                 return;
@@ -91,7 +90,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             }
             try {
                 RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage(), location -> {
-                    location.getWorld().playEffect(location, Effect.EXPLOSION_LARGE, 1);
+                    location.getWorld().playEffect(location, Effect.EXPLOSION_HUGE, 5);
                 });
                 attack.setSpawnLocation(top);
                 attack.setVelocity(targetLocation.subtract(top).toVector().multiply(0.2));
