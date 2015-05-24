@@ -23,10 +23,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -100,8 +100,8 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
             }
 
             substractUsageCost(new SkillAction(RecursiveBlockBreak.this));
-            int amount = chopTree(callback.getEvent().getClickedBlock(), getHolder().getPlayer(), getHolder().getPlayer().getWorld());
-            info(amount + " Blöcke sofort abgebaut.");
+            int amount = chopTree(callback.getEvent().getClickedBlock(), getHolder().getPlayer());
+            info(amount + "/" + getMaxAmount() + " Blöcke sofort abgebaut.");
         }, Action.LEFT_CLICK_BLOCK);
     }
 
@@ -117,18 +117,13 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
                 && allowedBlocks.contains(event.getClickedBlock().getType());
     }
 
-    public int chopTree(Block block, Player player, World world) {
+    public int chopTree(Block block, Player player) {
 
         List<Block> blocks = new LinkedList<>();
-        Block highest = getHighestLog(block);
-        if (isTree(highest, player, block)) {
-            getBlocksToChop(block, highest, blocks);
-            return popLogs(block, blocks, world, player);
-        }
-        return 0;
+        return popLogs(getBlocksToChop(block, getHighestLog(block), blocks), player);
     }
 
-    public void getBlocksToChop(Block block, Block highest, List<Block> blocks) {
+    public List<Block> getBlocksToChop(Block block, Block highest, List<Block> blocks) {
 
         while (block.getY() <= highest.getY()) {
             if (!blocks.contains(block)) {
@@ -197,6 +192,7 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
             }
             block = block.getRelative(BlockFace.UP);
         }
+        return blocks;
     }
 
     public void getBranches(Block block, List<Block> blocks, Block other) {
@@ -236,105 +232,20 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
         return block;
     }
 
-    public boolean isTree(Block block, Player player, Block first) {
-
-        if (TREES.containsKey(player)) {
-            Block[] blockarray = TREES.get(player);
-            for (int counter = 0; counter < Array.getLength(blockarray); counter++) {
-                if (blockarray[counter] == block) {
-                    return true;
-                }
-                if (blockarray[counter] == first) {
-                    return true;
-                }
-            }
-        }
-        int counter = 0;
-        if ((block.getRelative(BlockFace.UP).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.DOWN).getType() == Material.LEAVES) || (block.getRelative(BlockFace.DOWN).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.NORTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.NORTH).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.EAST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.EAST).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.SOUTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.SOUTH).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if ((block.getRelative(BlockFace.WEST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.WEST).getType() == Material.LEAVES_2)) {
-            counter++;
-        }
-        if (counter >= 2) {
-            return true;
-        }
-        if (block.getData() == 1) {
-            block = block.getRelative(BlockFace.UP);
-            if ((block.getRelative(BlockFace.UP).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.NORTH).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.SOUTH).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.EAST).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.UP).getRelative(BlockFace.WEST).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.NORTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.NORTH).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.EAST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.EAST).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.SOUTH).getType() == Material.LEAVES) || (block.getRelative(BlockFace.SOUTH).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if ((block.getRelative(BlockFace.WEST).getType() == Material.LEAVES) || (block.getRelative(BlockFace.WEST).getType() == Material.LEAVES_2)) {
-                counter++;
-            }
-            if (counter >= 2) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int popLogs(Block block, List<Block> blocks, World world, Player player) {
+    public int popLogs(List<Block> blocks, Player player) {
 
         ItemStack item = new ItemStack(Material.AIR);
         item.setAmount(1);
         int maxAmount = getMaxAmount();
         int amount = 0;
-        for (Block block1 : blocks) {
-            block1.breakNaturally(player.getItemInHand());
-            // popLeaves(block1);
-            amount++;
+        for (Block block : blocks) {
+            BlockBreakEvent event = new BlockBreakEvent(block, player);
+            RaidCraft.callEvent(event);
+            if (!event.isCancelled()) {
+                block.breakNaturally(player.getItemInHand());
+                // popLeaves(block1);
+                amount++;
+            }
             if (amount >= maxAmount) {
                 return amount;
             }
