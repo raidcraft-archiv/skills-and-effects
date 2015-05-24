@@ -21,7 +21,6 @@ import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.TimeUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
@@ -87,9 +86,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 target = target.add(RDSRandom.getDoubleValue(-4, 4), 0, RDSRandom.getDoubleValue(-4, 4));
             }
             try {
-                RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage(), location -> {
-                    location.getWorld().playEffect(location, Effect.EXPLOSION_HUGE, 5);
-                });
+                RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL);
                 attack.setSpawnLocation(top);
                 attack.setVelocity(target.subtract(top).toVector().multiply(speed));
                 //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
