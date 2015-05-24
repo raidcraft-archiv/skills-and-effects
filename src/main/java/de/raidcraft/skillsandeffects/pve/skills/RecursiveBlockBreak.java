@@ -1,8 +1,12 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.PlayerDirection;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.blocks.BlockID;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.world.World;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.language.Translator;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.effect.common.QueuedInteract;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -20,15 +24,12 @@ import de.raidcraft.skills.util.ConfigUtil;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -40,6 +41,8 @@ import java.util.Set;
         queuedAttack = true
 )
 public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
+
+    private static final int RANGE_SQUARED = 30 * 30;
 
     @Getter
     private final Set<Material> allowedTools = new HashSet<>();
@@ -93,9 +96,22 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
             }
 
             substractUsageCost(new SkillAction(RecursiveBlockBreak.this));
-            int amount = breakRecursive(event.getPlayer(), event.getItem(), event.getClickedBlock(), 0, getMaxAmount());
-            info(Translator.tr(SkillsPlugin.class, event.getPlayer(),
-                    "skills.recursive-block-break.break-amount", "You have destroyed {0} blocks with {1}.", amount, getFriendlyName()));
+            Block block = callback.getEvent().getClickedBlock();
+            int amount = 0;
+            int maxAmount = getMaxAmount();
+            try {
+                org.bukkit.World world = event.getPlayer().getWorld();
+                Set<Vector> blocks = bfs(new BukkitWorld(world), new Vector(block.getX(), block.getY(), block.getZ()));
+                for (Vector vector : blocks) {
+                    if (amount >= maxAmount) break;
+                    Block blockAt = world.getBlockAt(vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
+                    blockAt.breakNaturally(callback.getEvent().getItem());
+                    amount++;
+                }
+                info("Du hast " + amount + "/" + maxAmount + " Blöcke zerstört.");
+            } catch (MaxChangedBlocksException e) {
+                warn(e.getMessage());
+            }
         }, Action.LEFT_CLICK_BLOCK);
     }
 
@@ -111,26 +127,66 @@ public class RecursiveBlockBreak extends AbstractSkill implements Triggered {
                 && allowedBlocks.contains(event.getClickedBlock().getType());
     }
 
-    public int breakRecursive(Player player, ItemStack tool, Block block, int currentAmount, int maxAmount) {
+    Vector[] recurseDirections = {
+            PlayerDirection.NORTH.vector(),
+            PlayerDirection.EAST.vector(),
+            PlayerDirection.SOUTH.vector(),
+            PlayerDirection.WEST.vector(),
+            PlayerDirection.UP.vector(),
+            PlayerDirection.DOWN.vector(),
+    };
 
-        if (currentAmount < maxAmount && getAllowedBlocks().contains(block.getType())) {
-            BlockBreakEvent event = new BlockBreakEvent(block, player);
-            RaidCraft.callEvent(event);
-            if (event.isCancelled()) {
-                return currentAmount;
-            }
-            block.breakNaturally(tool);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.DOWN), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.NORTH), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.NORTH_EAST), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.EAST), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.SOUTH_EAST), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.SOUTH), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.SOUTH_WEST), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.WEST), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.NORTH_WEST), currentAmount + 1, maxAmount);
-            currentAmount = breakRecursive(player, tool, block.getRelative(BlockFace.UP), currentAmount + 1, maxAmount);
-        }
-        return currentAmount;
-    }
+    /**
+     * Helper method.
+     *
+     * @param world  the world that contains the tree
+     * @param origin any point contained in the floating tree
+     *
+     * @return a set containing all blocks in the tree/shroom or null if this is not a floating tree/shroom.
+     */
+    private Set<Vector> bfs(World world, Vector origin) throws MaxChangedBlocksException {
+
+        final Set<Vector> visited = new HashSet<Vector>();
+        final LinkedList<Vector> queue = new LinkedList<Vector>();
+
+        queue.addLast(origin);
+        visited.add(origin);
+
+        while (!queue.isEmpty()) {
+            final Vector current = queue.removeFirst();
+            for (Vector recurseDirection : recurseDirections) {
+                final Vector next = current.add(recurseDirection);
+                if (origin.distanceSq(next) > RANGE_SQUARED) {
+                    // Maximum range exceeded => stop walking
+                    continue;
+                }
+
+                if (visited.add(next)) {
+                    switch (world.getBlockType(next)) {
+                        case BlockID.AIR:
+                        case BlockID.SNOW:
+                            // we hit air or snow => stop walking this route
+                            continue;
+
+                        case BlockID.LOG:
+                        case BlockID.LOG2:
+                        case BlockID.LEAVES:
+                        case BlockID.LEAVES2:
+                        case BlockID.BROWN_MUSHROOM_CAP:
+                        case BlockID.RED_MUSHROOM_CAP:
+                        case BlockID.VINE:
+                            // queue next point
+                            queue.addLast(next);
+                            break;
+
+                        default:
+                            // we hit something solid => stop walking this route
+                            continue;
+                    } // switch
+                } // if
+            } // for
+        } // while
+
+        return visited;
+    } // bfs
 }
