@@ -17,7 +17,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.util.LocationUtil;
 import de.raidcraft.util.MathUtil;
 import de.raidcraft.util.TimeUtil;
 import lombok.Getter;
@@ -89,9 +88,10 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                         MathUtil.RANDOM.nextInt(6) + 6,
                         MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble());
             }
-            // TODO: set custom damage
             try {
-                RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL);
+                RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage(), location -> {
+                    location.getWorld().createExplosion(location, 5.0F, true);
+                });
                 attack.setSpawnLocation(top);
                 attack.setVelocity(targetLocation.subtract(top).toVector().multiply(0.2));
 //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
