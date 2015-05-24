@@ -1,6 +1,8 @@
 package de.raidcraft.skillsandeffects.pvp.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
@@ -17,6 +19,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.MathUtil;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -69,13 +72,19 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                         MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble());
             }
             try {
-                RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage(), location -> {
+                final RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage(), location -> {
                     location.getWorld().playEffect(location, Effect.EXPLOSION_HUGE, 5);
                 });
                 attack.setSpawnLocation(top);
                 attack.setVelocity(targetLocation.clone().subtract(top).toVector().multiply(0.2));
                 //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
-                attack.run();
+                Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), () -> {
+                    try {
+                        attack.run();
+                    } catch (CombatException e) {
+                        e.printStackTrace();
+                    }
+                }, 10L);
             } catch (CombatException ignored) {
             }
         }
