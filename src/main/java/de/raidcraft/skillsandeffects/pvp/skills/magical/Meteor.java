@@ -1,8 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.magical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.ProjectileType;
@@ -18,13 +16,10 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.MathUtil;
-import de.raidcraft.util.TimeUtil;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  * @author Silthus
@@ -39,11 +34,6 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
 
     @Getter
     private int amount;
-    private BukkitTask meteorTask;
-    private int firedMeteors = 0;
-    private double speed;
-    private long interval;
-    private long delay;
 
     public Meteor(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -57,9 +47,6 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
         if (amount < 1) {
             amount = 1;
         }
-        speed = data.getDouble("speed", 1.0);
-        interval = TimeUtil.secondsToTicks(data.getDouble("interval", 0.3));
-        delay = TimeUtil.secondsToTicks(data.getDouble("delay", 1.0));
     }
 
     @Override
@@ -71,17 +58,10 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
     public void dropMeteors(final Location targetLocation) throws CombatException {
 
         // lets start a repeating task to not spawn all meteors at once
-        firedMeteors = 0;
-        meteorTask = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), () -> {
-            if (firedMeteors >= getAmount()) {
-                // cancel the task
-                meteorTask.cancel();
-                return;
-            }
-
+        for (int i = 0; i < getAmount(); i++) {
             Location top = targetLocation.clone();
             // first Meteor hits exactly
-            if (firedMeteors == 0) {
+            if (i == 0) {
                 top = top.add(0.5, MathUtil.RANDOM.nextInt(6) + 6, 0.5);
             } else {
                 top = top.add(MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble(),
@@ -94,11 +74,10 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 });
                 attack.setSpawnLocation(top);
                 attack.setVelocity(targetLocation.clone().subtract(top).toVector().multiply(0.2));
-//                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
+                //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
                 attack.run();
-                firedMeteors++;
             } catch (CombatException ignored) {
             }
-        }, delay, interval);
+        }
     }
 }
