@@ -18,7 +18,6 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
-import de.raidcraft.util.MathUtil;
 import de.raidcraft.util.TimeUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -82,12 +81,10 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             Location top = targetLocation.clone();
             // first Meteor hits exactly
             if (spawnedMeteors == 0) {
-                top = top.add(0.5, MathUtil.RANDOM.nextInt(6) + 6, 0.5);
+                top = top.add(0.5, RDSRandom.getDoubleValue(6, 9), 0.5);
             } else {
-                top = top.add(MathUtil.RANDOM.nextInt(7) + 3 + MathUtil.RANDOM.nextDouble(),
-                        MathUtil.RANDOM.nextInt(6) + 6,
-                        MathUtil.RANDOM.nextInt(7) + 3 + MathUtil.RANDOM.nextDouble());
-                target = target.add(RDSRandom.getDoubleValue(1, 4), 0, RDSRandom.getDoubleValue(1, 4));
+                top = top.add(RDSRandom.getDoubleValue(-6, 6), RDSRandom.getDoubleValue(6, 12), RDSRandom.getDoubleValue(-6, 6));
+                target = target.add(RDSRandom.getDoubleValue(-4, 4), 0, RDSRandom.getDoubleValue(-4, 4));
             }
             try {
                 RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL, getTotalDamage(), location -> {
@@ -97,6 +94,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                 attack.setVelocity(target.subtract(top).toVector().multiply(speed));
                 //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
                 attack.run();
+                spawnedMeteors++;
             } catch (CombatException ignored) {
             }
         }, delay, interval);
