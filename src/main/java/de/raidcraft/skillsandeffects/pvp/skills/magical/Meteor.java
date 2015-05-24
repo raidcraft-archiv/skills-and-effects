@@ -93,7 +93,8 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             try {
                 RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL);
                 attack.setSpawnLocation(top);
-                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
+                attack.setVelocity(targetLocation.subtract(top).toVector().normalize().multiply(0.2));
+//                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
                 attack.run();
                 firedMeteors++;
             } catch (CombatException ignored) {
