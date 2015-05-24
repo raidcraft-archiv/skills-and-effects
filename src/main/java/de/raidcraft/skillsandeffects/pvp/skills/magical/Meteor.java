@@ -93,7 +93,7 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
                     location.getWorld().playEffect(location, Effect.EXPLOSION_HUGE, 5);
                 });
                 attack.setSpawnLocation(top);
-                attack.setVelocity(targetLocation.subtract(top).toVector().multiply(0.2));
+                attack.setVelocity(targetLocation.clone().subtract(top).toVector().multiply(0.2));
 //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
                 attack.run();
                 firedMeteors++;
