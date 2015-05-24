@@ -81,19 +81,19 @@ public class Meteor extends AbstractSkill implements CommandTriggered {
             }
 
             Location top = targetLocation.clone();
-            // frst Meteor hits exactly
+            // first Meteor hits exactly
             if (firedMeteors == 0) {
-                top = top.clone().add(0.5, MathUtil.RANDOM.nextInt(3) + 3, 0.5);
+                top = top.add(0.5, MathUtil.RANDOM.nextInt(6) + 6, 0.5);
             } else {
                 top = top.add(MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble(),
-                        MathUtil.RANDOM.nextInt(3) + 3,
+                        MathUtil.RANDOM.nextInt(6) + 6,
                         MathUtil.RANDOM.nextInt(7) - 3 + MathUtil.RANDOM.nextDouble());
             }
             // TODO: set custom damage
             try {
                 RangedAttack<LocationCallback> attack = rangedAttack(ProjectileType.LARGE_FIREBALL);
                 attack.setSpawnLocation(top);
-                attack.setVelocity(targetLocation.subtract(top).toVector().normalize().multiply(0.2));
+                attack.setVelocity(targetLocation.subtract(top).toVector().multiply(0.2));
 //                attack.setVelocity(LocationUtil.getDirection(top, targetLocation).multiply(speed));
                 attack.run();
                 firedMeteors++;
