@@ -14,6 +14,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.pvp.effects.misc.TrapEffect;
 import de.raidcraft.util.BlockUtil;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.Bukkit;
@@ -21,6 +22,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -58,7 +61,9 @@ public class Firewall extends AbstractLevelableSkill implements CommandTriggered
         if (LocationUtil.isSafeZone(getHolder().getPlayer(), sourceBlock.getLocation())) {
             throw new CombatException(CombatException.Type.PVP);
         }
-        BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
+        Set<Block> blocks = BlockUtil.replaceNonSolidSurfaceBlocks(sourceBlock, Material.FIRE, face, getWidth());
+        TrapEffect effect = addEffect(TrapEffect.class);
+        effect.setChangedBlocks(blocks);
         getAmbientEffects(AbilityEffectStage.IMPACT, sourceBlock.getLocation()).forEach(ambientEffect -> ambientEffect.run(sourceBlock.getLocation()));
     }
 
