@@ -77,7 +77,7 @@ public class AreaAttack extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (CharacterTemplate target : getSafeNearbyTargets()) {
+        for (CharacterTemplate target : getSafeNearbyTargets(false)) {
 
             try {
                 attack(target, new EntityAttackCallback() {
