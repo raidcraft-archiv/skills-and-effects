@@ -80,7 +80,7 @@ public class AreaCast extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (CharacterTemplate target : getSafeNearbyTargets()) {
+        for (CharacterTemplate target : getSafeNearbyTargets(false)) {
 
             try {
                 magicalAttack(target, new EntityAttackCallback() {

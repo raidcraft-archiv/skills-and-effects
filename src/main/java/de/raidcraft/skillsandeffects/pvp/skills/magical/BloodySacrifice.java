@@ -33,7 +33,7 @@ public class BloodySacrifice extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        for (CharacterTemplate target : getSafeNearbyTargets()) {
+        for (CharacterTemplate target : getNearbyTargets()) {
             try {
                 if (target.equals(getHolder())) {
                     continue;
