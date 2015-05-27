@@ -67,6 +67,9 @@ public class Invisibility<S> extends ExpirableEffect<S> implements Triggered {
     @TriggerHandler(ignoreCancelled = true, filterTargets = false)
     public void onTarget(EntityTargetTrigger trigger) {
 
+        if (trigger.getEvent().getTarget() == null || getTarget() == null) {
+            return;
+        }
         if (trigger.getEvent().getTarget().equals(getTarget().getEntity())) {
             trigger.getEvent().setCancelled(true);
         }
