@@ -98,6 +98,7 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
     @Override
     protected void renew(CharacterTemplate target) throws CombatException {
 
+        if (pig == null) return;
         pig.setMaxHealth(9999);
         pig.setHealth(pig.getMaxHealth());
         pig.setPassenger(target.getEntity());
@@ -106,7 +107,12 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        pig.getPassenger().leaveVehicle();
+        if (pig == null) return;
+        if (pig.getPassenger() != null) {
+            pig.getPassenger().leaveVehicle();
+        } else {
+            pig.setPassenger(null);
+        }
         pig.remove();
     }
 
@@ -120,7 +126,7 @@ public class Pigify extends PeriodicExpirableEffect<Skill> implements Triggered 
                 target.setHealth((int) (target.getHealth() + healthRegain));
             }
         }
-        if (pig.isDead()) {
+        if (pig != null && pig.isDead()) {
             remove();
         }
     }
