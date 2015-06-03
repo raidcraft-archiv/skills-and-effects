@@ -6,7 +6,6 @@ import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -64,34 +63,35 @@ public class ChainHeal extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
+        jumpCount = 0;
         intialHeal = getTotalDamage();
         // damage the intial target
-        castChainHeal(getTarget(), intialHeal);
-        jumpCount = 0;
+        CharacterTemplate target = getTarget();
+        if (!target.isFriendly(getHolder())) {
+            throw new CombatException("Du kannst nur befreundete Ziele heilen.");
+        }
+        castChainHeal(target, intialHeal);
     }
 
-    private void castChainHeal(CharacterTemplate target, final double heal) throws CombatException {
+    private void castChainHeal(CharacterTemplate target, final double healAmount) throws CombatException {
 
-        new HealAction<>(this, target, heal).run();
+        heal(target, healAmount).run();
+
         ++jumpCount;
         addEffect(target, ChainHealEffect.class);
         if (jumpCount < getJumpCount()) {
             try {
-                for (final CharacterTemplate nextTarget : target.getNearbyTargets(jumpRange)) {
+                for (final CharacterTemplate nextTarget : target.getNearbyTargets(jumpRange, true)) {
                     if (target.hasEffect(ChainHealEffect.class) || target.equals(getHolder()) || !target.isFriendly(getHolder())) {
                         continue;
                     }
-                    final int newHealAmount = (int) (heal - (intialHeal * getReductionPerJump()));
+                    final int newHealAmount = (int) (healAmount - (intialHeal * getReductionPerJump()));
                     if (newHealAmount > 0) {
-                        Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-                            @Override
-                            public void run() {
-
-                                try {
-                                    castChainHeal(nextTarget, newHealAmount);
-                                } catch (CombatException e) {
-                                    getHolder().sendMessage(ChatColor.RED + e.getMessage());
-                                }
+                        Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(SkillsPlugin.class), () -> {
+                            try {
+                                castChainHeal(nextTarget, newHealAmount);
+                            } catch (CombatException e) {
+                                getHolder().sendMessage(ChatColor.RED + e.getMessage());
                             }
                         }, 4L);
                     }
