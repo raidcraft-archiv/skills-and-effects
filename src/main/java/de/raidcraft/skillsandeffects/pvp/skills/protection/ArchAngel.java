@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.pvp.skills.protection;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectElement;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -15,6 +16,7 @@ import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.healing.ArchAngelEffect;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -79,6 +81,7 @@ public class ArchAngel extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-
+        CharacterTemplate target = getTarget(args, true, true);
+        addEffect(target, ArchAngelEffect.class);
     }
 }
