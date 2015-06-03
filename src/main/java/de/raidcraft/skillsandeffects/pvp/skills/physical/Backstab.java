@@ -2,7 +2,6 @@ package de.raidcraft.skillsandeffects.pvp.skills.physical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
-import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Hero;
@@ -12,8 +11,8 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
-import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skillsandeffects.pvp.effects.potion.Invisibility;
+import de.raidcraft.util.EntityUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -43,14 +42,15 @@ public class Backstab extends AbstractSkill implements CommandTriggered {
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        addEffect(QueuedAttack.class).addCallback(new Callback<AttackTrigger>() {
-            @Override
-            public void run(AttackTrigger trigger) throws CombatException {
+        addEffect(QueuedAttack.class).addCallback(trigger -> {
 
-                if (needsInvisibility && !getHolder().hasEffect(Invisibility.class)) {
-                    throw new CombatException("Du kannst mit dem Skill " + getFriendlyName() + " nur aus der Unsichtbarkeit heraus angreifen.");
-                }
+            if (needsInvisibility && !getHolder().hasEffect(Invisibility.class)) {
+                throw new CombatException("Du kannst mit dem Skill " + getFriendlyName() + " nur aus der Unsichtbarkeit heraus angreifen.");
             }
+            if (!EntityUtil.isBehind(trigger.getSource().getEntity(), trigger.getAttack().getTarget().getEntity())) {
+                throw new CombatException("Du musst dich hinter dem Ziel befinden.");
+            }
+            trigger.getAttack().run();
         });
     }
 }
