@@ -57,33 +57,30 @@ public class LightningStorm extends AbstractSkill implements CommandTriggered {
         final World world = getHolder().getPlayer().getWorld();
         final FireworkEffect effect = FireworkEffect.builder().with(FireworkEffect.Type.BALL).withColor(Color.BLUE).build();
 
-        task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), new Runnable() {
-            @Override
-            public void run() {
+        task = Bukkit.getScheduler().runTaskTimer(RaidCraft.getComponent(SkillsPlugin.class), () -> {
 
-                if (i < circle.size()) {
-                    EffectUtil.playFirework(world, circle.get(i), effect);
-                    i++;
-                } else {
-                    EffectUtil.strikeLightning(center);
-                    Entity[] entities = LocationUtil.getNearbyEntities(center, getTotalRange());
-                    for (Entity entity : entities) {
-                        if (entity instanceof LivingEntity) {
-                            CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class)
-                                    .getCharacterManager().getCharacter((LivingEntity) entity);
-                            if (character.isFriendly(getHolder())) {
-                                continue;
-                            }
-                            try {
-                                magicalAttack(character, getTotalDamage()).run();
-                                EffectUtil.strikeLightning(entity.getLocation());
-                            } catch (CombatException e) {
-                                getHolder().sendMessage(ChatColor.RED + e.getMessage());
-                            }
+            if (i < circle.size()) {
+                EffectUtil.playFirework(world, circle.get(i), effect);
+                i++;
+            } else {
+                EffectUtil.strikeLightning(center);
+                Entity[] entities = LocationUtil.getNearbyEntities(center, getTotalRange());
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity) {
+                        CharacterTemplate character = RaidCraft.getComponent(SkillsPlugin.class)
+                                .getCharacterManager().getCharacter((LivingEntity) entity);
+                        if (character == null || character.isFriendly(getHolder())) {
+                            continue;
+                        }
+                        try {
+                            magicalAttack(character, getTotalDamage()).run();
+                            EffectUtil.strikeLightning(entity.getLocation());
+                        } catch (CombatException e) {
+                            getHolder().sendMessage(ChatColor.RED + e.getMessage());
                         }
                     }
-                    cancel();
                 }
+                cancel();
             }
         }, 1L, 1L);
     }
