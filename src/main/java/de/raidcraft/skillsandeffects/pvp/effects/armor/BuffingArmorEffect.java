@@ -43,7 +43,7 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
         double amount = trigger.getAmount();
         double healIncrease = getSource().getHealIncrease();
         int newAmount = (int) (amount + amount * healIncrease);
-        combatLog("Erhaltene Heilung um " + (newAmount - amount) + "(" + MathUtil.toPercent(healIncrease) + ") erhöht.");
+        combatLog("Erhaltene Heilung um " + (newAmount - amount) + "(" + MathUtil.toPercent(healIncrease) + "%) erhöht.");
         trigger.setAmount(newAmount);
     }
 
@@ -75,7 +75,7 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
             double maxHealth = target.getMaxHealth();
             increasePercent = getSource().getHealthIncrease();
             healthIncrease = MathUtil.trim(maxHealth * increasePercent);
-            combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + ") erhöht.");
+            combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + "%) erhöht.");
             target.increaseMaxHealth(healthIncrease);
         }
     }
@@ -90,7 +90,7 @@ public class BuffingArmorEffect extends PeriodicEffect<BuffingArmor> implements 
     protected void remove(CharacterTemplate target) throws CombatException {
 
         if (getSource().hasType(BuffingArmor.Type.HEALTH_INCREASE)) {
-            combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + ") verringert.");
+            combatLog("Maximale Leben um " + healthIncrease + "(" + MathUtil.toPercent(increasePercent) + "%) verringert.");
             target.decreaseMaxHealth(healthIncrease);
         }
     }
