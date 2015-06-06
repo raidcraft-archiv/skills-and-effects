@@ -66,7 +66,7 @@ public class ChainHeal extends AbstractSkill implements CommandTriggered {
         jumpCount = 0;
         intialHeal = getTotalDamage();
         // damage the intial target
-        CharacterTemplate target = getTarget();
+        CharacterTemplate target = getTarget(args, true, true);
         if (!target.isFriendly(getHolder())) {
             throw new CombatException("Du kannst nur befreundete Ziele heilen.");
         }
