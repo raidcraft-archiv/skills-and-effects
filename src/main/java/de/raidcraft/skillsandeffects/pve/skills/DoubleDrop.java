@@ -79,11 +79,14 @@ public class DoubleDrop extends AbstractLevelableSkill implements Triggered {
         if (toolType != null && ToolType.fromMaterial(getHolder().getItemTypeInHand()) != toolType) {
             return;
         }
+        if (RaidCraft.isPlayerPlacedBlock(trigger.getEvent().getBlock())) {
+            return;
+        }
         Block block = trigger.getEvent().getBlock();
         boolean doubleDrop = false;
         if (blocks.contains(block.getType())) {
             // lets check for a double drop
-            if (!RaidCraft.isPlayerPlacedBlock(block) && Math.random() < getChance()) {
+            if (Math.random() < getChance()) {
                 // lets drop all normal drops again
                 for (ItemStack item : block.getDrops(trigger.getEvent().getPlayer().getItemInHand())) {
                     block.getWorld().dropItemNaturally(block.getLocation(), item);
