@@ -34,7 +34,7 @@ public class BloodStrike extends AbstractLevelableSkill implements CommandTrigge
 
         final BloodlustEffect effect = getEffect(BloodlustEffect.class);
         if (!hasEffect(BloodlustEffect.class)) {
-            throw new CombatException("Du benötigst mindestens einen Stack " + effect.getFriendlyName());
+            throw new CombatException("Du benötigst mindestens einen Stack Blutrausch!");
         }
         addEffect(QueuedAttack.class).addCallback(trigger -> {
 
