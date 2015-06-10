@@ -16,9 +16,12 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.util.SerializationUtil;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,9 +41,17 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
     private static final String MAPBUILDER_ARMOR_STORAGE_ID = "MAPBUILDER_ARMOR";
     private static final InventoryStorage INVENTORY_STORAGE = new InventoryStorage("mapbuilder-skill");
 
+    private List<String> permissions = new ArrayList<>();
+
     public MapBuilder(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
         super(hero, data, profession, database);
+    }
+
+    @Override
+    public void load(ConfigurationSection data) {
+
+        permissions = data.getStringList("permissions");
     }
 
     @Override
@@ -62,6 +73,11 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
                 e.printStackTrace();
             }
         }
+    }
+
+    public List<String> getPermissions() {
+
+        return permissions;
     }
 
     private String getKey(String key) {

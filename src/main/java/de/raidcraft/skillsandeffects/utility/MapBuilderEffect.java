@@ -1,5 +1,6 @@
 package de.raidcraft.skillsandeffects.utility;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.effect.AbstractEffect;
 import de.raidcraft.skills.api.effect.EffectInformation;
@@ -42,7 +43,11 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
-        getSource().getHolder().getPlayer().setGameMode(GameMode.CREATIVE);
+        Player player = getSource().getHolder().getPlayer();
+        player.setGameMode(GameMode.CREATIVE);
+        for (String permission : getSource().getPermissions()) {
+            RaidCraft.getPermissions().playerAdd(player, permission);
+        }
     }
 
     @Override
@@ -57,6 +62,9 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
         player.setGameMode(GameMode.SURVIVAL);
         for (PotionEffect potionEffect : new ArrayList<>(player.getActivePotionEffects())) {
             player.removePotionEffect(potionEffect.getType());
+        }
+        for (String permission : getSource().getPermissions()) {
+            RaidCraft.getPermissions().playerRemove(player, permission);
         }
     }
 
