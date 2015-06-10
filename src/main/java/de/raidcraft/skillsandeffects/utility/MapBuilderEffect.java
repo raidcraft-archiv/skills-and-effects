@@ -15,10 +15,14 @@ import de.raidcraft.skills.trigger.NPCRightClickTrigger;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.ArrayList;
 
 /**
  * @author mdoering
@@ -49,7 +53,11 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
     @Override
     protected void remove(CharacterTemplate target) throws CombatException {
 
-        getSource().getHolder().getPlayer().setGameMode(GameMode.SURVIVAL);
+        Player player = getSource().getHolder().getPlayer();
+        player.setGameMode(GameMode.SURVIVAL);
+        for (PotionEffect potionEffect : new ArrayList<>(player.getActivePotionEffects())) {
+            player.removePotionEffect(potionEffect.getType());
+        }
     }
 
     @EventHandler
