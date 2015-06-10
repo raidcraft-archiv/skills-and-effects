@@ -36,7 +36,8 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
             info("Der Map Builder Effekt wurde entfernt!");
         } else {
             try {
-                warn("Bist du dir sicher dass du den Map Builder Modus betreten willst? Dein Inventar wird dabei komplett gelöscht!");
+                warn("Bist du dir sicher dass du den Map Builder Modus betreten willst? " +
+                        "Deine angelegte Rüstung wird dabei gelöscht. Bitte lege sie ins Inventar wenn du die Rüstung nicht verlieren willst!");
                 new QueuedCommand(getHolder().getPlayer(), this, "enterMapBuilder");
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
