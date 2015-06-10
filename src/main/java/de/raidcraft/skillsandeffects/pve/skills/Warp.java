@@ -24,6 +24,7 @@ import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -78,8 +79,12 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         int z = data.getInt("z");
         float yaw = (float) data.getDouble("yaw");
         float pitch = (float) data.getDouble("pitch");
-        destination = new Location(Bukkit.getWorld(data.getString("world")), x, y, z, yaw, pitch);
-        if (destination.getWorld() == null) destination = Bukkit.getWorlds().get(0).getSpawnLocation();
+        World world = Bukkit.getWorld(data.getString("world", "world"));
+        if (world == null) {
+            destination = Bukkit.getWorlds().get(0).getSpawnLocation();
+        } else {
+            destination = new Location(world, x, y, z, yaw, pitch);
+        }
     }
 
     @Override
