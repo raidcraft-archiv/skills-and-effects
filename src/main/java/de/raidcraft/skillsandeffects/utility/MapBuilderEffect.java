@@ -15,6 +15,7 @@ import de.raidcraft.skills.trigger.ItemPickupTrigger;
 import de.raidcraft.skills.trigger.NPCRightClickTrigger;
 import de.raidcraft.skills.trigger.PlayerCastSkillTrigger;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,8 +46,10 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
 
         Player player = getSource().getHolder().getPlayer();
         player.setGameMode(GameMode.CREATIVE);
+
+        Permission permissions = RaidCraft.getPermissions();
         for (String permission : getSource().getPermissions()) {
-            RaidCraft.getPermissions().playerAdd(player, permission);
+            permissions.playerAdd(player, permission);
         }
     }
 
@@ -63,8 +66,10 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
         for (PotionEffect potionEffect : new ArrayList<>(player.getActivePotionEffects())) {
             player.removePotionEffect(potionEffect.getType());
         }
+
+        Permission permissions = RaidCraft.getPermissions();
         for (String permission : getSource().getPermissions()) {
-            RaidCraft.getPermissions().playerRemove(player, permission);
+            permissions.playerRemove(player, permission);
         }
     }
 

@@ -1,6 +1,7 @@
 package de.raidcraft.skillsandeffects.utility;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.commands.QueuedCommand;
 import de.raidcraft.api.storage.InventoryStorage;
 import de.raidcraft.api.storage.StorageException;
@@ -15,6 +16,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
 import de.raidcraft.util.SerializationUtil;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -42,6 +44,7 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
     private static final InventoryStorage INVENTORY_STORAGE = new InventoryStorage("mapbuilder-skill");
 
     private List<String> permissions = new ArrayList<>();
+    private List<String> globalPermissions = new ArrayList<>();
 
     public MapBuilder(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -52,6 +55,7 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         permissions = data.getStringList("permissions");
+        globalPermissions = data.getStringList("global-permissions");
     }
 
     @Override
@@ -142,6 +146,10 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
     @Override
     public void apply() {
 
+        Permission permissions = RaidCraft.getPermissions();
+        for (String permission : globalPermissions) {
+            permissions.playerAdd(getHolder().getPlayer(), permission);
+        }
         try {
             Optional<TSkillData> data = getData(getKey(MAPBUILDER_DATA_KEY));
             if (data.isPresent() && Boolean.parseBoolean(data.get().getDataValue())) {
@@ -155,6 +163,10 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
     @Override
     public void remove() {
 
+        Permission permissions = RaidCraft.getPermissions();
+        for (String permission : globalPermissions) {
+            permissions.playerRemove(getHolder().getPlayer(), permission);
+        }
         try {
             removeMapBuilder();
         } catch (CombatException e) {
