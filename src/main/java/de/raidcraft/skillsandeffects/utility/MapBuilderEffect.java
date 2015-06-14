@@ -112,7 +112,7 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
 
         PlayerInteractEvent event = trigger.getEvent();
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getClickedBlock() instanceof InventoryHolder) {
+            if (event.getClickedBlock().getState() instanceof InventoryHolder) {
                 warn("Du kannst im Map Builder Modus keine Kisten o.ä. öffnen.");
                 event.setCancelled(true);
             }
