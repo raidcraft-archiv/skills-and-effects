@@ -89,6 +89,7 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
     @TriggerHandler
     public void onSkillCast(PlayerCastSkillTrigger trigger) {
 
+        if (trigger.getAction().getSkill().equals(getSource())) return;
         warn("Du kannst im Map Builder Modus keine Skills casten!");
         trigger.setCancelled(true);
     }
