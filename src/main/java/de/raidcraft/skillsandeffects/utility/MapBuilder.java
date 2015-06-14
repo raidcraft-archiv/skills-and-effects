@@ -104,6 +104,8 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
         setData(getKey(MAPBUILDER_ARMOR_STORAGE_ID), armorStorageId + "");
 
         player.getInventory().clear();
+        // armor contents do not clear when calling the above method
+        player.getInventory().setArmorContents(new ItemStack[player.getInventory().getArmorContents().length]);
         info("Map Builder Modus betreten.");
     }
 
