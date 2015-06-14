@@ -96,7 +96,7 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
 
         Player player = getHolder().getPlayer();
 
-        setData(MAPBUILDER_DATA_KEY, "true");
+        setData(getKey(MAPBUILDER_DATA_KEY), "true");
         String locationByteStream = SerializationUtil.toByteStream(player.getLocation());
         setData(getKey(MAPBUILDER_LOCATION_DATA), locationByteStream);
         int storageId = INVENTORY_STORAGE.storeObject(player.getInventory().getContents());
