@@ -18,7 +18,6 @@ import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -73,14 +72,14 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
         }
     }
 
-    @EventHandler
+    @TriggerHandler
     public void onAttack(AttackTrigger trigger) {
 
         warn("Du kannst im Map Builder Modus nicht angreifen!");
         trigger.setCancelled(true);
     }
 
-    @EventHandler
+    @TriggerHandler
     public void onDamage(DamageTrigger trigger) {
 
         trigger.setCancelled(true);
