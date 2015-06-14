@@ -170,7 +170,9 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
             permissions.playerRemove(getHolder().getPlayer(), permission);
         }
         try {
-            removeMapBuilder();
+            if (getHolder().isOnline()) {
+                removeMapBuilder();
+            }
         } catch (CombatException e) {
             e.printStackTrace();
         }
