@@ -32,7 +32,7 @@ import java.util.Optional;
 @SkillInformation(
         name = "Map Builder",
         description = "Allows the switching into Gamemode, prevents the dropping of items and clears the inventory.",
-        types = EffectType.SYSTEM,
+        types = {EffectType.PERMISSION, EffectType.SYSTEM},
         triggerCombat = false
 )
 public class MapBuilder extends AbstractSkill implements CommandTriggered {
