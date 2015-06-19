@@ -43,6 +43,12 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
     @Override
     protected void apply(CharacterTemplate target) throws CombatException {
 
+        renew(target);
+    }
+
+    @Override
+    protected void renew(CharacterTemplate target) throws CombatException {
+
         Player player = getSource().getHolder().getPlayer();
         player.setGameMode(GameMode.CREATIVE);
 
@@ -50,11 +56,6 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
         for (String permission : getSource().getPermissions()) {
             permissions.playerAdd(player, permission);
         }
-    }
-
-    @Override
-    protected void renew(CharacterTemplate target) throws CombatException {
-
     }
 
     @Override

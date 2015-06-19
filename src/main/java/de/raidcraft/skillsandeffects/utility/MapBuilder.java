@@ -13,8 +13,11 @@ import de.raidcraft.skills.api.profession.Profession;
 import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
+import de.raidcraft.skills.api.trigger.TriggerHandler;
+import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TSkillData;
+import de.raidcraft.skills.trigger.PlayerLoginTrigger;
 import de.raidcraft.util.SerializationUtil;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Location;
@@ -35,7 +38,7 @@ import java.util.Optional;
         types = {EffectType.PERMISSION, EffectType.SYSTEM},
         triggerCombat = false
 )
-public class MapBuilder extends AbstractSkill implements CommandTriggered {
+public class MapBuilder extends AbstractSkill implements CommandTriggered, Triggered {
 
     private static final String MAPBUILDER_DATA_KEY = "IS_MAPBUILDER";
     private static final String MAPBUILDER_LOCATION_DATA = "MAPBUILDER_LOC";
@@ -74,6 +77,18 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered {
                 warn("Bist du dir sicher dass du den Map Builder Modus betreten willst?");
                 new QueuedCommand(getHolder().getPlayer(), this, "enterMapBuilder");
             } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @TriggerHandler(ignoreCancelled = true)
+    public void onJoin(PlayerLoginTrigger trigger) {
+
+        if (hasEffect(MapBuilderEffect.class)) {
+            try {
+                getEffect(MapBuilderEffect.class).renew();
+            } catch (CombatException e) {
                 e.printStackTrace();
             }
         }
