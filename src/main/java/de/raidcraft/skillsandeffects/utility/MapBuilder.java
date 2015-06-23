@@ -85,13 +85,7 @@ public class MapBuilder extends AbstractSkill implements CommandTriggered, Trigg
     @TriggerHandler(ignoreCancelled = true)
     public void onJoin(PlayerLoginTrigger trigger) {
 
-        if (hasEffect(MapBuilderEffect.class)) {
-            try {
-                getEffect(MapBuilderEffect.class).renew();
-            } catch (CombatException e) {
-                e.printStackTrace();
-            }
-        }
+        apply();
     }
 
     public List<String> getPermissions() {
