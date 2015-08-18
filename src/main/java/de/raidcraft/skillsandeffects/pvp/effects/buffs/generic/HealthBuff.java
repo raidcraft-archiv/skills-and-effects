@@ -20,7 +20,8 @@ import org.bukkit.configuration.ConfigurationSection;
 @EffectInformation(
         name = "Health Buff",
         description = "Erhöht die maximale Lebensenergie.",
-        types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE}
+        types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE},
+        global = true
 )
 public class HealthBuff extends ExpirableEffect<Skill> implements Triggered {
 

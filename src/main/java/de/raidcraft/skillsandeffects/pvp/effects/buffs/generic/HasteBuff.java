@@ -16,7 +16,8 @@ import org.bukkit.potion.PotionEffectType;
 @EffectInformation(
         name = "Haste Buff",
         description = "Erhöht die Bewegungsgeschwindigkeit.",
-        types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE}
+        types = {EffectType.HELPFUL, EffectType.MAGICAL, EffectType.BUFF, EffectType.PURGEABLE},
+        global = true
 )
 public class HasteBuff extends ExpirableEffect<Skill> {
 
