@@ -113,7 +113,7 @@ public class Warp extends AbstractSkill implements Triggered, CommandTriggered, 
         if (bedSpawn) {
             Location spawnLocation = getHolder().getPlayer().getBedSpawnLocation();
             if (spawnLocation != null) {
-                getHolder().getEntity().teleport(spawnLocation);
+                getHolder().getEntity().teleport(spawnLocation.add(0, 1, 0));
                 return;
             }
         }
