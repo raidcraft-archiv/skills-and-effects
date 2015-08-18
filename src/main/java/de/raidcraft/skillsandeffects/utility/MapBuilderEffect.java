@@ -18,7 +18,6 @@ import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.potion.PotionEffect;
@@ -111,11 +110,9 @@ public class MapBuilderEffect extends AbstractEffect<MapBuilder> implements Trig
     public void onInteract(PlayerInteractTrigger trigger) {
 
         PlayerInteractEvent event = trigger.getEvent();
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getClickedBlock().getState() instanceof InventoryHolder) {
-                warn("Du kannst im Map Builder Modus keine Kisten o.ä. öffnen.");
-                event.setCancelled(true);
-            }
+        if (event.getClickedBlock().getState() instanceof InventoryHolder) {
+            warn("Du kannst im Map Builder Modus keine Kisten o.ä. öffnen.");
+            event.setCancelled(true);
         }
     }
 
