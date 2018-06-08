@@ -49,7 +49,7 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        persistant = data.getBoolean("persistant", false);
+        persistant = data.getBoolean("persistent", false);
         maxBlocks = data.getConfigurationSection("max-blocks");
         duration = data.getConfigurationSection("duration");
     }
