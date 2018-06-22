@@ -2,6 +2,7 @@ package de.raidcraft.skillsandeffects.pvp.skills.physical;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.combat.callback.Callback;
 import de.raidcraft.skills.api.effect.common.QueuedAttack;
 import de.raidcraft.skills.api.effect.common.SunderingArmor;
@@ -13,18 +14,11 @@ import de.raidcraft.skills.api.skill.AbstractSkill;
 import de.raidcraft.skills.api.skill.SkillInformation;
 import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.api.trigger.Triggered;
-import de.raidcraft.skills.effects.Bleed;
-import de.raidcraft.skills.effects.Burn;
-import de.raidcraft.skills.effects.Poison;
-import de.raidcraft.skills.effects.Slow;
-import de.raidcraft.skills.effects.Weakness;
-import de.raidcraft.skills.effects.disabling.Disarm;
-import de.raidcraft.skills.effects.disabling.Interrupt;
-import de.raidcraft.skills.effects.disabling.KnockBack;
-import de.raidcraft.skills.effects.disabling.Silence;
-import de.raidcraft.skills.effects.disabling.Stun;
+import de.raidcraft.skills.effects.*;
+import de.raidcraft.skills.effects.disabling.*;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.AttackTrigger;
+import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -50,6 +44,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
     private boolean interrupt = false;
     private boolean silence = false;
     private boolean poison = false;
+    private ConfigurationSection lifeLeech;
 
     public Strike(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -71,6 +66,7 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
         interrupt = data.getBoolean("interrupt", false);
         silence = data.getBoolean("silence", false);
         poison = data.getBoolean("poison", false);
+        lifeLeech = data.getConfigurationSection("life-leech");
     }
 
     @Override
@@ -94,7 +90,14 @@ public class Strike extends AbstractSkill implements CommandTriggered, Triggered
                 if (silence || interrupt) Strike.this.addEffect(trigger.getSource().getTarget(), Interrupt.class);
                 if (silence) Strike.this.addEffect(trigger.getSource().getTarget(), Silence.class);
                 if (poison) Strike.this.addEffect(trigger.getSource().getTarget(), Poison.class);
+                if (lifeLeech != null) {
+                    new HealAction<>(Strike.this, getHolder(), (int) (trigger.getAttack().getDamage() * getLifeLeechPercentage())).run();
+                }
             }
         });
+    }
+
+    private double getLifeLeechPercentage() {
+        return ConfigUtil.getTotalValue(this, lifeLeech);
     }
 }
