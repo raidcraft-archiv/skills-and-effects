@@ -59,7 +59,7 @@ public class Consume extends AbstractSkill implements Triggered {
                     Consumeable consumeable = new Consumeable(item.getId(), section.getConfigurationSection(key));
                     consumeables.put(consumeable.itemId, consumeable);
                 } else {
-                    RaidCraft.LOGGER.warning("Wrong item name " + key + " in " + getName() + ".yml config.");
+                    RaidCraft.LOGGER.warning("Wrong item displayName " + key + " in " + getName() + ".yml config.");
                 }
             }
         }
