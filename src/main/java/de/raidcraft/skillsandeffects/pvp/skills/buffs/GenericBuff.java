@@ -40,7 +40,7 @@ public class GenericBuff extends AbstractSkill implements CommandTriggered {
     public void load(ConfigurationSection data) {
 
         type = BuffType.fromString(data.getString("type"));
-        self = data.getBoolean("self-only", false);
+        self = data.getBoolean("self", false);
         group = data.getBoolean("group", false);
     }
 
