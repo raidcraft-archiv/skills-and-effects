@@ -1,5 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.effects.buffs.healing;
 
+import de.raidcraft.api.items.attachments.Consumeable;
 import de.raidcraft.skills.api.character.CharacterTemplate;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.HealAction;
@@ -7,6 +8,7 @@ import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.PeriodicExpirableEffect;
 import de.raidcraft.skills.api.events.RCCombatEvent;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.EffectData;
 import de.raidcraft.skills.api.resource.Resource;
 import de.raidcraft.skills.api.trigger.TriggerHandler;
@@ -31,7 +33,7 @@ import org.bukkit.potion.PotionEffectType;
 public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements Triggered {
 
     private final PotionEffect regainEffect;
-    private Consume.Consumeable consumeable;
+    private Consume.ConsumeableWrapper consumeable;
     private int resourceGain;
     private boolean breakCombat = false;
     private boolean breakOnDamage = true;
@@ -64,7 +66,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
         }
     }
 
-    public void setConsumeable(Consume.Consumeable consumeable) {
+    public void setConsumeable(Consume.ConsumeableWrapper consumeable) {
 
         this.consumeable = consumeable;
     }
@@ -75,15 +77,10 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
         if (target.isInCombat()) {
             remove();
         }
-        if (consumeable == null) {
+        if (consumeable == null || !(target instanceof Hero)) {
             return;
         }
-        if (consumeable.getType() == Consume.ConsumeableType.HEALTH) {
-            new HealAction<>(this, target, resourceGain).run();
-        } else if (consumeable.getType() == Consume.ConsumeableType.RESOURCE) {
-            Resource resource = consumeable.getResource();
-            resource.setCurrent(resource.getCurrent() + resourceGain);
-        }
+        consumeable.applyRessourceGain(resourceGain);
     }
 
     @Override
@@ -105,23 +102,34 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
         if (breakCombat && target.isInCombat()) {
             remove();
         }
-        if (consumeable.getType() == Consume.ConsumeableType.HEALTH) {
-            if (consumeable.isPercentage()) {
-                this.resourceGain = (int) ((target.getMaxHealth() * consumeable.getResourceGain()) / getTickCount());
-            } else {
-                this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
-            }
-        } else if (consumeable.getType() == Consume.ConsumeableType.RESOURCE) {
-            if (consumeable.isPercentage()) {
-                this.resourceGain = (int) ((consumeable.getResource().getMax() * consumeable.getResourceGain()) / getTickCount());
-            } else {
-                this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
-            }
+        switch (consumeable.getType()) {
+            case HEALTH:
+                if (consumeable.isPercentage()) {
+                    this.resourceGain = (int) ((target.getMaxHealth() * consumeable.getResourceGain()) / getTickCount());
+                } else {
+                    this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
+                }
+                info("Du regenerierst nun langsam Leben.");
+                break;
+            case RESOURCE:
+                if (consumeable.isPercentage()) {
+                    this.resourceGain = (int) ((consumeable.getResource().getMax() * consumeable.getResourceGain()) / getTickCount());
+                } else {
+                    this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
+                }
+                info("Du regenerierst nun langsam " + consumeable.getResource().getFriendlyName());
+                break;
+            case ATTRIBUTE:
+                if (consumeable.isPercentage()) {
+                    this.resourceGain = (int) ((consumeable.getAttribute().getBaseValue() * consumeable.getResourceGain()) / getTickCount());
+                } else {
+                    this.resourceGain = (int) (consumeable.getResourceGain() / getTickCount());
+                }
+                info("Du regenerierst nun langsam " + consumeable.getAttribute().getFriendlyName());
+                break;
+
         }
         target.getEntity().addPotionEffect(regainEffect);
-        info("Du regenerierst nun langsam " +
-                        (consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Leben" : consumeable.getResource().getFriendlyName()) + "."
-        );
     }
 
     @Override
@@ -129,7 +137,7 @@ public class ConsumeEffect extends PeriodicExpirableEffect<Consume> implements T
 
         this.resourceGain = 0;
         target.getEntity().removePotionEffect(PotionEffectType.REGENERATION);
-        info((consumeable.getType() == Consume.ConsumeableType.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName())
+        info((consumeable.getType() == Consumeable.Type.HEALTH ? "Lebens" : consumeable.getResource().getFriendlyName())
                 + " Regeneration beendet.");
     }
 }

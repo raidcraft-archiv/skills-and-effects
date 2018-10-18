@@ -1,8 +1,12 @@
 package de.raidcraft.skillsandeffects.pvp.skills.healing;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.attachments.Consumeable;
 import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.combat.action.HealAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
+import de.raidcraft.skills.api.hero.Attribute;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
 import de.raidcraft.skills.api.profession.Profession;
@@ -14,15 +18,11 @@ import de.raidcraft.skills.api.trigger.TriggerPriority;
 import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerConsumeTrigger;
-import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skillsandeffects.pvp.effects.buffs.generic.AttributeBuff;
 import de.raidcraft.skillsandeffects.pvp.effects.buffs.healing.ConsumeEffect;
-import de.raidcraft.util.ItemUtils;
-import org.bukkit.Material;
+import lombok.Data;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Silthus
@@ -34,7 +34,6 @@ import java.util.Map;
 )
 public class Consume extends AbstractSkill implements Triggered {
 
-    private final Map<Integer, Consumeable> consumeables = new HashMap<>();
     private int requiredFoodLevel = 19;
 
     public Consume(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
@@ -46,23 +45,6 @@ public class Consume extends AbstractSkill implements Triggered {
     public void load(ConfigurationSection data) {
 
         requiredFoodLevel = data.getInt("food-level", 19);
-        loadConsumables(data.getConfigurationSection("food"));
-        loadConsumables(data.getConfigurationSection("drinks"));
-    }
-
-    private void loadConsumables(ConfigurationSection section) {
-
-        if (section != null) {
-            for (String key : section.getKeys(false)) {
-                Material item = ItemUtils.getItem(key);
-                if (item != null) {
-                    Consumeable consumeable = new Consumeable(item.getId(), section.getConfigurationSection(key));
-                    consumeables.put(consumeable.itemId, consumeable);
-                } else {
-                    RaidCraft.LOGGER.warning("Wrong item displayName " + key + " in " + getName() + ".yml config.");
-                }
-            }
-        }
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
@@ -76,44 +58,45 @@ public class Consume extends AbstractSkill implements Triggered {
             trigger.getEvent().setCancelled(true);
             throw new CombatException("Du kannst im Kampf kein Essen zu dir nehmen.");
         }
-        ItemStack item = trigger.getEvent().getItem();
-        if (item != null && consumeables.containsKey(item.getTypeId())) {
-            consumeables.get(item.getTypeId()).consume(item);
-        }
+        CustomItemStack customItem = RaidCraft.getCustomItem(trigger.getEvent().getItem());
+        if (customItem == null || !(customItem.getItem() instanceof Consumeable)) return;
+
+        new ConsumeableWrapper((Consumeable) customItem.getItem()).consume(customItem);
     }
 
-    public enum ConsumeableType {
+    @Data
+    public class ConsumeableWrapper {
 
-        HEALTH,
-        RESOURCE
-    }
-
-    public class Consumeable {
-
-        private final int itemId;
-        private final ConsumeableType type;
-        private final String resourceName;
-        private final ConfigurationSection resourceGain;
-        private final boolean percentage;
-
-        public Consumeable(int itemId, ConfigurationSection config) {
-
-            this.itemId = itemId;
-            this.resourceName = config.getString("resource", "health");
-            this.resourceGain = config.getConfigurationSection("gain");
-            this.type = resourceName.equalsIgnoreCase("health") ? ConsumeableType.HEALTH : ConsumeableType.RESOURCE;
-            this.percentage = config.getBoolean("percentage", true);
-        }
+        private final Consumeable consumeable;
 
         public void consume(ItemStack itemStack) throws CombatException {
 
-            if (this.itemId != itemStack.getTypeId()) {
-                return;
+            CustomItemStack customItem = RaidCraft.getCustomItem(itemStack);
+            if (customItem == null) return;
+
+            if (getConsumeable().getConsumeableType() == Consumeable.Type.RESOURCE && getResource() == null) {
+                throw new CombatException("Dir bringt der Verzehr dieses Gegenstands keine Regeneration.");
             }
-            if (type != ConsumeableType.HEALTH && getResource() == null) {
-                throw new CombatException("Dir bringt der Verzehr dieses Essens keine Regeneration.");
+            if (getConsumeable().getConsumeableType() == Consumeable.Type.ATTRIBUTE && getAttribute() == null) {
+                throw new CombatException("Dir bringt der Verzehr dieses Gegenstands keine Attribut Steigerung.");
             }
-            Consume.this.addEffect(ConsumeEffect.class).setConsumeable(this);
+
+            if (getConsumeable().isInstant()) {
+                applyRessourceGain(getResourceGain());
+            } else {
+                if (getType() == Consumeable.Type.ATTRIBUTE) {
+                    AttributeBuff attributeBuff = Consume.this.addEffect(AttributeBuff.class);
+                    attributeBuff.setModifier(getResourceGain());
+                    attributeBuff.setAttribute(getAttribute().getName());
+                    if (getConsumeable().getDuration() > 0) attributeBuff.setDuration(getConsumeable().getDuration());
+                } else {
+                    ConsumeEffect consumeEffect = Consume.this.addEffect(ConsumeEffect.class);
+                    consumeEffect.setConsumeable(this);
+                    if (getConsumeable().getDuration() > 0) consumeEffect.setDuration(getConsumeable().getDuration());
+                    if (getConsumeable().getInterval() > 0) consumeEffect.setInterval(getConsumeable().getInterval());
+                }
+            }
+
             if (itemStack.getAmount() > 1) {
                 itemStack.setAmount(itemStack.getAmount() - 1);
             } else {
@@ -121,24 +104,43 @@ public class Consume extends AbstractSkill implements Triggered {
             }
         }
 
-        public Resource getResource() {
+        public void applyRessourceGain(double ressourceGain) throws CombatException {
+            switch (getType()) {
+                case HEALTH:
+                    new HealAction<>(this, getHolder(), ressourceGain).run();
+                    break;
+                case RESOURCE:
+                    Resource resource = getResource();
+                    resource.setCurrent(resource.getCurrent() + ressourceGain);
+                    break;
+                case ATTRIBUTE:
+                    Attribute attribute = getAttribute();
+                    attribute.updateBaseValue((int) ressourceGain, true);
+                    break;
 
-            return getHolder().getResource(resourceName);
+            }
         }
 
-        public ConsumeableType getType() {
+        public Attribute getAttribute() {
+            return getHolder().getAttribute(getConsumeable().getResourceName());
+        }
 
-            return type;
+        public Resource getResource() {
+
+            return getHolder().getResource(getConsumeable().getResourceName());
         }
 
         public double getResourceGain() {
 
-            return ConfigUtil.getTotalValue(Consume.this, resourceGain);
+            return getConsumeable().getResourceGain();
+        }
+
+        public Consumeable.Type getType() {
+            return getConsumeable().getConsumeableType();
         }
 
         public boolean isPercentage() {
-
-            return percentage;
+            return getConsumeable().isPercentage();
         }
     }
 }
