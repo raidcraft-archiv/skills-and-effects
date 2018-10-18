@@ -85,15 +85,17 @@ public class Consume extends AbstractSkill implements Triggered {
                 applyRessourceGain(getResourceGain());
             } else {
                 if (getType() == Consumeable.Type.ATTRIBUTE) {
-                    AttributeBuff attributeBuff = Consume.this.addEffect(AttributeBuff.class);
-                    attributeBuff.setModifier(getResourceGain());
-                    attributeBuff.setAttribute(getAttribute().getName());
-                    if (getConsumeable().getDuration() > 0) attributeBuff.setDuration(getConsumeable().getDuration());
+                    Consume.this.addEffect(AttributeBuff.class, effect -> {
+                        effect.setModifier(getResourceGain());
+                        effect.setAttribute(getAttribute().getName());
+                        if (getConsumeable().getDuration() > 0) effect.setDuration(getConsumeable().getDuration());
+                    });
                 } else {
-                    ConsumeEffect consumeEffect = Consume.this.addEffect(ConsumeEffect.class);
-                    consumeEffect.setConsumeable(this);
-                    if (getConsumeable().getDuration() > 0) consumeEffect.setDuration(getConsumeable().getDuration());
-                    if (getConsumeable().getInterval() > 0) consumeEffect.setInterval(getConsumeable().getInterval());
+                    Consume.this.addEffect(ConsumeEffect.class, effect -> {
+                        effect.setConsumeable(this);
+                        if (getConsumeable().getDuration() > 0) effect.setDuration(getConsumeable().getDuration());
+                        if (getConsumeable().getInterval() > 0) effect.setInterval(getConsumeable().getInterval());
+                    });
                 }
             }
 

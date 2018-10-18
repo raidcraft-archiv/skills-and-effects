@@ -2,6 +2,8 @@ package de.raidcraft.skillsandeffects.pvp.effects.buffs.generic;
 
 import de.raidcraft.api.items.AttributeType;
 import de.raidcraft.skills.api.character.CharacterTemplate;
+import de.raidcraft.skills.api.combat.EffectType;
+import de.raidcraft.skills.api.effect.EffectInformation;
 import de.raidcraft.skills.api.effect.types.ExpirableEffect;
 import de.raidcraft.skills.api.exceptions.CombatException;
 import de.raidcraft.skills.api.hero.Attribute;
@@ -13,6 +15,11 @@ import lombok.Data;
 import org.bukkit.configuration.ConfigurationSection;
 
 @Data
+@EffectInformation(
+        name = "Attribute Buff",
+        description = "Erhöht deine Attribute.",
+        types = {EffectType.BUFF, EffectType.PURGEABLE, EffectType.HELPFUL}
+)
 public class AttributeBuff extends ExpirableEffect<Skill> {
 
     private String attribute;
