@@ -16,7 +16,9 @@ import de.raidcraft.skills.api.trigger.Triggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
+import de.raidcraft.skills.util.ItemUtil;
 import de.raidcraft.util.BlockUtil;
+import de.raidcraft.util.ItemUtils;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -59,11 +61,9 @@ public class Woodcutting extends AbstractLevelableSkill implements Triggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        matsTree.add(Material.LOG);
-        matsTree.add(Material.LOG_2);
+        matsTree.addAll(ItemUtils.LOGS);
 
-        matsLeaves.add(Material.LEAVES);
-        matsLeaves.add(Material.LEAVES_2);
+        matsLeaves.addAll(ItemUtils.LEAVES);
 
         for (String entry : data.getStringList("tools")) {
             Material material = Material.matchMaterial(entry);

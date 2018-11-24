@@ -32,7 +32,7 @@ import java.util.Map;
 public class ConvertItems extends AbstractSkill implements CommandTriggered {
 
     private ConfigurationSection amount;
-    private Map<Integer, Integer> itemConversionMap = new HashMap<>();
+    private Map<Material, Material> itemConversionMap = new HashMap<>();
 
     public ConvertItems(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -54,12 +54,12 @@ public class ConvertItems extends AbstractSkill implements CommandTriggered {
                 RaidCraft.LOGGER.warning("Item key " + key + " is not a valid item in " + getName());
                 continue;
             }
-            int result = ores.getInt(key, 0);
-            if (result == 0) {
+            Material result = ItemUtils.getItem(ores.getString(key, "AIR"));
+            if (result == Material.AIR) {
                 RaidCraft.LOGGER.warning("No result item defined for the item " + key + " in " + getName());
                 continue;
             }
-            itemConversionMap.put(item.getId(), result);
+            itemConversionMap.put(item, result);
         }
     }
 
@@ -67,7 +67,7 @@ public class ConvertItems extends AbstractSkill implements CommandTriggered {
     public void runCommand(CommandContext args) throws CombatException {
 
         ItemStack itemStack = getHolder().getPlayer().getItemInHand();
-        if (itemStack == null || !itemConversionMap.containsKey(itemStack.getTypeId())) {
+        if (itemStack == null || !itemConversionMap.containsKey(itemStack.getType())) {
             throw new CombatException("Du musst für diesen Skill die Items die du konvertieren möchtest in der Hand haben.");
         }
         int amount = getAmount();
@@ -75,10 +75,10 @@ public class ConvertItems extends AbstractSkill implements CommandTriggered {
             throw new CombatException("Du musst mindestens " + amount + " Items in deiner Hand halten.");
         }
         if (itemStack.getAmount() == amount) {
-            itemStack.setTypeId(itemConversionMap.get(itemStack.getTypeId()));
+            itemStack.setType(itemConversionMap.get(itemStack.getType()));
         } else {
             itemStack.setAmount(itemStack.getAmount() - amount);
-            getHolder().getPlayer().getInventory().addItem(new ItemStack(itemConversionMap.get(itemStack.getTypeId()), amount));
+            getHolder().getPlayer().getInventory().addItem(new ItemStack(itemConversionMap.get(itemStack.getType()), amount));
         }
         getHolder().sendMessage(ChatColor.GREEN + getFriendlyName() + " wurde vollzogen und deine Items wurden konvertiert.");
         getHolder().getPlayer().updateInventory();

@@ -14,6 +14,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.trigger.PlayerItemBreakTrigger;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
+import lombok.Data;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ import java.util.Map;
 )
 public class Recycler extends AbstractSkill implements Triggered {
 
-    private final Map<Integer, SalvagedItem> salvagedItems = new HashMap<>();
+    private final Map<Material, SalvagedItem> salvagedItems = new HashMap<>();
 
     public Recycler(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -55,51 +56,37 @@ public class Recycler extends AbstractSkill implements Triggered {
                 RaidCraft.LOGGER.warning("Unknown item " + key + " in skill config " + getName());
                 continue;
             }
-            SalvagedItem salvagedItem = new SalvagedItem(material.getId(), section.getInt("amount", 1));
+            SalvagedItem salvagedItem = new SalvagedItem(material, section.getInt("amount", 1));
             salvagedItem.setChance(section.getConfigurationSection("chance"));
-            salvagedItems.put(item.getId(), salvagedItem);
+            salvagedItems.put(item, salvagedItem);
         }
     }
 
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.MONITOR)
     public void onItemBreak(PlayerItemBreakTrigger trigger) {
 
-        if (!salvagedItems.containsKey(trigger.getEvent().getBrokenItem().getTypeId())) {
+        if (!salvagedItems.containsKey(trigger.getEvent().getBrokenItem().getType())) {
             return;
         }
-        SalvagedItem salvagedItem = salvagedItems.get(trigger.getEvent().getBrokenItem().getTypeId());
+        SalvagedItem salvagedItem = salvagedItems.get(trigger.getEvent().getBrokenItem().getType());
         if (Math.random() < salvagedItem.getChance(this)) {
-            ItemStack itemStack = new ItemStack(salvagedItem.getItemId(), salvagedItem.getAmount());
+            ItemStack itemStack = new ItemStack(salvagedItem.getMaterial(), salvagedItem.getAmount());
             Player player = trigger.getEvent().getPlayer();
             player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
         }
     }
 
+    @Data
     public static class SalvagedItem {
 
-        private final int itemId;
+        private final Material material;
         private final int amount;
         private ConfigurationSection chance;
 
-        public SalvagedItem(int itemId, int amount) {
+        public SalvagedItem(Material material, int amount) {
 
-            this.itemId = itemId;
+            this.material = material;
             this.amount = amount;
-        }
-
-        public int getItemId() {
-
-            return itemId;
-        }
-
-        public int getAmount() {
-
-            return amount;
-        }
-
-        public void setChance(ConfigurationSection chance) {
-
-            this.chance = chance;
         }
 
         public double getChance(Skill skill) {

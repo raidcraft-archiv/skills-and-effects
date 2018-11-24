@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>skills-and-effects</artifactId>
     <packaging>jar</packaging>
-    <version>1.12-0.1-SNAPSHOT</version>
+    <version>1.13.2-SNAPSHOT</version>
     <name>SkillsAndEffects</name>
 
     <parent>
         <groupId>de.faldoria</groupId>
         <artifactId>FaldoriaMasterPom</artifactId>
-        <version>1.12-0.18</version>
+        <version>1.13.2-SNAPSHOT</version>
     </parent>
 
     <repositories>
@@ -40,12 +40,12 @@
         <dependency>
             <groupId>de.faldoria</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>1.12-0.7-SNAPSHOT</version>
+            <version>1.13.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.faldoria</groupId>
             <artifactId>skills</artifactId>
-            <version>1.12-0.1-SNAPSHOT</version>
+            <version>1.13.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

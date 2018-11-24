@@ -1,6 +1,5 @@
 package de.raidcraft.skillsandeffects.pve.skills;
 
-import com.sk89q.worldedit.blocks.ItemID;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.api.hero.Hero;
 import de.raidcraft.skills.api.persistance.SkillProperties;
@@ -30,8 +29,8 @@ import java.util.List;
 )
 public class Silktouch extends AbstractSkill implements Triggered {
 
-    private final List<Integer> blockIds = new ArrayList<>();
-    private final ItemStack silkTouch = new ItemStack(ItemID.DIAMOND_PICKAXE);
+    private final List<Material> blocks = new ArrayList<>();
+    private final ItemStack silkTouch = new ItemStack(Material.DIAMOND_PICKAXE);
 
     public Silktouch(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -48,7 +47,7 @@ public class Silktouch extends AbstractSkill implements Triggered {
                 RaidCraft.LOGGER.warning("Uknown item " + key + " in effect config of " + getName() + " for skill " + getName());
                 continue;
             }
-            blockIds.add(item.getId());
+            blocks.add(item);
         }
     }
 
@@ -56,7 +55,7 @@ public class Silktouch extends AbstractSkill implements Triggered {
     public void onBlockBreak(BlockBreakTrigger trigger) {
 
         Block block = trigger.getEvent().getBlock();
-        if (blockIds.contains(block.getTypeId())) {
+        if (blocks.contains(block.getType())) {
             // simply break the block with a different tool and cancel the event
             block.breakNaturally(silkTouch);
             trigger.getEvent().setCancelled(true);
