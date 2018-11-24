@@ -31,8 +31,7 @@ import org.bukkit.inventory.ItemStack;
 )
 public class SummonBlock extends AbstractSkill implements CommandTriggered {
 
-    private int blockId;
-    private short blockData;
+    private Material blockData;
 
     private Location lastBlock;
 
@@ -44,19 +43,17 @@ public class SummonBlock extends AbstractSkill implements CommandTriggered {
     @Override
     public void load(ConfigurationSection data) {
 
-        Material block = ItemUtils.getItem(data.getString("block"));
-        if (block == null) {
+        this.blockData = ItemUtils.getItem(data.getString("block"));
+        if (blockData == null) {
             RaidCraft.LOGGER.warning("Unknown block defined in the config of " + getName());
             return;
         }
-        blockId = block.getId();
-        blockData = ItemUtils.getItemData(data.getString("block"));
     }
 
     @Override
     public void runCommand(CommandContext args) throws CombatException {
 
-        if (blockId == 0) {
+        if (blockData == null || blockData == Material.AIR) {
             throw new CombatException("Unbekannter Block definitiert! Bitte melde dies als Bug an das Raid-Craft Team!");
         }
         if (lastBlock != null) {
@@ -68,13 +65,13 @@ public class SummonBlock extends AbstractSkill implements CommandTriggered {
                 }
                 ((InventoryHolder) block).getInventory().clear();
             }
-            block.setTypeId(0, true);
+            block.setType(Material.AIR, true);
             lastBlock = null;
             getHolder().sendMessage(ChatColor.RED + "Dein letzter beschworener Block wurde entfernt.");
         }
         // dont store the block directly because this will keep the chunk loaded
         Block block = findBlock(getTargetBlock().getBlock());
-        block.setTypeIdAndData(blockId, (byte) blockData, true);
+        block.setType(blockData, true);
         lastBlock = block.getLocation();
     }
 
@@ -86,11 +83,11 @@ public class SummonBlock extends AbstractSkill implements CommandTriggered {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 3; y++) {
                     relative = block.getRelative(x, y, z);
-                    if (BlockUtil.TRANSPARENT_BLOCKS.contains((byte) relative.getTypeId())) {
+                    if (!relative.getType().isOccluding()) {
                         return relative;
                     }
                     relative = block.getRelative(-x, y, -z);
-                    if (BlockUtil.TRANSPARENT_BLOCKS.contains((byte) relative.getTypeId())) {
+                    if (!relative.getType().isOccluding()) {
                         return relative;
                     }
                 }

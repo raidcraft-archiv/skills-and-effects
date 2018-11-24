@@ -18,6 +18,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Wool;
 
 import java.util.Collections;
 import java.util.SortedMap;
@@ -72,8 +74,14 @@ public class SuperShear extends AbstractLevelableSkill implements Triggered {
             }
         }
         if (amount > 0) {
-            entity.getLocation().getWorld().dropItemNaturally(
-                    entity.getLocation(), new ItemStack(Material.WOOL, amount, ((Sheep) entity).getColor().getWoolData()));
+
+            ItemStack itemStack = new ItemStack(Material.WHITE_WOOL, amount);
+            MaterialData data = itemStack.getData();
+            if (data instanceof Wool) {
+                ((Wool) data).setColor(((Sheep) entity).getColor());
+                itemStack.setData(data);
+            }
+            entity.getLocation().getWorld().dropItemNaturally(entity.getLocation(), itemStack);
             getAttachedLevel().addExp(getUseExp() * amount);
             substractUsageCost(new SkillAction(this));
         }

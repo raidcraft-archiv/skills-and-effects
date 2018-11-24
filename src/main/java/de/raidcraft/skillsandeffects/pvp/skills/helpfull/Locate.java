@@ -1,6 +1,5 @@
 package de.raidcraft.skillsandeffects.pvp.skills.helpfull;
 
-import com.sk89q.worldedit.blocks.ItemID;
 import de.raidcraft.skills.api.combat.EffectType;
 import de.raidcraft.skills.api.combat.action.SkillAction;
 import de.raidcraft.skills.api.exceptions.CombatException;
@@ -16,6 +15,7 @@ import de.raidcraft.skills.trigger.PlayerInteractTrigger;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -46,7 +46,7 @@ public class Locate extends AbstractSkill implements Triggered {
         }
         // check if he has a compas in his hand
         ItemStack item = event.getPlayer().getItemInHand();
-        if (item == null || item.getTypeId() != ItemID.COMPASS || !canUseAbility()) {
+        if (item == null || item.getType() != Material.COMPASS || !canUseAbility()) {
             return;
         }
         int distance = getTotalRange();

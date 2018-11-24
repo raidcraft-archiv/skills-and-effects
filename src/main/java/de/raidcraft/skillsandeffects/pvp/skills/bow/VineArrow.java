@@ -1,7 +1,6 @@
 package de.raidcraft.skillsandeffects.pvp.skills.bow;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.worldedit.blocks.BlockID;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.skills.SkillsPlugin;
 import de.raidcraft.skills.api.combat.EffectType;
@@ -19,6 +18,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -67,12 +67,12 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
                 int maxBlocks = getMaxBlocks();
                 Block block = location.getBlock();
                 do {
-                    block.setTypeId(BlockID.VINE, false);
+                    block.setType(Material.VINE, false);
                     block = block.getRelative(BlockFace.DOWN);
                     if (!persistant) {
                         affectedBlocks.add(block);
                     }
-                } while ((maxBlocks < 1 || ++changedBlocks < maxBlocks) && block.getTypeId() == 0);
+                } while ((maxBlocks < 1 || ++changedBlocks < maxBlocks) && block.getType() == Material.AIR);
             }
         }, ProjectileType.ARROW);
         // clear the vines after the end of the duration
@@ -90,7 +90,7 @@ public class VineArrow extends AbstractSkill implements CommandTriggered {
         // remove the old vine
         if (!persistant) {
             for (Block block : affectedBlocks) {
-                block.setTypeId(0, true);
+                block.setType(Material.AIR, true);
             }
         }
     }

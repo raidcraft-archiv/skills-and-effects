@@ -13,6 +13,7 @@ import de.raidcraft.skills.api.trigger.CommandTriggered;
 import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.util.ConfigUtil;
 import de.raidcraft.util.ItemUtils;
+import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -53,9 +54,8 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
                 RaidCraft.LOGGER.warning("Unknown item " + item + " in skill config of " + getName());
                 continue;
             }
-            short itemData = ItemUtils.getItemData(key);
             ConfigurationSection section = data.getConfigurationSection("items." + key);
-            ConjuredItem conjuredItem = new ConjuredItem(item.getId(), itemData, section.getInt("amount", 1));
+            ConjuredItem conjuredItem = new ConjuredItem(item, section.getInt("amount", 1));
             conjuredItem.setChance(section.getConfigurationSection("chance"));
             conjuredItem.setExp(section.getInt("exp", 1));
             conjuredItem.setRequiredLevel(section.getInt("level", 1));
@@ -75,7 +75,7 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
                     continue;
                 }
                 if (Math.random() < item.getChance(this)) {
-                    ItemStack itemStack = new ItemStack(item.getItemId(), item.getAmount(), item.getItemData());
+                    ItemStack itemStack = new ItemStack(item.getMaterial(), item.getAmount());
                     Location location = getHolder().getEntity().getLocation();
                     location.getWorld().dropItemNaturally(location, itemStack);
                     getAttachedLevel().addExp(item.getExp());
@@ -89,65 +89,24 @@ public class ConjureItem extends AbstractLevelableSkill implements CommandTrigge
 
     }
 
+    @Data
     public static class ConjuredItem {
 
-        private final int itemId;
+        private final Material material;
         private final int amount;
-        private final short itemData;
         private ConfigurationSection chance;
         private int requiredLevel;
         private int exp;
 
-        public ConjuredItem(int itemId, short itemData, int amount) {
+        public ConjuredItem(Material material, int amount) {
 
-            this.itemId = itemId;
-            this.itemData = itemData;
+            this.material = material;
             this.amount = amount;
-        }
-
-        public int getItemId() {
-
-            return itemId;
-        }
-
-        public short getItemData() {
-
-            return itemData;
-        }
-
-        public int getAmount() {
-
-            return amount;
-        }
-
-        public int getRequiredLevel() {
-
-            return requiredLevel;
-        }
-
-        public void setRequiredLevel(int requiredLevel) {
-
-            this.requiredLevel = requiredLevel;
-        }
-
-        public int getExp() {
-
-            return exp;
-        }
-
-        public void setExp(int exp) {
-
-            this.exp = exp;
         }
 
         public double getChance(Skill skill) {
 
             return ConfigUtil.getTotalValue(skill, chance);
-        }
-
-        public void setChance(ConfigurationSection chance) {
-
-            this.chance = chance;
         }
     }
 }
