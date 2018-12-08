@@ -37,7 +37,7 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
 
     private final Map<WeaponType, ConfigurationSection> bonusDamage = new EnumMap<>(WeaponType.class);
     private boolean allAttacks = false;
-    private double expPerDamage;
+    private ConfigurationSection expPerDamage;
 
     public WeaponBonusDamage(Hero hero, SkillProperties data, Profession profession, THeroSkill database) {
 
@@ -48,7 +48,7 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
     public void load(ConfigurationSection data) {
 
         allAttacks = data.getBoolean("all-attacks", false);
-        expPerDamage = data.getDouble("exp-per-damage", 0.0);
+        expPerDamage = data.getConfigurationSection("exp-per-damage");
         ConfigurationSection weapons = data.getConfigurationSection("weapons");
         if (weapons == null || weapons.getKeys(false) == null) return;
         for (String key : weapons.getKeys(false)) {
@@ -84,6 +84,11 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
         return 0;
     }
 
+    private int getExpPerDamage(double damage) {
+        if (expPerDamage == null) return 0;
+        return (int) Math.round(ConfigUtil.getTotalValue(this, expPerDamage) * damage);
+    }
+
     @TriggerHandler(ignoreCancelled = true, priority = TriggerPriority.LOWEST)
     public void onAttack(AttackTrigger trigger) {
 
@@ -102,7 +107,8 @@ public class WeaponBonusDamage extends AbstractLevelableSkill implements Trigger
                 double newDamage = oldDamage + oldDamage * bonusDamage;
                 attack.combatLog(this, "Waffenschaden um " + (int) (newDamage - oldDamage) + "(" + ((int) (bonusDamage * 100)) + "%) erhöht.");
                 attack.setDamage(newDamage);
-                getAttachedLevel().addExp((int) (newDamage * expPerDamage) + getUseExp());
+                getAttachedLevel().addExp(getExpPerDamage(newDamage));
+                getAttachedLevel().addExp(getUseExp());
             }
         }
     }
