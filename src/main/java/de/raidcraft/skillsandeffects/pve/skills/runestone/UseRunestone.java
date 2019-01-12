@@ -26,6 +26,7 @@ import de.raidcraft.skills.tables.THeroSkill;
 import de.raidcraft.skills.tables.TRunestone;
 import de.raidcraft.skills.trigger.AttackTrigger;
 import de.raidcraft.skills.trigger.DamageTrigger;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -109,7 +110,7 @@ public class UseRunestone extends AbstractSkill implements Triggered, CommandTri
             getHolder().getPlayer().getInventory().remove(getHolder().getPlayer().getItemInHand());
             throw new CombatException("Der Runenstein in deiner Hand hat bereits seine Wirkung verloren und wurde zerstört.");
         }
-        World world = Bukkit.getWorld(runestone.getWorld());
+        World world = LocationUtil.getCaseInsensitiveWorld(runestone.getWorld());
         if (world == null) {
             throw new CombatException("Die Zielwelt (" + runestone.getWorld() + ") des Runensteins existiert nicht!");
         }
